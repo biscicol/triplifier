@@ -30,11 +30,11 @@ public class CSVReader implements TabularDataReader
 {
     private StreamTokenizer st;
     private boolean hasnext = false;
-    private LinkedList<String> recqueue;
+    private LinkedList<String> reclist;
     
     public CSVReader()
     {
-        recqueue = new LinkedList<String>();
+        reclist = new LinkedList<String>();
     }
     
     @Override
@@ -132,7 +132,7 @@ public class CSVReader implements TabularDataReader
         
         int prevToken = ',';
         int fieldcnt = 0;
-        recqueue.clear();
+        reclist.clear();
         
         try {
         while (st.ttype != StreamTokenizer.TT_EOL &&
@@ -140,7 +140,7 @@ public class CSVReader implements TabularDataReader
             if (st.ttype == ',') {
                 // See if we just passed an empty field.
                 if (prevToken == ',') {
-                    recqueue.add("");
+                    reclist.add("");
                     fieldcnt++;
                 }
             }
@@ -148,9 +148,9 @@ public class CSVReader implements TabularDataReader
                 // See if we just passed an escaped double quote inside
                 // of a quoted string.
                 if (prevToken != ',')
-                    recqueue.add(recqueue.removeLast() + "\"" + st.sval);
+                    reclist.add(reclist.removeLast() + "\"" + st.sval);
                 else {
-                    recqueue.add(st.sval);
+                    reclist.add(st.sval);
                     fieldcnt++;
                 }
             }
@@ -163,7 +163,7 @@ public class CSVReader implements TabularDataReader
         
         // Test for the special case of a blank last field.
         if (prevToken == ',') {
-            recqueue.add("");
+            reclist.add("");
             fieldcnt++;
         }
         
@@ -171,7 +171,7 @@ public class CSVReader implements TabularDataReader
         
         String[] ret = new String[fieldcnt];
         for (int cnt = 0; cnt < fieldcnt; cnt++)
-            ret[cnt] = recqueue.remove();
+            ret[cnt] = reclist.remove();
         
         return ret;
     }
