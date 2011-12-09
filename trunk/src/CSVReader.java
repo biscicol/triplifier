@@ -22,8 +22,9 @@ import java.util.NoSuchElementException;
  * escape sequences (e.g., "\"\t") are also supported inside of quoted fields.
  * Fourth, blank lines are ignored.
  * 
- * Finally, note that ASCII characters 0-8 and 10-31 are all treated as empty
- * whitespace and ignored (unless they occur within a quoted string).
+ * Finally, note that this class expects text to consist of simple ASCII
+ * (1 byte) characters, and that characters 0-8 and 10-31 are all treated as
+ * empty whitespace and ignored (unless they occur within a quoted string).
  */
 public class CSVReader implements TabularDataReader
 {
@@ -167,9 +168,6 @@ public class CSVReader implements TabularDataReader
         }
         
         testNext();
-        
-        //while (!recqueue.isEmpty())
-        //    System.out.println(recqueue.remove());
         
         String[] ret = new String[fieldcnt];
         for (int cnt = 0; cnt < fieldcnt; cnt++)
