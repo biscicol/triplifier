@@ -48,8 +48,8 @@ public class CSVReader implements TabularDataReader
     }
 
     @Override
-    public String getFileExtension() {
-        return "csv";
+    public String[] getFileExtensions() {
+        return new String[] {"csv"};
     }
 
     /** See if the specified file is a CSV file.  Since no "magic number" can

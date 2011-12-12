@@ -6,7 +6,7 @@ public interface TabularDataReader
     
     public String getFormatDescription();
     
-    public String getFileExtension();
+    public String[] getFileExtensions();
     
     public boolean testFile(String filepath);
     
