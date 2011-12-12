@@ -1,28 +1,45 @@
 
 public class run
 {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        CSVReader csvr = new CSVReader();
+    private static void runReader(TabularDataReader reader) {
         String[] record;
         
-        csvr.openFile("test.csv");
-        
-        while (csvr.hasNextRow())
+        while (reader.hasNextRow())
         {
-            record = csvr.getNextRow();
+            record = reader.getNextRow();
             for (int cnt = 0; cnt < record.length; cnt++)
                 System.out.print(cnt > 0 ? ", " + record[cnt] : record[cnt]);
             
             System.out.println();
         }
         
-        if (csvr.testFile("test_file.csv"))
-            System.out.println("Valid CSV file.");
+        System.out.println("file extension: " + reader.getFileExtensions()[0]);
+    }
+    
+    private static void testFile(TabularDataReader reader, String filename) {
+        if (reader.testFile(filename))
+            System.out.println("Valid " + reader.getSourceFormat() + " file.");
         else
-            System.out.println("Not a CSV file.");
+            System.out.println("Not a " + reader.getSourceFormat() + " file.");
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        TabularDataReader reader = new CSVReader();
+        reader.openFile("test.csv");
+        
+        runReader(reader);
+        testFile(reader, "test_file.csv");
+        System.out.println();
+        
+        reader = new ExcelReader();
+        reader.openFile("test.xls");
+        runReader(reader);
+        System.out.println();
+        
+        reader.openFile("test.xlsx");
+        runReader(reader);
     }
 }
