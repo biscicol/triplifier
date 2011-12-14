@@ -21,7 +21,6 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
  */
 public class ExcelReader implements TabularDataReader
 {
-    Sheet exsheet;
     Iterator<Row> rowiter;
     
     @Override
@@ -49,7 +48,7 @@ public class ExcelReader implements TabularDataReader
         FileInputStream is;
         
         try {
-            is = new FileInputStream("test.xls");
+            is = new FileInputStream(filepath);
         }
         catch (FileNotFoundException e) {
             return false;
@@ -57,7 +56,7 @@ public class ExcelReader implements TabularDataReader
         
         try {
             Workbook excelwb = WorkbookFactory.create(is);
-            exsheet = excelwb.getSheetAt(0);
+            Sheet exsheet = excelwb.getSheetAt(0);
             rowiter = exsheet.rowIterator();
         }
         catch (Exception e) {

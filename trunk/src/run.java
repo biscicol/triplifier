@@ -41,5 +41,10 @@ public class run
         
         reader.openFile("test.xlsx");
         runReader(reader);
+        System.out.println();
+        
+        reader = new OpenDocReader();
+        reader.openFile("test.ods");
+        runReader(reader);
     }
 }
