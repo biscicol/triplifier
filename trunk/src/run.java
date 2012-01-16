@@ -1,4 +1,11 @@
 
+import java.io.FileNotFoundException;
+import plugins.CSVReader;
+import plugins.OpenDocReader;
+import plugins.ExcelReader;
+import plugins.TabularDataReader;
+
+
 public class run
 {
     private static void runReader(TabularDataReader reader) {
@@ -18,15 +25,12 @@ public class run
     
     private static void testFile(TabularDataReader reader, String filename) {
         if (reader.testFile(filename))
-            System.out.println("Valid " + reader.getSourceFormat() + " file.");
+            System.out.println("Valid " + reader.getShortFormatDesc() + " file.");
         else
-            System.out.println("Not a " + reader.getSourceFormat() + " file.");
+            System.out.println("Not a " + reader.getShortFormatDesc() + " file.");
     }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
+    
+    private static void runReaders() {
         TabularDataReader reader = new CSVReader();
         reader.openFile("test.csv");
         
@@ -45,6 +49,26 @@ public class run
         
         reader = new OpenDocReader();
         reader.openFile("test.ods");
-        runReader(reader);
+        runReader(reader);        
+    }
+
+    public static void main(String[] args) {
+        //runReaders();
+        
+        // create the ReaderManager and load the plugins
+        ReaderManager rm = new ReaderManager();
+        try {
+            rm.LoadReaders();
+        }
+        catch (FileNotFoundException e) { System.out.println(e); }
+        
+        // print descriptions for all supported file formats
+        for (TabularDataReader reader : rm)
+            System.out.println(reader.getFormatDescription() + " ");
+        System.out.println();
+        
+        // open a file and print the data
+        runReader(rm.openFile("test.csv"));
+        //runReader(rm.openFile("test.csv", "CSV"));
     }
 }

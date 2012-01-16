@@ -1,3 +1,5 @@
+package plugins;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +19,12 @@ public class OpenDocReader implements TabularDataReader
     private Sheet odsheet;
     
     @Override
-    public String getSourceFormat() {
+    public String getFormatString() {
+        return "ODF";
+    }
+    
+    @Override
+    public String getShortFormatDesc() {
         return "OpenDocument";
     }
 
@@ -31,9 +38,34 @@ public class OpenDocReader implements TabularDataReader
         return new String[] {"ods"};
     }
 
+    /** See if the specified file is an OpenDocument spreadsheet file.  As
+     * currently implemented, this method simply tests if the file extension is
+     * "ods".  A better approach would be to actually test for a specific
+     * "magic number."  This method also tests if the file actually exists.
+     * 
+     * @param filepath The file to test.
+     * 
+     * @return True if the specified file exists and appears to be an
+     * OpenDocument file, false otherwise.
+     */
     @Override
     public boolean testFile(String filepath) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // test if the file exists
+        File file = new File(filepath);
+        if (!file.exists())
+            return false;
+        
+        int index = filepath.lastIndexOf('.');
+        
+        if (index != -1 && index != (filepath.length() - 1)) {
+            // get the extension
+            String ext = filepath.substring(index + 1);
+            
+            if (ext.equals("ods"))
+                return true;            
+        }
+        
+        return false;
     }
     
     @Override
