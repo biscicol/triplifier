@@ -1,8 +1,12 @@
+package plugins;
+
 
 
 public interface TabularDataReader
 {
-    public String getSourceFormat();
+    public String getFormatString();
+    
+    public String getShortFormatDesc();
     
     public String getFormatDescription();
     

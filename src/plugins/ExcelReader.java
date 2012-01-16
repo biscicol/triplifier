@@ -1,4 +1,7 @@
+package plugins;
 
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 //import java.io.IOException;
@@ -24,10 +27,15 @@ public class ExcelReader implements TabularDataReader
     Iterator<Row> rowiter;
     
     @Override
-    public String getSourceFormat() {
+    public String getShortFormatDesc() {
         return "Microsoft Excel";
     }
 
+    @Override
+    public String getFormatString() {
+        return "EXCEL";
+    }
+    
     @Override
     public String getFormatDescription() {
         return "Microsoft Excel 97-2003, 2007+";
@@ -38,9 +46,34 @@ public class ExcelReader implements TabularDataReader
         return new String[] {"xls", "xlsx"};
     }
 
+    /** See if the specified file is an Excel file.  As currently implemented,
+     * this method simply tests if the file extension is "xls" or "xlsx".  A
+     * better approach would be to actually test for a specific "magic number."
+     * This method also tests if the file actually exists.
+     * 
+     * @param filepath The file to test.
+     * 
+     * @return True if the specified file exists and appears to be an Excel
+     * file, false otherwise.
+     */
     @Override
     public boolean testFile(String filepath) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // test if the file exists
+        File file = new File(filepath);
+        if (!file.exists())
+            return false;
+        
+        int index = filepath.lastIndexOf('.');
+        
+        if (index != -1 && index != (filepath.length() - 1)) {
+            // get the extension
+            String ext = filepath.substring(index + 1);
+            
+            if (ext.equals("xls") || ext.equals("xlsx"))
+                return true;            
+        }
+        
+        return false;
     }
     
     @Override

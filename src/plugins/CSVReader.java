@@ -1,4 +1,7 @@
+package plugins;
 
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -38,7 +41,12 @@ public class CSVReader implements TabularDataReader
     }
     
     @Override
-    public String getSourceFormat() {
+    public String getFormatString() {
+        return "CSV";
+    }
+    
+    @Override
+    public String getShortFormatDesc() {
         return "CSV";
     }
 
@@ -54,16 +62,20 @@ public class CSVReader implements TabularDataReader
 
     /** See if the specified file is a CSV file.  Since no "magic number" can
      * be defined for CSV files, this test is limited to seeing if the file
-     * extension is "csv".  This method only examines the specified file name
-     * and does not currently test if the file actually exists.
+     * extension is "csv".  This method also tests if the file actually exists.
      * 
      * @param filepath The file to test.
      * 
-     * @return True if the specified file appears to be a CSV file, false
-     * otherwise.
+     * @return True if the specified file exists and appears to be a CSV file,
+     * false otherwise.
      */
     @Override
     public boolean testFile(String filepath) {
+        // test if the file exists
+        File file = new File(filepath);
+        if (!file.exists())
+            return false;
+        
         int index = filepath.lastIndexOf('.');
         
         if (index != -1 && index != (filepath.length() - 1)) {
