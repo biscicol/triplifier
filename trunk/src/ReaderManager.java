@@ -12,6 +12,10 @@ public class ReaderManager implements Iterable<TabularDataReader>
 {
     private LinkedList<TabularDataReader> readers;
     
+    /**
+     * Initializes a new ReaderManager.  No plugins are loaded by default.  The
+     * LoadReaders() method must be called to find and load reader plugins.
+     */
     public ReaderManager() {
         readers = new LinkedList<TabularDataReader>();
     }
@@ -19,7 +23,7 @@ public class ReaderManager implements Iterable<TabularDataReader>
     /**
      * Load all reader plugins.  All compiled class files in the
      * plugins directory will be examined to see if they implement the
-     * TabularDataReader interface.  If so, they will loaded as valid reader
+     * TabularDataReader interface.  If so, they will be loaded as valid reader
      * plugins for use by the ReaderManager.
      * 
      * @throws FileNotFoundException 
@@ -121,6 +125,16 @@ public class ReaderManager implements Iterable<TabularDataReader>
         return new ReaderIterator(readers);
     }
     
+    /**
+     * Attempts to open the specified file with an appropriate reader plugin.
+     * The testFile() method of the readers is used to find a reader that can
+     * open the file.  If a reader for the file type is found, a new instance
+     * of the reader is created and returned after opening the file.
+     * 
+     * @param filepath The path of the data file to open.
+     * @return A new instance of a reader if an appropriate reader is found that
+     * opens the file successfully. Otherwise, returns null.
+     */
     public TabularDataReader openFile(String filepath) {
         // Check all readers to see if we have one that can read the
         // specified file.
@@ -141,6 +155,16 @@ public class ReaderManager implements Iterable<TabularDataReader>
         return null;
     }
     
+    /**
+     * Attempts to open a data file with a specified format.  If a reader
+     * supporting the format is found, a new instance of the reader is created
+     * and returned after opening the file.
+     * 
+     * @param filepath The path of the data file to open.
+     * @param formatstring The format of the input file.
+     * @return A new instance of a reader if a reader for the format is
+     * available and opens the file successfully. Otherwise, returns null.
+     */
     public TabularDataReader openFile(String filepath, String formatstring) {
         // get the reader for the specified file format
         TabularDataReader reader = getReader(formatstring);
@@ -163,7 +187,7 @@ public class ReaderManager implements Iterable<TabularDataReader>
      * An iterator for all reader plugins loaded by the ReaderManager.  Note
      * that as ReaderManager is currently implemented, defining a separate class
      * here for an iterator over all readers is not strictly necessary.  We
-     * could have just as easily returned an interator for the list used by
+     * could have just as easily returned an iterator for the list used by
      * ReaderManager to keep track of loaded plugins.  The advantage of
      * explicitly defining an iterator class here is that it gives us more
      * flexibility if the ReaderManager implementation changes in the future or
