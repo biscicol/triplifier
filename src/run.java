@@ -1,5 +1,8 @@
 
 import java.io.FileNotFoundException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import plugins.CSVReader;
 import plugins.OpenDocReader;
 import plugins.ExcelReader;
@@ -52,7 +55,7 @@ public class run
         runReader(reader);        
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         //runReaders();
         
         // create the ReaderManager and load the plugins
@@ -68,7 +71,17 @@ public class run
         System.out.println();
         
         // open a file and print the data
-        runReader(rm.openFile("test.csv"));
+        //runReader(rm.openFile("test.csv"));
         //runReader(rm.openFile("test.csv", "CSV"));
+        
+        try {
+            TabularDataConverter tdc = new TabularDataConverter(
+                    rm.openFile("test.csv"), "jdbc:sqlite:tempdb.sqlite");
+        
+            tdc.convert();
+        } catch (Exception e) {
+            throw e;
+            //System.out.println(e);
+        }
     }
 }
