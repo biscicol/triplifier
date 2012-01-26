@@ -27,10 +27,21 @@ public final class TabularDataConverter
         setDestination(dest);
     }
     
+    /**
+     * Set the source data for this TabularDataConverter.  The source
+     * TabularDataReader must have a data source open and ready to access.
+     * 
+     * @param source The data source from which to read.
+     */
     public final void setSource(TabularDataReader source) {
         this.source = source;
     }
     
+    /**
+     * The SQLite JDBC connection string to use for the destination.
+     * 
+     * @param dest A valid JDBC SQLite connection string.
+     */
     public final void setDestination(String dest) {
         this.dest = dest;
     }
@@ -39,6 +50,12 @@ public final class TabularDataConverter
         return dest;
     }
     
+    /**
+     * Specify a table name to use for storing the converted data in the
+     * destination database.  The table name "table1" is used by default.
+     * 
+     * @param tablename A valid SQLite table name.
+     */
     public void setTableName(String tablename) {
         this.tablename = tablename;
     }
