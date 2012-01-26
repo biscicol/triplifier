@@ -1,9 +1,8 @@
-#summary One-sentence summary of this page.
+#summary Information for software developers who would like to use the triplifier.
 
 = Introduction =
 
-Add your content here.
-
+There are at least two ways in which software developers might interact with the BiSciCol triplifier.  First, programmers can extend the number of input formats supported by the triplifier by writing new reader plugins.  Second, the triplifier can also be used as a component of other software projects.    This document provides a high-level overview of the triplifier architecture and discusses both writing new reader plugins and using the triplifier in other software.
 
 = Details =
 
