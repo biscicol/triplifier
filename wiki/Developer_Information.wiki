@@ -6,7 +6,7 @@ There are at least two ways in which software developers might want to interact 
 
 == Writing new reader plugins ==
 
-As distributed, the core triplifier supports a relatively small number of file formats, including CSV files, OpenOffice spreadsheets, and Excel spreadsheets.  Each of these formats is implemented as a separate reader plugin.  Rather than try to anticipate every input format that researchers might want to use, we have tried to make it relatively simple to write new reader plugins.
+As distributed, the core triplifier supports a relatively small number of file formats, including CSV files, OpenOffice spreadsheets, and Excel spreadsheets.  Each of these formats is implemented as a separate reader plugin.  Rather than try to anticipate every input format that researchers might want to use, we have tried to make it easy to write new reader plugins.
 
 All plugins must support the TabularDataReader interface, which is part of the "plugins" package in the triplifier source code.  The plugins do not have any other dependencies or requirements.  Each method required by the TabularDataReader interface is described in detailed javadoc comments in the interface source file.
 
@@ -53,4 +53,29 @@ The remaining methods implement the "guts" of the plugin that handle opening fil
 
 Once the reader plugin is fully implemented and compiled, the compiled .class file must be placed in the "plugins" directory of the compiled triplifier code.  That is all that is required to "install" the new plugin.  The triplifier will automatically detect and load the new plugin the next time it is run.
 
-Finally, although this discussion has focused on writing plugins for file-based input data, this is not a requirement.  Reader plugins could just as well be written for input data that is received from a Web service, for instance.
+Finally, although this discussion has focused on writing plugins for file-based input data, this is not a requirement.  Reader plugins could just as well be written for input data that is received from a Web service, for example.
+
+== Using the triplifier in other software ==
+
+Accessing the triplifier components from other java software is straightforward.  To use the reader system, you will need an instance of ReaderManager.  ReaderManager handles finding and loading all available plugins and provides an interface for getting reader objects to process input data sources.  Although individual reader plugins could also be instantiated directly, using a ReaderManager is recommended.
+
+After instantiating a ReaderManager, you will need to tell it to search for and load any available reader plugins.
+{{{
+ReaderManager rm = new ReaderManager();
+try {
+    rm.LoadReaders();
+}
+catch (FileNotFoundException e) { /* Handle the exception... */ }
+}}}
+
+You can then open a data file and loop through its contents one row at a time.  You can request a specific reader from the ReaderManager using getReader(), or you can simply call openFile(), which will automatically determine the appropriate reader for the specified file.
+{{{
+TabularDataReader reader = rm.openFile("/path/to/data/file");
+
+String[] row;
+while (reader.hasNextRow())
+{
+    row = reader.getNextRow();
+    /* Code to process the data... */
+}
+}}}
