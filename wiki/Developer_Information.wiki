@@ -1,12 +1,56 @@
 #summary Information for software developers who would like to use the triplifier.
 
-= Introduction =
+== Introduction ==
 
-There are at least two ways in which software developers might interact with the BiSciCol triplifier.  First, programmers can extend the number of input formats supported by the triplifier by writing new reader plugins.  Second, the triplifier can also be used as a component of other software projects.    This document provides a high-level overview of the triplifier architecture and discusses both writing new reader plugins and using the triplifier in other software.
+There are at least two ways in which software developers might want to interact with the BiSciCol triplifier.  First, programmers can extend the number of input formats supported by the triplifier by writing new reader plugins.  Second, the triplifier can also be used as a component of other software projects.    This document discusses both writing new reader plugins and using the triplifier in other software.
 
-= Details =
+== Writing new reader plugins ==
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+As distributed, the core triplifier supports a relatively small number of file formats, including CSV files, OpenOffice spreadsheets, and Excel spreadsheets.  Each of these formats is implemented as a separate reader plugin.  Rather than try to anticipate every input format that researchers might want to use, we have tried to make it relatively simple to write new reader plugins.
+
+All plugins must support the TabularDataReader interface, which is part of the "plugins" package in the triplifier source code.  The plugins do not have any other dependencies or requirements.  Each method required by the TabularDataReader interface is described in detailed javadoc comments in the interface source file.
+
+To illustrate the process, we will go through the initial steps of writing a reader plugin for CSV files.  The basic skeleton of the reader plugin will be as follows.
+{{{
+package plugins;
+
+public class CSVReader implements TabularDataReader
+{
+    /* Add implementations for all interface methods here. */
+}
+}}}
+
+Next, we'll add an implementation of getFormatString().  This method is used to return a short string that acts as a constant, identifying the file format(s) supported by the reader.  It should be unique, at least in comparison to the other reader plugins that are installed.  We'll just use "CSV" as the identifier.
+{{{
+    @Override
+    public String getFormatString() {
+        return "CSV";
+    }
+}}}
+
+The methods getFormatDescription() and getShortFormatDesc() are used to provide human-readable descriptions of the input formats supported by the reader.  The short description should be usable in space-constrained settings, such as file chooser dialogs.  The longer description can be more informative.
+{{{
+    @Override
+    public String getShortFormatDesc() {
+        return "CSV";
+    }
+
+    @Override
+    public String getFormatDescription() {
+        return "comma-separated values";
+    }
+}}}
+
+We'll next implement getFileExtensions() to indicate the file extensions we expect on valid input files.  This will mostly be useful to user interface code, such as file chooser dialogs.  Some input formats use multiple file extensions (e.g., Excel files can be either "xls" or "xlsx"), so the method returns an array of Strings.
+{{{
+    @Override
+    public String[] getFileExtensions() {
+        return new String[] {"csv"};
+    }
+}}}
+
+The remaining methods implement the "guts" of the plugin that handle opening files, reading data from them, and returning the data one row at a time.  Each row must be returned as an array of Strings, where each element of the array corresponds to one column in the source format.  Rather than take the space to illustrate full implementations of these methods here, please refer to the javadoc documentation of TabularDataReader, as well as the source code of the reader plugins provided with the triplifier.
+
+Once the reader plugin is fully implemented and compiled, the compiled .class file must be placed in the "plugins" directory of the compiled triplifier code.  That is all that is required to "install" the new plugin.  The triplifier will automatically detect and load the new plugin the next time it is run.
+
+Finally, although this discussion has focused on writing plugins for file-based input data, this is not a requirement.  Reader plugins could just as well be written for input data that is received from a Web service, for instance.
