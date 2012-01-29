@@ -52,7 +52,7 @@ public class CSVReader implements TabularDataReader
 
     @Override
     public String getFormatDescription() {
-        return "comma-separated value";
+        return "comma-separated values";
     }
 
     @Override
