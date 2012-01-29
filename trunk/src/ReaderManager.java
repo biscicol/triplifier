@@ -76,10 +76,10 @@ public class ReaderManager implements Iterable<TabularDataReader>
     
     /**
      * Get all file formats supported by the loaded reader plugins.  The
-     * returned strings contain short format codes that can be used to request
-     * specific readers from the getReader() method.
+     * returned strings contain short format identifiers that can be used to
+     * request specific readers from the getReader() method.
      * 
-     * @return An array of file format codes for all loaded plugins.
+     * @return An array of file format identifiers for all loaded plugins.
      */
     public String[] getSupportedFormats() {
         String[] formats = new String[readers.size()];
