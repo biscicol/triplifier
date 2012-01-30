@@ -6,7 +6,7 @@ There are at least two ways in which software developers might want to interact 
 
 ==Writing new reader plugins==
 
-As distributed, the core triplifier supports a relatively small number of file formats, including CSV files, OpenOffice spreadsheets, and Excel spreadsheets.  Each of these formats is implemented as a separate reader plugin.  Rather than try to anticipate every input format that researchers might want to use, we have tried to make it easy to write new reader plugins.
+As distributed, the core triplifier supports a relatively small number of file formats, including CSV files, [http://www.openoffice.org/ OpenOffice] spreadsheets, and Excel spreadsheets.  Each of these formats is implemented as a separate reader plugin.  Rather than try to anticipate every input format that researchers might want to use, we have tried to make it easy to write new reader plugins.
 
 All plugins must support the !TabularDataReader interface, which is part of the "plugins" package in the triplifier source code.  The plugins do not have any other dependencies or requirements.  Each method required by the !TabularDataReader interface is described in detailed javadoc comments in the interface source file.
 
