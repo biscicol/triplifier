@@ -1,10 +1,10 @@
 #summary Information for software developers who would like to use the triplifier.
 
-== Introduction ==
+==Introduction==
 
 There are at least two ways in which software developers might want to interact with the BiSciCol triplifier.  First, programmers can extend the number of input formats supported by the triplifier by writing new reader plugins.  Second, the triplifier can also be used as a component of other software projects.    This document discusses both writing new reader plugins and using the triplifier in other software.
 
-== Writing new reader plugins ==
+==Writing new reader plugins==
 
 As distributed, the core triplifier supports a relatively small number of file formats, including CSV files, OpenOffice spreadsheets, and Excel spreadsheets.  Each of these formats is implemented as a separate reader plugin.  Rather than try to anticipate every input format that researchers might want to use, we have tried to make it easy to write new reader plugins.
 
@@ -59,6 +59,8 @@ Finally, although this discussion has focused on writing plugins for file-based 
 
 Accessing the triplifier components from other java software is straightforward.  To use the reader system, you will need an instance of ReaderManager.  ReaderManager handles finding and loading all available plugins and provides an interface for getting reader objects to process input data sources.  Although individual reader plugins could also be instantiated directly, using a ReaderManager is recommended.
 
+===Initializing the ReaderManager and processing input files===
+
 After instantiating a ReaderManager, you will need to tell it to search for and load any available reader plugins.
 {{{
 ReaderManager rm = new ReaderManager();
@@ -68,7 +70,7 @@ try {
 catch (FileNotFoundException e) { /* Handle the exception... */ }
 }}}
 
-You can then open a data file and loop through its contents one row at a time.  You can request a specific reader from the ReaderManager using getReader(), or you can simply call openFile(), which will automatically determine the appropriate reader for the specified file.
+You can then open a data file and loop through its contents one row at a time.  To open a file, you can either request a specific reader from the ReaderManager using getReader(), or simply call openFile(), which will automatically determine the appropriate reader for the specified file.
 {{{
 TabularDataReader reader = rm.openFile("/path/to/data/file");
 
@@ -79,3 +81,7 @@ while (reader.hasNextRow())
     /* Code to process the data... */
 }
 }}}
+
+===Converting input data to a SQLite database===
+
+The triplifier uses [http://www.sqlite.org/ SQLite] databases as an intermediate format for incoming data prior to passing it off to D2RQ.
