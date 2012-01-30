@@ -59,7 +59,7 @@ Finally, although this discussion has focused on writing plugins for file-based 
 
 Accessing the triplifier components from other java software is straightforward.  To use the reader system, you will need an instance of !ReaderManager.  !ReaderManager handles finding and loading all available plugins and provides an interface for getting reader objects to process input data sources.  Although individual reader plugins could also be instantiated directly, using a !eaderManager is recommended.
 
-===Initializing the ReaderManager and processing input files===
+===Initializing the !ReaderManager and processing input files===
 
 After instantiating a !ReaderManager, you will need to tell it to search for and load any available reader plugins.
 {{{
