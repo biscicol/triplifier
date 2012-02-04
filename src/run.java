@@ -71,8 +71,8 @@ public class run
         System.out.println();
         
         // open a file and print the data
-        //runReader(rm.openFile("test.csv"));
-        //runReader(rm.openFile("test.csv", "CSV"));
+        //runReader(rm.openFile("/Users/jdeck/bioValidatorSpreadsheets/biocode_fishes.xls"));
+        runReader(rm.openFile("test.csv", "CSV"));
         
         try {
             TabularDataConverter tdc = new TabularDataConverter(
