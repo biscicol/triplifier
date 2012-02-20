@@ -5,9 +5,8 @@ doc: $(SRC)/plugins/*.java $(SRC)/ReaderManager.java
 	touch doc
 
 clean:
-	-rm *.html
-	-rm -r plugins
-	-rm -r resources
+	-rm -r *.html
+	-rm resources/*
 	-rm package-list
 	-rm *.css
 	-rm doc
