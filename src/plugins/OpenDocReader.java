@@ -16,8 +16,10 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
  */
 public class OpenDocReader implements TabularDataReader
 {
-    private int numrows, curr_row, numcols;
+    private SpreadSheet sprdsheet;
     private Sheet odsheet;
+    private int numrows, curr_row, numcols;
+    private int currsheet;
     
     @Override
     public String getFormatString() {
@@ -74,15 +76,9 @@ public class OpenDocReader implements TabularDataReader
         File filein = new File(filepath);
         
         try {
-            SpreadSheet odss = SpreadSheet.createFromFile(filein);
-            odsheet = odss.getSheet(0);
-            
-            numrows = odsheet.getRowCount();
-            curr_row = 0;
-            numcols = odsheet.getColumnCount();
-            
-            //System.out.println(numrows);
-            //System.out.println(numcols);
+            sprdsheet = SpreadSheet.createFromFile(filein);
+            currsheet = -1;
+            curr_row = numrows = 0;
         }
         catch (IOException e) {
             return false;
@@ -93,17 +89,28 @@ public class OpenDocReader implements TabularDataReader
 
     @Override
     public boolean hasNextTable() {
-        return false;
+        return (currsheet + 1) < sprdsheet.getSheetCount();
     }
     
     @Override
     public void moveToNextTable() {
-        throw new NoSuchElementException();
+        if (hasNextTable()) {
+            odsheet = sprdsheet.getSheet(++currsheet);
+            
+            numrows = odsheet.getRowCount();
+            curr_row = 0;
+            numcols = odsheet.getColumnCount();
+            
+            //System.out.println(numrows);
+            //System.out.println(numcols);
+        }
+        else
+            throw new NoSuchElementException();
     }
 
     @Override
     public String getCurrentTableName() {
-        return "table1";
+        return odsheet.getName();
     }
 
     @Override
@@ -124,6 +131,9 @@ public class OpenDocReader implements TabularDataReader
     public String[] tableGetNextRow() {
         MutableCell cell;
         boolean blankrow = true;
+        
+        if (!tableHasNextRow())
+            throw new NoSuchElementException();
         
         String[] ret = new String[numcols];
 

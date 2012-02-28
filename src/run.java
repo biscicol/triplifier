@@ -13,16 +13,24 @@ public class run
 {
     private static void runReader(TabularDataReader reader) {
         String[] record;
-        
-        while (reader.tableHasNextRow())
-        {
-            record = reader.tableGetNextRow();
-            for (int cnt = 0; cnt < record.length; cnt++)
-                System.out.print(cnt > 0 ? ", " + record[cnt] : record[cnt]);
+
+        while (reader.hasNextTable()) {
+            reader.moveToNextTable();
+            
+            System.out.println("TABLE: " + reader.getCurrentTableName());
+            
+            while (reader.tableHasNextRow()) {
+                record = reader.tableGetNextRow();
+                for (int cnt = 0; cnt < record.length; cnt++) {
+                    System.out.print(cnt > 0 ? ", " + record[cnt] : record[cnt]);
+                }
+
+                System.out.println();
+            }
             
             System.out.println();
         }
-        
+
         System.out.println("file extension: " + reader.getFileExtensions()[0]);
     }
     
@@ -76,8 +84,8 @@ public class run
         
         try {
             TabularDataConverter tdc = new TabularDataConverter(
-                    //rm.openFile("test.csv"), "jdbc:sqlite:tempdb.sqlite");
-                    rm.openFile("357800_biocode-tmp.xls"), "jdbc:sqlite:tempdb.sqlite");
+                    rm.openFile("test.csv"), "jdbc:sqlite:tempdb.sqlite");
+                    //rm.openFile("357800_biocode-tmp.xls"), "jdbc:sqlite:tempdb.sqlite");
         
             tdc.setTableName("collecting_events");
             tdc.convert();
