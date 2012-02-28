@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Triplifier Prototype</title>
+
+    <link rel="stylesheet" type="text/css" href="triplifier.css" />
+
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="jquery.formparams.min.js"></script>
+    <script type="text/javascript" src="triplifier.js"></script>
+</head>
+
+<body>
+
+<form id="dbSourceForm" action="">
+	<table>
+		<tr><td colspan="2"><strong>Data Source</strong></td></tr>
+		<tr>
+			<td>Host</td>
+			<td><input type="text" id="id" name="host" size="36" value="test" /> *</td>
+		</tr>
+		<tr>
+			<td>Database</td>
+			<td><input type="text" id="id" name="database" size="36" value="test" /> *</td>
+		</tr>
+		<tr>
+			<td>Username</td>
+			<td><input type="text" id="id" name="username" size="36" /></td>
+		</tr>
+		<tr>
+			<td>Password</td>
+			<td><input type="text" id="id" name="password" size="36" /></td>
+		</tr>
+		<tr>
+	        <td colspan="2"><input type="submit" value="Inspect Data Source" /></td>
+		</tr>
+	</table>
+</form>
+
+<div id="mappingDiv">
+
+	<p>
+		<strong>Data Source</strong>
+		&nbsp;&nbsp;&nbsp;&nbsp; accessed: 
+		<span id="dateTime"></span>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="button" id="clear" value="Clear All" />
+	</p>
+
+	<table id="dbSourceTable">
+	<tbody>
+		<tr>
+			<th>Table</th>
+			<th>Columns</th>
+		</tr>
+		<tr>
+			<td/>
+			<td/>
+		</tr>
+	</tbody>
+	</table>
+
+	<hr/>
+
+	<p>
+		<strong>Mappings</strong>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="button" id="addMapping" value="Add Table" />
+		<input type="button" id="addAttribute" value="Add Column" disabled="disabled" />
+		<input type="button" id="edit" value="Edit" disabled="disabled" />
+		<input type="button" id="delete" value="Delete" disabled="disabled" />
+	</p>
+
+	<table id="mappingTable">
+	<tbody>
+		<tr>
+			<th/>
+			<th>Table</th>
+			<th>ID Column</th>
+			<th>Class</th>
+			<th/>
+		</tr>
+		
+		<tr>
+			<td><input type="radio" name="choice"></td>
+			<td/>
+			<td/>
+			<td/>
+			<td/>
+		</tr>
+
+		<tr class="edit">
+		  <td/>
+		  <td><select name="table" /></td>
+		  <td><select name="idColumn" /></td>
+		  <td><select name="class" /></td>
+		  <td>
+			<input type="button" value="Save" id="saveButton" />
+			<input type="button" value="Cancel" id="cancelButton" />
+		  </td>
+		</tr>
+		
+		<tr class="attributes">
+			<td/>
+			<td colspan='4'>
+				<table>
+				<tbody>
+					<tr>
+					  <th/>
+					  <th>Column</th>
+					  <th>Mode</th>
+					  <th>Predicate</th>
+					  <th>Target</th>
+					  <th/>
+					</tr>
+
+					<tr>
+						<td><input type="radio" name="choice"></td>
+						<td/>
+						<td/>
+						<td/>
+						<td/>
+						<td/>
+					</tr>
+
+					<tr class="edit">
+						<td/>
+						<td><select name="column" /></td>
+						<td><select name="mode" /></td>
+						<td><select name="predicate" /></td>
+						<td><select name="target" /></td>
+						<td>
+							<input type="button" value="Save" id="saveButton" />
+							<input type="button" value="Cancel" id="cancelButton" />
+						</td>
+					</tr>
+
+				</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+	</table>
+
+</div>
+
+<div id="overlay" />
+
+</body>
+</html>
