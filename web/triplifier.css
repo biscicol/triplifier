@@ -1,0 +1,81 @@
+table {
+	border-collapse: collapse; 
+}
+
+#dbSourceTable th, #dbSourceTable td {
+	padding: 4px;
+	border: 2px solid #bbb; 	
+}
+
+#mappingTable {
+	border: 2px solid #bbb;
+    background-color: #eee;
+}
+
+#mappingTable th {
+	text-align: left;
+	padding: 4px 8px;
+}
+
+#mappingTable td {
+	padding: 4px 8px;
+	border-top: 2px solid #bbb; 	
+}
+
+#mappingTable td:first-child {
+	padding: 2px;
+	border-right: 2px solid #bbb; 	
+}
+
+#mappingTable > tbody > tr > td + td{
+	min-width: 120px;
+}
+
+#mappingTable tr.attributes > td {
+	border-top: none;
+	padding: 0;
+}
+
+#mappingTable tr.attributes table {
+    background-color: #fff;
+	margin: 8px;
+}
+
+#mappingTable tr.attributes table td {
+	border-top: 1px solid #bbb; 	
+	border-right: none !important; 	
+}
+
+#mappingTable tr.attributes table th {
+	border-right: none !important; 	
+}
+
+p {
+	margin-bottom: 6px;
+}
+
+#overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #ddd;
+    opacity: 0.75;
+    z-index: 3;
+}
+
+.editData td, .editData th, .edit td {
+    z-index: 4;
+    position: relative;
+}
+
+#mappingTable .edit td {
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+#mappingTable .editData+.edit td {
+	padding-top: 0;
+	border-top: none;
+}
