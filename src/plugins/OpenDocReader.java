@@ -3,6 +3,7 @@ package plugins;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import org.jopendocument.dom.spreadsheet.MutableCell;
 import org.jopendocument.dom.spreadsheet.Sheet;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
@@ -91,7 +92,22 @@ public class OpenDocReader implements TabularDataReader
     }
 
     @Override
-    public boolean hasNextRow() {
+    public boolean hasNextTable() {
+        return false;
+    }
+    
+    @Override
+    public void moveToNextTable() {
+        throw new NoSuchElementException();
+    }
+
+    @Override
+    public String getCurrentTableName() {
+        return "table1";
+    }
+
+    @Override
+    public boolean tableHasNextRow() {
         return curr_row < numrows;
     }
 
@@ -105,7 +121,7 @@ public class OpenDocReader implements TabularDataReader
      * @return The data from the next row of the spreadsheet.
      */
     @Override
-    public String[] getNextRow() {
+    public String[] tableGetNextRow() {
         MutableCell cell;
         boolean blankrow = true;
         

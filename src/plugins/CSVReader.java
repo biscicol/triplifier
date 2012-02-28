@@ -131,15 +131,30 @@ public class CSVReader implements TabularDataReader
         else
             hasnext = false;
     }
+
+    @Override
+    public boolean hasNextTable() {
+        return false;
+    }
     
     @Override
-    public boolean hasNextRow() {
+    public void moveToNextTable() {
+        throw new NoSuchElementException();
+    }
+
+    @Override
+    public String getCurrentTableName() {
+        return "table1";
+    }
+    
+    @Override
+    public boolean tableHasNextRow() {
         return hasnext;
     }
 
     @Override
-    public String[] getNextRow() {
-        if (!hasNextRow())
+    public String[] tableGetNextRow() {
+        if (!tableHasNextRow())
             throw new NoSuchElementException();
         
         int prevToken = ',';

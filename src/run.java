@@ -14,9 +14,9 @@ public class run
     private static void runReader(TabularDataReader reader) {
         String[] record;
         
-        while (reader.hasNextRow())
+        while (reader.tableHasNextRow())
         {
-            record = reader.getNextRow();
+            record = reader.tableGetNextRow();
             for (int cnt = 0; cnt < record.length; cnt++)
                 System.out.print(cnt > 0 ? ", " + record[cnt] : record[cnt]);
             
@@ -56,7 +56,7 @@ public class run
     }
 
     public static void main(String[] args) throws Exception {
-        //runReaders();
+        runReaders();
         
         // create the ReaderManager and load the plugins
         ReaderManager rm = new ReaderManager();
@@ -76,8 +76,10 @@ public class run
         
         try {
             TabularDataConverter tdc = new TabularDataConverter(
-                    rm.openFile("test.csv"), "jdbc:sqlite:tempdb.sqlite");
+                    //rm.openFile("test.csv"), "jdbc:sqlite:tempdb.sqlite");
+                    rm.openFile("357800_biocode-tmp.xls"), "jdbc:sqlite:tempdb.sqlite");
         
+            tdc.setTableName("collecting_events");
             tdc.convert();
         } catch (Exception e) {
             throw e;

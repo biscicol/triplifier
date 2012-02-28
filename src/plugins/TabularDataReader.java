@@ -63,23 +63,27 @@ public interface TabularDataReader
      */
     public boolean openFile(String filepath);
     
+    public boolean hasNextTable();
+    public void moveToNextTable();
+    public String getCurrentTableName();
+
     /**
      * Test if there is at least one more row of data waiting to be read from
-     * the opened data source.
+     * the current table of the opened data source.
      * 
      * @return True if the data source has at least one more row of data to
      * read; false otherwise.
      */
-    public boolean hasNextRow();
+    public boolean tableHasNextRow();
     
     /**
-     * Get the next row of data from the data source.  The row is returned as an
-     * array of Strings, where each element of the array represents one column
-     * in the source data.
+     * Get the next row of data from current table of the data source.  The row
+     * is returned as an array of Strings, where each element of the array
+     * represents one column in the source data.
      * 
      * @return The next row of data from the data source.
      */
-    public String[] getNextRow();
+    public String[] tableGetNextRow();
     
     /**
      * Close the open data source, if there is one.

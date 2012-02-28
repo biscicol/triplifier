@@ -88,7 +88,7 @@ public final class TabularDataConverter
         // set up the table definition query
         String query = "CREATE TABLE \"" + tablename + "\" (";
         colcnt = 0;
-        for (String colname : source.getNextRow()) {
+        for (String colname : source.tableGetNextRow()) {
             if (colcnt++ > 0)
                 query += ", ";
             query += "\"" + colname + "\"";
@@ -112,9 +112,9 @@ public final class TabularDataConverter
         PreparedStatement insstmt = conn.prepareStatement(query);
 
         // populate the table with the source data
-        while (source.hasNextRow()) {
+        while (source.tableHasNextRow()) {
             cnt = 0;
-            for (String dataval : source.getNextRow()) {
+            for (String dataval : source.tableGetNextRow()) {
                 insstmt.setString(++cnt, dataval);
             }
             
