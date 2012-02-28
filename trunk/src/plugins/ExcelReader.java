@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 //import java.io.IOException;
 import java.util.Iterator;
 //import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import java.util.NoSuchElementException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -100,12 +101,27 @@ public class ExcelReader implements TabularDataReader
     }
 
     @Override
-    public boolean hasNextRow() {
+    public boolean hasNextTable() {
+        return false;
+    }
+    
+    @Override
+    public void moveToNextTable() {
+        throw new NoSuchElementException();
+    }
+
+    @Override
+    public String getCurrentTableName() {
+        return "table1";
+    }
+
+    @Override
+    public boolean tableHasNextRow() {
         return rowiter.hasNext();
     }
 
     @Override
-    public String[] getNextRow() {
+    public String[] tableGetNextRow() {
         Row row = rowiter.next();
         Cell cell;
 
