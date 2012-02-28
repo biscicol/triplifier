@@ -34,6 +34,7 @@ public class CSVReader implements TabularDataReader
     private StreamTokenizer st;
     private boolean hasnext = false;
     private LinkedList<String> reclist;
+    private int currtable;
     
     public CSVReader()
     {
@@ -98,6 +99,8 @@ public class CSVReader implements TabularDataReader
             return false;
         }
         
+        currtable = -1;
+        
         st.resetSyntax();
         st.eolIsSignificant(true);
         st.whitespaceChars(0, 31);
@@ -134,12 +137,15 @@ public class CSVReader implements TabularDataReader
 
     @Override
     public boolean hasNextTable() {
-        return false;
+        return currtable < 0;
     }
     
     @Override
     public void moveToNextTable() {
-        throw new NoSuchElementException();
+        if (hasNextTable())
+            currtable++;
+        else
+            throw new NoSuchElementException();
     }
 
     @Override
@@ -149,7 +155,10 @@ public class CSVReader implements TabularDataReader
     
     @Override
     public boolean tableHasNextRow() {
-        return hasnext;
+        if (currtable < 0)
+            return false;
+        else
+            return hasnext;
     }
 
     @Override
