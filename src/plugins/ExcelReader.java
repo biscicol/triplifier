@@ -19,13 +19,12 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 /**
  * TabularDataReader for Excel-format spreadsheet files.  Both Excel 97-2003
  * format (*.xls) and Excel XML (*.xlsx) format files are supported.
- * 
- * This class makes the simplifying assumption that all data is contained in the
- * first sheet of the "workbook".
  */
 public class ExcelReader implements TabularDataReader
 {
-    Iterator<Row> rowiter;
+    private Iterator<Row> rowiter = null;
+    private int currsheet;
+    private Workbook excelwb;
     
     @Override
     public String getShortFormatDesc() {
@@ -89,9 +88,9 @@ public class ExcelReader implements TabularDataReader
         }
         
         try {
-            Workbook excelwb = WorkbookFactory.create(is);
-            Sheet exsheet = excelwb.getSheetAt(0);
-            rowiter = exsheet.rowIterator();
+            excelwb = WorkbookFactory.create(is);
+            
+            currsheet = 0;
         }
         catch (Exception e) {
             return false;
@@ -102,26 +101,37 @@ public class ExcelReader implements TabularDataReader
 
     @Override
     public boolean hasNextTable() {
-        return false;
+        return (currsheet < excelwb.getNumberOfSheets());
     }
     
     @Override
     public void moveToNextTable() {
-        throw new NoSuchElementException();
+        if (hasNextTable()) {
+            Sheet exsheet = excelwb.getSheetAt(currsheet++);
+            rowiter = exsheet.rowIterator();
+        }
+        else
+            throw new NoSuchElementException();
     }
 
     @Override
     public String getCurrentTableName() {
-        return "table1";
+        return excelwb.getSheetName(currsheet - 1);
     }
 
     @Override
     public boolean tableHasNextRow() {
-        return rowiter.hasNext();
+        if (rowiter == null)
+            return false;
+        else
+            return rowiter.hasNext();
     }
 
     @Override
     public String[] tableGetNextRow() {
+        if (!tableHasNextRow())
+            throw new NoSuchElementException();
+        
         Row row = rowiter.next();
         Cell cell;
 
