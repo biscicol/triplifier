@@ -11,8 +11,7 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
 
 /**
  * A reader for OpenDocument Format spreadsheets (e.g., OpenOffice,
- * LibreOffice).  Only the first sheet of the document is examined, so all data
- * must be in the first sheet.
+ * LibreOffice).
  */
 public class OpenDocReader implements TabularDataReader
 {
@@ -77,7 +76,7 @@ public class OpenDocReader implements TabularDataReader
         
         try {
             sprdsheet = SpreadSheet.createFromFile(filein);
-            currsheet = -1;
+            currsheet = 0;
             curr_row = numrows = 0;
         }
         catch (IOException e) {
@@ -89,13 +88,13 @@ public class OpenDocReader implements TabularDataReader
 
     @Override
     public boolean hasNextTable() {
-        return (currsheet + 1) < sprdsheet.getSheetCount();
+        return currsheet < sprdsheet.getSheetCount();
     }
     
     @Override
     public void moveToNextTable() {
         if (hasNextTable()) {
-            odsheet = sprdsheet.getSheet(++currsheet);
+            odsheet = sprdsheet.getSheet(currsheet++);
             
             numrows = odsheet.getRowCount();
             curr_row = 0;
