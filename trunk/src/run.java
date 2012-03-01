@@ -84,7 +84,8 @@ public class run
         
         try {
             TabularDataConverter tdc = new TabularDataConverter(
-                    rm.openFile("test.csv"), "jdbc:sqlite:tempdb.sqlite");
+                    //rm.openFile("test.csv"), "jdbc:sqlite:tempdb.sqlite");
+                    rm.openFile("test.ods"), "jdbc:sqlite:tempdb.sqlite");
                     //rm.openFile("357800_biocode-tmp.xls"), "jdbc:sqlite:tempdb.sqlite");
         
             tdc.setTableName("collecting_events");
