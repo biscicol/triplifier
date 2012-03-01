@@ -64,6 +64,28 @@ public final class TabularDataConverter
     public String getTableName() {
         return tablename;
     }
+
+    /**
+     * Corrects some common problems with table names that cause some SQLite
+     * applications to complain.  Spaces are replaced with underscores, and if
+     * the name starts with a digit, an underscore is added to the beginning of
+     * the name.
+     *
+     * @param tname The table name to fix, if needed.
+     * @return The corrected table name.
+     */
+    private String fixTableName(String tname) {
+        String newname;
+
+        // replace spaces with underscores
+        newname = tname.replace(' ', '_');
+
+        // if the table name starts with a digit, prepend an underscore
+        if (newname.matches("[0-9].*"))
+            newname = "_" + newname;
+
+        return newname;
+    }
     
     /**
      * Reads the source data and converts it to tables in a Sqlite database.
@@ -91,12 +113,12 @@ public final class TabularDataConverter
             // If the user supplied a name for the first table in the data
             // source, use it.  Otherwise, take the table name from the data
             // source.
-            if ((tablecnt == 1) && (tablename != ""))
+            if ((tablecnt == 1) && !tablename.equals(""))
                 tname = tablename;
             else
                 tname = source.getCurrentTableName();
 
-            buildTable(conn, tname);
+            buildTable(conn, fixTableName(tname));
         }
         
         conn.close();
@@ -119,10 +141,10 @@ public final class TabularDataConverter
         Statement stmt = conn.createStatement();
 
         // if this table exists, drop it
-        stmt.executeUpdate("DROP TABLE IF EXISTS " + tname);
+        stmt.executeUpdate("DROP TABLE IF EXISTS [" + tname + "]");
 
         // set up the table definition query
-        String query = "CREATE TABLE \"" + tname + "\" (";
+        String query = "CREATE TABLE [" + tname + "] (";
         colcnt = 0;
         for (String colname : source.tableGetNextRow()) {
             if (colcnt++ > 0)
@@ -137,7 +159,7 @@ public final class TabularDataConverter
         stmt.close();
 
         // create a prepared statement for insert queries
-        query = "INSERT INTO " + tname + " VALUES (";
+        query = "INSERT INTO [" + tname + "] VALUES (";
         for (cnt = 0; cnt < colcnt; cnt++) {
             if (cnt > 0)
                 query += ", ";
