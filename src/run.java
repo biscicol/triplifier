@@ -88,7 +88,7 @@ public class run
                     rm.openFile("test.ods"), "jdbc:sqlite:tempdb.sqlite");
                     //rm.openFile("357800_biocode-tmp.xls"), "jdbc:sqlite:tempdb.sqlite");
         
-            tdc.setTableName("collecting_events");
+            //tdc.setTableName("collecting_events");
             tdc.convert();
         } catch (Exception e) {
             throw e;
