@@ -97,7 +97,7 @@ public interface TabularDataReader
 
     /**
      * Test if there is at least one more row of data waiting to be read from
-     * the current table of the opened data source.
+     * the active table of the opened data source.
      * 
      * @return True if the data source has at least one more row of data to
      * read; false otherwise.
@@ -105,8 +105,8 @@ public interface TabularDataReader
     public boolean tableHasNextRow();
     
     /**
-     * Get the next row of data from current table of the data source.  The row
-     * is returned as an array of Strings, where each element of the array
+     * Get the next row of data from the active table of the data source.  The
+     * row is returned as an array of Strings, where each element of the array
      * represents one column in the source data.
      * 
      * @return The next row of data from the data source.
