@@ -22,8 +22,13 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
  */
 public class ExcelReader implements TabularDataReader
 {
+    // iterator for moving through the active worksheet
     private Iterator<Row> rowiter = null;
+    
+    // the index for the active worksheet
     private int currsheet;
+    
+    // the entire workbook (e.g., spreadsheet file)
     private Workbook excelwb;
     
     @Override

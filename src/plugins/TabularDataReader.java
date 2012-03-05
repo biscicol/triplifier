@@ -1,7 +1,14 @@
 package plugins;
 
 
-
+/**
+ * The interface for data reader plugins in the triplifier system.  This
+ * interface considers a data source to be a set of tables, each of which
+ * contains 0 or more rows of data.  The methods hasNextTable() and
+ * moveToNextTable() are used to examine each table in the data source, and the
+ * methods tableHasNextRow() and tableGetNextRow() are used to iterate through
+ * all rows in the active table.
+ */
 public interface TabularDataReader
 {
     /**
@@ -63,8 +70,29 @@ public interface TabularDataReader
      */
     public boolean openFile(String filepath);
     
+    /**
+     * Test if there is at least one table waiting to be processed in the
+     * data source.  This should always return true immediately after a new data
+     * source is opened (i.e., before any data has been read).
+     * 
+     * @return True if the data source has at least one more table waiting to be
+     * processed; false otherwise.
+     */
     public boolean hasNextTable();
+    
+    /**
+     * Set the active table to the next table in the data source.  After
+     * opening a data source, this method must be called in order to read the
+     * first table from the data source, even if it contains only one table
+     * (e.g., CSV files).
+     */
     public void moveToNextTable();
+    
+    /**
+     * Get the name of the active table in the data source.
+     * 
+     * @return The name of the active table.
+     */
     public String getCurrentTableName();
 
     /**

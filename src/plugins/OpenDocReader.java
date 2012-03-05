@@ -15,10 +15,18 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
  */
 public class OpenDocReader implements TabularDataReader
 {
+    // the entire spreadsheet file
     private SpreadSheet sprdsheet;
+    
+    // the active worksheet
     private Sheet odsheet;
-    private int numrows, curr_row, numcols;
+    
+    // the index of the active worksheet
     private int currsheet;
+    
+    // used for tracking the dimensions of the active sheet as well as the
+    // current row in the active sheet
+    private int numrows, curr_row, numcols;
     
     @Override
     public String getFormatString() {
