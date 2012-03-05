@@ -7,6 +7,11 @@ import java.sql.Statement;
 import plugins.TabularDataReader;
 
 
+/**
+ * Takes a data source represented by a TabularDataReader and converts it to a
+ * SQLite database.  Each table in the source data is converted to a matching
+ * table in the SQLite database.
+ */
 public final class TabularDataConverter
 {
     TabularDataReader source;
@@ -53,7 +58,7 @@ public final class TabularDataConverter
      * Specify a table name to use for storing the converted data in the
      * destination database.  This will only apply to the first table in a data
      * source, and is intended for data sources that don't explicitly provide a
-     * table name, such as CSV files.
+     * meaningful table name, such as CSV files.
      * 
      * @param tablename A valid SQLite table name.
      */
@@ -66,7 +71,7 @@ public final class TabularDataConverter
     }
 
     /**
-     * Corrects some common problems with table names that cause some SQLite
+     * Corrects a few common problems with table names that cause some SQLite
      * applications to complain.  Spaces are replaced with underscores, and if
      * the name starts with a digit, an underscore is added to the beginning of
      * the name.
