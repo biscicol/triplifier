@@ -64,7 +64,7 @@ public class run
     }
 
     public static void main(String[] args) throws Exception {
-        runReaders();
+        //runReaders();
         
         // create the ReaderManager and load the plugins
         ReaderManager rm = new ReaderManager();
@@ -80,9 +80,10 @@ public class run
         
         // open a file and print the data
         //runReader(rm.openFile("/Users/jdeck/bioValidatorSpreadsheets/biocode_fishes.xls"));
-        runReader(rm.openFile("test.csv", "CSV"));
+        //runReader(rm.openFile("test.csv", "CSV"));
+        runReader(rm.openFile("CEPHMBG.zip", "DWCA"));
         
-        try {
+        /*try {
             TabularDataConverter tdc = new TabularDataConverter(
                     //rm.openFile("test.csv"), "jdbc:sqlite:tempdb.sqlite");
                     rm.openFile("test.ods"), "jdbc:sqlite:tempdb.sqlite");
@@ -94,6 +95,6 @@ public class run
         } catch (Exception e) {
             throw e;
             //System.out.println(e);
-        }
+        }*/
     }
 }
