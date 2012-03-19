@@ -72,9 +72,9 @@ public final class TabularDataConverter
 
     /**
      * Corrects a few common problems with table names that cause some SQLite
-     * applications to complain.  Spaces are replaced with underscores, and if
-     * the name starts with a digit, an underscore is added to the beginning of
-     * the name.
+     * applications to complain.  Spaces and periods are replaced with
+     * underscores, and if the name starts with a digit, an underscore is added
+     * to the beginning of the name.
      *
      * @param tname The table name to fix, if needed.
      * @return The corrected table name.
@@ -84,6 +84,9 @@ public final class TabularDataConverter
 
         // replace spaces with underscores
         newname = tname.replace(' ', '_');
+
+        // replace periods with underscores
+        newname = tname.replace('.', '_');
 
         // if the table name starts with a digit, prepend an underscore
         if (newname.matches("[0-9].*"))
