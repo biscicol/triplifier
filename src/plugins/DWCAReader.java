@@ -3,18 +3,14 @@ package plugins;
 import java.io.File;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import org.gbif.dwc.record.Record;
 import org.gbif.dwc.terms.ConceptTerm;
-import org.gbif.dwc.terms.DwcTerm;
 import org.gbif.dwc.text.Archive;
 import org.gbif.dwc.text.ArchiveFactory;
 import org.gbif.dwc.text.ArchiveFile;
-import org.gbif.dwc.text.StarRecord;
-import org.gbif.utils.file.ClosableIterator;
 
 
 /**
