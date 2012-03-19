@@ -3,15 +3,48 @@ package plugins;
 import java.io.File;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import org.gbif.dwc.record.Record;
+import org.gbif.dwc.terms.ConceptTerm;
 import org.gbif.dwc.terms.DwcTerm;
+import org.gbif.dwc.text.Archive;
 import org.gbif.dwc.text.ArchiveFactory;
+import org.gbif.dwc.text.ArchiveFile;
 import org.gbif.dwc.text.StarRecord;
 import org.gbif.utils.file.ClosableIterator;
 
+
+/**
+ * A reader plugin for Darwin Core Archives.  This plugin supports "zipped"
+ * multi-file archives, uncompressed multi-file archives (i.e., as a directory),
+ * and single-file archives.  Each data file in the archive will be processed as
+ * long as it is included in the archive's meta.xml.  For column names, the
+ * proper Darwin Core terms, as mapped in meta.xml, are used.  If an ID field is
+ * indicated in meta.xml, the column name "ID" will be used for the core table,
+ * and "CORE_ID" is used for any "extension" tables.
+ */
 public class DWCAReader implements TabularDataReader {
-    ClosableIterator<StarRecord> starRecordIterator;
-    File tmpdir = null;
+    // iterator for records within a table (ArchiveFile)
+    private Iterator<Record> rec_iter;
+    // iterator for extension tables in an archive
+    private Iterator<ArchiveFile> ext_iter;
+    // the field (column) names in a table
+    private Set<ConceptTerm> fields;
+    // the entire archive
+    private Archive dwcarchive;
+    // the currently active table
+    private ArchiveFile currfile;
+    // temporary directory for uncompressing archive files
+    private File tmpdir = null;
+    // indicates if an id field was specified for the active table
+    private boolean has_id;
+    // keep track of how many tables have been processed
+    private int tablecnt;
+    // keep track of how many records in the active table have been processed
+    private int reccnt;
 
     @Override
     public String getFormatString() {
@@ -65,24 +98,40 @@ public class DWCAReader implements TabularDataReader {
      * @throws IOException 
      */
     private File getTempDir() throws IOException {
-        tmpdir = File.createTempFile("DwCA_tmp", "");
-
+        // The method below does not require the guava library, but is not
+        // thread safe.
+        /* tmpdir = File.createTempFile("DwCA_tmp", "");
         tmpdir.delete();
-        tmpdir.mkdir();
+        tmpdir.mkdir(); */
         
-        System.out.println(tmpdir.getAbsolutePath());
+        // This should be thread safe.
+        tmpdir = com.google.common.io.Files.createTempDir();
+        
+        //System.out.println(tmpdir.getAbsolutePath());
         
         return tmpdir;
     }
     
     @Override
     public boolean testFile(String filepath) {
+        File archive = new File(filepath);
+        File dir = null;
+        Archive tmparchive;
+        
         try {
-            File archiveFolder = new File(filepath);
-            ArchiveFactory.openArchive(archiveFolder).iterator().close();
+            if (isZippedArchive(filepath)) {
+                dir = getTempDir();
+                tmparchive = ArchiveFactory.openArchive(archive, tmpdir);
+            }
+            else
+                tmparchive = ArchiveFactory.openArchive(archive);
+            
         } catch (Exception e) {
             return false;
+        } finally {
+            removeDir(dir);
         }
+        
         return true;
     }
 
@@ -93,49 +142,140 @@ public class DWCAReader implements TabularDataReader {
         try {
             if (isZippedArchive(filepath)) {
                 tmpdir = getTempDir();
-                starRecordIterator = ArchiveFactory.openArchive(archive, tmpdir).iterator();
+                dwcarchive = ArchiveFactory.openArchive(archive, tmpdir);
             }
             else
-                starRecordIterator = ArchiveFactory.openArchive(archive).iterator();
+                dwcarchive = ArchiveFactory.openArchive(archive);
+            
+            ext_iter = dwcarchive.getExtensions().iterator();
+            tablecnt = 0;
+            currfile = null;
+            
         } catch (Exception e) {
             System.out.println(e);
             return false;
         }
+        
         return true;
     }
 
     @Override
     public boolean hasNextTable() {
-        return false;
+        // If there are tables left to process, then either the core table has
+        // not been processed yet (tablecnt == 0) or there are extension tables
+        // waiting for processing.
+        return (tablecnt == 0) || ext_iter.hasNext();
     }
 
     @Override
     public void moveToNextTable() {
-        throw new NoSuchElementException();
+        if (hasNextTable()) {
+            if (tablecnt == 0)
+                // the core table is the first table to process
+                currfile = dwcarchive.getCore();
+            else
+                // get the next extension table
+                currfile = ext_iter.next();
+            
+            fields = currfile.getFields().keySet();
+            rec_iter = currfile.iterator();
+            has_id = currfile.getId() != null;
+            reccnt = 0;
+            tablecnt++;
+        }
+        else
+            throw new NoSuchElementException();
     }
 
     @Override
     public String getCurrentTableName() {
-        return "table1";
+        return currfile.getLocationFile().getName();
     }
 
     @Override
     public boolean tableHasNextRow() {
-        return starRecordIterator.hasNext();
+        if (currfile != null)
+            return (reccnt == 0) || rec_iter.hasNext();
+        else
+            return false;
     }
 
     @Override
     public String[] tableGetNextRow() {
-        StarRecord starRecord = starRecordIterator.next();
-        String[] row = new String[3];
-        row[0] = starRecord.core().id();
-        row[1] = "dwc:" + starRecord.core().value(DwcTerm.basisOfRecord);
-        row[2] = starRecord.core().value("http://purl.org/dc/terms/modified");
+        String[] row;
+        
+        if (has_id)
+            row = new String[fields.size() + 1];
+        else
+            row = new String[fields.size()];
+            
+        int fieldcnt = 0;
+        
+        if (!tableHasNextRow())
+            throw new NoSuchElementException();
+ 
+        if (reccnt == 0) {
+            // This is the first row of the table, so generate a header row
+            // with all DwC terms used by this table.
+            
+            // add an ID column if the table has one
+            if (has_id) {
+                if (tablecnt == 1)
+                    row[fieldcnt++] = "ID";
+                else
+                    row[fieldcnt++] = "CORE_ID";
+            }
+            
+            for (ConceptTerm term : fields) {
+                row[fieldcnt] = term.simpleName();
+                fieldcnt++;
+            }
+        } else {
+            // Return the next data row.
+            
+            Record rec = rec_iter.next();
+
+            // add the ID value if the table has one
+            if (has_id)
+                row[fieldcnt++] = rec.id();
+            
+            for (ConceptTerm term : fields) {
+                row[fieldcnt] = rec.value(term);
+                
+                if (row[fieldcnt] == null)
+                    row[fieldcnt] = "";
+                
+                fieldcnt++;
+            }
+        }
+
+        reccnt++;
+        
         return row;
     }
 
+    /**
+     * Deletes a directory and all of its contents.  This method assumes that
+     * the directory only contains files, not nested directories.
+     * 
+     * @param dir The directory to remove.
+     */
+    private void removeDir(File dir) {
+        if (dir != null) {
+            if (dir.isDirectory()) {
+                // first, remove all files in the directory
+                for (File afile : dir.listFiles())
+                    afile.delete();
+                
+                // delete the directory
+                dir.delete();
+            }
+        }
+    }
+    
     @Override
     public void closeFile() {
-        starRecordIterator.close();
+        // If a temporary directory was used to uncompress a DwCA, delete it.
+        removeDir(tmpdir);
     }
 }

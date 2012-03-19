@@ -32,6 +32,8 @@ public class run
         }
 
         System.out.println("file extension: " + reader.getFileExtensions()[0]);
+        
+        reader.closeFile();
     }
     
     private static void testFile(TabularDataReader reader, String filename) {
@@ -81,17 +83,26 @@ public class run
         // open a file and print the data
         //runReader(rm.openFile("/Users/jdeck/bioValidatorSpreadsheets/biocode_fishes.xls"));
         //runReader(rm.openFile("test.csv", "CSV"));
-        runReader(rm.openFile("CEPHMBG.zip", "DWCA"));
+        runReader(rm.openFile("test-archive.zip", "DWCA"));
+        //runReader(rm.openFile("test-dwca", "DWCA"));
         
-        /*try {
+        /*TabularDataReader reader;
+        try {
+            //reader = rm.openFile("test.csv");
+            //reader = rm.openFile("test.ods");
+            //reader = rm.openFile("test-archive.zip");
+            reader = rm.openFile("test-dwca");
+            //rm.openFile("357800_biocode.xls"), "jdbc:sqlite:tempdb.sqlite");
+            //rm.openFile("357800_biocode-tmp.xls"), "jdbc:sqlite:tempdb.sqlite");
+
             TabularDataConverter tdc = new TabularDataConverter(
-                    //rm.openFile("test.csv"), "jdbc:sqlite:tempdb.sqlite");
-                    rm.openFile("test.ods"), "jdbc:sqlite:tempdb.sqlite");
-                    //rm.openFile("357800_biocode.xls"), "jdbc:sqlite:tempdb.sqlite");
-                    //rm.openFile("357800_biocode-tmp.xls"), "jdbc:sqlite:tempdb.sqlite");
-        
+                    reader, "jdbc:sqlite:tempdb.sqlite");
+
             //tdc.setTableName("collecting_events");
             tdc.convert();
+
+            reader.closeFile();
+
         } catch (Exception e) {
             throw e;
             //System.out.println(e);
