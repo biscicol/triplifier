@@ -93,7 +93,7 @@ public class DWCAReader implements TabularDataReader {
      * 
      * @throws IOException 
      */
-    private File getTempDir() throws IOException {
+    private void setTempDir() throws IOException {
         // The method below does not require the guava library, but is not
         // thread safe.
         /* tmpdir = File.createTempFile("DwCA_tmp", "");
@@ -105,27 +105,25 @@ public class DWCAReader implements TabularDataReader {
         
         //System.out.println(tmpdir.getAbsolutePath());
         
-        return tmpdir;
+//        return tmpdir;
     }
     
     @Override
     public boolean testFile(String filepath) {
         File archive = new File(filepath);
-        File dir = null;
-        Archive tmparchive;
         
         try {
             if (isZippedArchive(filepath)) {
-                dir = getTempDir();
-                tmparchive = ArchiveFactory.openArchive(archive, tmpdir);
+                setTempDir();
+                ArchiveFactory.openArchive(archive, tmpdir);
             }
             else
-                tmparchive = ArchiveFactory.openArchive(archive);
+                ArchiveFactory.openArchive(archive);
             
         } catch (Exception e) {
             return false;
         } finally {
-            removeDir(dir);
+        	closeFile();
         }
         
         return true;
@@ -137,7 +135,7 @@ public class DWCAReader implements TabularDataReader {
         
         try {
             if (isZippedArchive(filepath)) {
-                tmpdir = getTempDir();
+                setTempDir();
                 dwcarchive = ArchiveFactory.openArchive(archive, tmpdir);
             }
             else
