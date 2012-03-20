@@ -1,12 +1,8 @@
 
 import java.io.FileNotFoundException;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import plugins.CSVReader;
-import plugins.OpenDocReader;
-import plugins.ExcelReader;
-import plugins.TabularDataReader;
+import reader.ReaderManager;
+import reader.TabularDataConverter;
+import reader.plugins.*;
 
 
 public class run
@@ -90,8 +86,8 @@ public class run
         try {
             //reader = rm.openFile("test.csv");
             //reader = rm.openFile("test.ods");
-            //reader = rm.openFile("test-archive.zip");
-            reader = rm.openFile("test-dwca");
+            reader = rm.openFile("test-archive.zip");
+            //reader = rm.openFile("test-dwca");
             //rm.openFile("357800_biocode.xls"), "jdbc:sqlite:tempdb.sqlite");
             //rm.openFile("357800_biocode-tmp.xls"), "jdbc:sqlite:tempdb.sqlite");
 
