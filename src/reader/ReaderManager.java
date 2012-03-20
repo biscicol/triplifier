@@ -1,11 +1,14 @@
+package reader;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
-import plugins.TabularDataReader;
+import reader.plugins.TabularDataReader;
 
 
 public class ReaderManager implements Iterable<TabularDataReader>
@@ -22,7 +25,7 @@ public class ReaderManager implements Iterable<TabularDataReader>
     
     /**
      * Load all reader plugins.  All compiled class files in the
-     * plugins directory will be examined to see if they implement the
+     * reader/plugins directory will be examined to see if they implement the
      * TabularDataReader interface.  If so, they will be loaded as valid reader
      * plugins for use by the ReaderManager.
      * 
@@ -32,7 +35,11 @@ public class ReaderManager implements Iterable<TabularDataReader>
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         
         // get location of the plugins package
-        File pluginsdir = new File(cl.getResource("plugins").getFile());
+        URL rsc = cl.getResource("reader/plugins");
+        if (rsc == null)
+            throw new FileNotFoundException("Could not locate plugins directory.");
+        
+        File pluginsdir = new File(rsc.getFile());
         
         // make sure the location is a valid directory
         if (!pluginsdir.exists() || !pluginsdir.isDirectory())
@@ -60,7 +67,7 @@ public class ReaderManager implements Iterable<TabularDataReader>
             
             try {
                 // load the class file and instantiate the class
-                newclass = cl.loadClass("plugins." + classname);
+                newclass = cl.loadClass("reader.plugins." + classname);
                 newreader = newclass.newInstance();
                 
                 // make sure this class implements the reader interface
