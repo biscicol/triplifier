@@ -111,6 +111,20 @@ public class DWCAReader implements TabularDataReader {
     @Override
     public boolean testFile(String filepath) {
         File archive = new File(filepath);
+
+        // Oddly, ArchiveFactory will open an Excel 97-2003 file without
+        // throwing an exception, even though reading the file results in
+        // garbage.  To deal with this, check the extension of the file to make
+        // sure it is not "xls".
+        int index = filepath.lastIndexOf('.');
+        
+        if (index != -1 && index != (filepath.length() - 1)) {
+            // get the extension
+            String ext = filepath.substring(index + 1);
+            
+            if (ext.equals("xls"))
+                return false;
+        }
         
         try {
             if (isZippedArchive(filepath)) {
