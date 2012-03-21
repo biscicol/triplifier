@@ -24,12 +24,12 @@ public class run
                 System.out.println();
             }
             
-            System.out.println();
+            //System.out.println();
         }
 
         System.out.println("file extension: " + reader.getFileExtensions()[0]);
         
-        //reader.closeFile();
+        reader.closeFile();
     }
     
     private static void testFile(TabularDataReader reader, String filename) {
