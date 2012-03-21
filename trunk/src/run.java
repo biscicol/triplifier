@@ -29,7 +29,7 @@ public class run
 
         System.out.println("file extension: " + reader.getFileExtensions()[0]);
         
-        reader.closeFile();
+        //reader.closeFile();
     }
     
     private static void testFile(TabularDataReader reader, String filename) {
@@ -78,15 +78,19 @@ public class run
         
         // open a file and print the data
         //runReader(rm.openFile("/Users/jdeck/bioValidatorSpreadsheets/biocode_fishes.xls"));
+        //System.out.println(rm.getReader("DWCA").testFile("test.xls"));
         //runReader(rm.openFile("test.csv", "CSV"));
-        runReader(rm.openFile("test-archive.zip", "DWCA"));
+        //runReader(rm.openFile("test-archive.zip", "DWCA"));
+        //runReader(rm.openFile("dwca-hsu_wildlife_mammals.zip", "DWCA"));
+        //runReader(rm.openFile("dwca-nysm_mammals.zip", "DWCA"));
         //runReader(rm.openFile("test-dwca", "DWCA"));
         
-        /*TabularDataReader reader;
+        TabularDataReader reader;
         try {
             //reader = rm.openFile("test.csv");
             //reader = rm.openFile("test.ods");
-            reader = rm.openFile("test-archive.zip");
+            //reader = rm.openFile("test-archive.zip");
+            reader = rm.openFile("dwca-nysm_mammals.zip");
             //reader = rm.openFile("test-dwca");
             //rm.openFile("357800_biocode.xls"), "jdbc:sqlite:tempdb.sqlite");
             //rm.openFile("357800_biocode-tmp.xls"), "jdbc:sqlite:tempdb.sqlite");
@@ -102,6 +106,6 @@ public class run
         } catch (Exception e) {
             throw e;
             //System.out.println(e);
-        }*/
+        }
     }
 }
