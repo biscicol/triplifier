@@ -72,17 +72,7 @@ public class DWCAReader implements TabularDataReader {
      * @return True if the archive is compressed, false otherwise.
      */
     private boolean isZippedArchive(String filepath) {
-        int index = filepath.lastIndexOf('.');
-        
-        if (index != -1 && index != (filepath.length() - 1)) {
-            // get the extension
-            String ext = filepath.substring(index + 1);
-            
-            if (ext.equals("zip"))
-                return true;            
-        }
-        
-        return false;
+        return filepath.endsWith(".zip");
     }
     
     /**
@@ -104,8 +94,6 @@ public class DWCAReader implements TabularDataReader {
         tmpdir = com.google.common.io.Files.createTempDir();
         
         //System.out.println(tmpdir.getAbsolutePath());
-        
-//        return tmpdir;
     }
     
     @Override
@@ -116,15 +104,8 @@ public class DWCAReader implements TabularDataReader {
         // throwing an exception, even though reading the file results in
         // garbage.  To deal with this, check the extension of the file to make
         // sure it is not "xls".
-        int index = filepath.lastIndexOf('.');
-        
-        if (index != -1 && index != (filepath.length() - 1)) {
-            // get the extension
-            String ext = filepath.substring(index + 1);
-            
-            if (ext.equals("xls"))
-                return false;
-        }
+        if (filepath.endsWith(".xls"))
+        	return false;
         
         try {
             if (isZippedArchive(filepath)) {
