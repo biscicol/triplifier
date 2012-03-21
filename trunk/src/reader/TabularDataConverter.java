@@ -166,7 +166,6 @@ public final class TabularDataConverter
 
         // create the table
         stmt.executeUpdate(query);
-        stmt.close();
 
         // create a prepared statement for insert queries
         query = "INSERT INTO [" + tname + "] VALUES (";
@@ -178,6 +177,11 @@ public final class TabularDataConverter
         query += ")";
         //System.out.println(query);
         PreparedStatement insstmt = conn.prepareStatement(query);
+        
+        // Start a new transaction for all of the INSERT statements.  This
+        // dramatically improves the run time from many minutes for a large data
+        // source to a matter of seconds.
+        stmt.execute("BEGIN TRANSACTION");
 
         // populate the table with the source data
         while (source.tableHasNextRow()) {
@@ -198,5 +202,9 @@ public final class TabularDataConverter
         }
 
         insstmt.close();
+        
+        // end the transaction
+        stmt.execute("COMMIT");
+        stmt.close();
     }
 }
