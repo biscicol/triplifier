@@ -79,6 +79,7 @@ public class run
         // open a file and print the data
         //runReader(rm.openFile("/Users/jdeck/bioValidatorSpreadsheets/biocode_fishes.xls"));
         //System.out.println(rm.getReader("DWCA").testFile("test.xls"));
+        runReader(rm.openFile("test.xlsx"));
         //runReader(rm.openFile("test.csv", "CSV"));
         //runReader(rm.openFile("test-archive.zip", "DWCA"));
         //runReader(rm.openFile("dwca-hsu_wildlife_mammals.zip", "DWCA"));
@@ -87,10 +88,10 @@ public class run
         
         TabularDataReader reader;
         try {
-            //reader = rm.openFile("test.csv");
+            reader = rm.openFile("test.xlsx");
             //reader = rm.openFile("test.ods");
             //reader = rm.openFile("test-archive.zip");
-            reader = rm.openFile("dwca-nysm_mammals.zip");
+            //reader = rm.openFile("dwca-nysm_mammals.zip");
             //reader = rm.openFile("test-dwca");
             //rm.openFile("357800_biocode.xls"), "jdbc:sqlite:tempdb.sqlite");
             //rm.openFile("357800_biocode-tmp.xls"), "jdbc:sqlite:tempdb.sqlite");
