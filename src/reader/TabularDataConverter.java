@@ -128,7 +128,8 @@ public final class TabularDataConverter
             else
                 tname = source.getCurrentTableName();
 
-            buildTable(conn, fixTableName(tname));
+            if (source.tableHasNextRow())
+                buildTable(conn, fixTableName(tname));
         }
         
         conn.close();
@@ -187,6 +188,7 @@ public final class TabularDataConverter
         while (source.tableHasNextRow()) {
             cnt = 0;
             for (String dataval : source.tableGetNextRow()) {
+                //System.out.println(dataval);
                 insstmt.setString(++cnt, dataval);
             }
 
