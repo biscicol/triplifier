@@ -1,12 +1,17 @@
 package rest;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.io.PrintWriter;
 
-@XmlRootElement
 public class Attribute {
-	@XmlElement String column;
-	@XmlElement String mode;
-	@XmlElement String predicate;
-	@XmlElement String target;
+	public String column;
+	public String predicate;
+
+	void printD2RQ(PrintWriter pw, String classMap, String table) {
+			pw.println("map:" + classMap + "_" + column + " a d2rq:PropertyBridge;");
+			pw.println("\td2rq:belongsToClassMap " + "map:" + classMap + ";");
+			pw.println("\td2rq:property " + predicate + ";");
+			pw.println("\td2rq:column \"" + table + "." + column + "\";");
+			pw.println("\t.");	
+	}
+
 }
