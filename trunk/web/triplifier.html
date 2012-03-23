@@ -1,80 +1,153 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Triplifier Prototype</title>
+    <title>Triplifier</title>
 
     <link rel="stylesheet" type="text/css" href="triplifier.css" />
 
     <script type="text/javascript" src="jquery.js"></script>
     <script type="text/javascript" src="jquery.formparams.min.js"></script>
+    <script type="text/javascript" src="flexTable.js"></script>
     <script type="text/javascript" src="triplifier.js"></script>
 </head>
 
 <body>
 
-<form id="dbSourceForm" action="">
-	<table>
-		<tr><td colspan="2"><strong>Data Source</strong></td></tr>
-		<tr>
-			<td>Host</td>
-			<td><input type="text" id="id" name="host" size="36" value="test" /> *</td>
-		</tr>
-		<tr>
-			<td>Database</td>
-			<td><input type="text" id="id" name="database" size="36" value="test" /> *</td>
-		</tr>
-		<tr>
-			<td>Username</td>
-			<td><input type="text" id="id" name="username" size="36" /></td>
-		</tr>
-		<tr>
-			<td>Password</td>
-			<td><input type="text" id="id" name="password" size="36" /></td>
-		</tr>
-		<tr>
-	        <td colspan="2"><input type="submit" value="Inspect Data Source" /></td>
-		</tr>
-	</table>
-</form>
+<div id="header"><h1>Triplifier by BiSciCol Prototype</h1></div>
 
-<div id="mappingDiv">
-
-	<p>
-		<strong>Data Source</strong>
-		&nbsp;&nbsp;&nbsp;&nbsp; accessed: 
-		<span id="dateTime"></span>
-		&nbsp;&nbsp;&nbsp;&nbsp;
-		<input type="button" id="clear" value="Clear All" />
-	</p>
-
-	<table id="dbSourceTable">
-	<tbody>
+<div id="dsDiv">
+	<span class="title">1. Data Source</span>
+	<input type="button" id="clear" value="Clear All" />
+	<br/>
+	<form id="dbForm" action="">
+		<table>
+			<tr>
+				<td colspan="2">Database connection:</td>
+			</tr>
+			<tr>
+				<td>DB System</td>
+				<td>
+					<select name="system">
+						<option value="mysql">MySQL</option>
+						<option value="postgresql">PostgreSQL</option>
+						<option value="oracle">Oracle</option>
+						<option value="sqlserver">Microsoft SQL Server</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>Host</td>
+				<td><input type="text" name="host" size="34" /> *</td>
+			</tr>
+			<tr>
+				<td>Database</td>
+				<td><input type="text" name="database" size="34" /> *</td>
+			</tr>
+			<tr>
+				<td>Username</td>
+				<td><input type="text" name="username" size="34" /></td>
+			</tr>
+			<tr>
+				<td>Password</td>
+				<td><input type="password" name="password" size="34" /></td>
+			</tr>
+			<tr>
+				<td colspan="2"><input type="submit" value="Connect to database" class="external" /></td>
+			</tr>
+		</table>
+	</form>
+	<form id="uploadForm" enctype="multipart/form-data" method="post" action="rest/upload" target="uploadTarget">
+		<span>File upload:</span><br/>
+		<input type="file" name="file" size="44" /><br/>
+		<input type="submit" value="Upload file" class="external" />
+	</form>
+	<iframe id="uploadTarget" name="uploadTarget"></iframe>
+	<div id="dsDescription"></div>
+	<table id="schemaTable">
+	<thead>
 		<tr>
 			<th>Table</th>
 			<th>Columns</th>
 		</tr>
+	</thead>
+	<tbody>
 		<tr>
 			<td/>
 			<td/>
 		</tr>
 	</tbody>
 	</table>
+</div>
 
-	<hr/>
+<hr/>
 
-	<p>
-		<strong>Mappings</strong>
-		&nbsp;&nbsp;&nbsp;&nbsp;
-		<input type="button" id="addMapping" value="Add Table" />
-		<input type="button" id="addAttribute" value="Add Column" disabled="disabled" />
-		<input type="button" id="edit" value="Edit" disabled="disabled" />
-		<input type="button" id="delete" value="Delete" disabled="disabled" />
-	</p>
+<div id="joinDiv">
+	<span class="title">2. Joins</span>
+	<input type="button" class="add" value="Add Join" />
+	<input type="button" class="edit" value="Edit" />
+	<input type="button" class="delete" value="Delete" />
+	<br/>
+	
+	<table>
+	<thead>
+		<tr>
+			<th/>
+			<th colspan="2">Foreign Key</th>
+			<th colspan="2">Primary Key</th>
+			<th/>
+		</tr>
+		<tr>
+			<th/>
+			<th>Table</th>
+			<th>Column</th>
+			<th>Table</th>
+			<th>Column</th>
+			<th/>
+		</tr>
+	</thead>
+	<tbody>			
+		<tr>
+			<td><input type="radio" name="joinChoice" /></td>
+			<td/>
+			<td/>
+			<td/>
+			<td/>
+			<td/>
+		</tr>
 
-	<table id="mappingTable">
-	<tbody>
+		<tr class="edit">
+		  <td/>
+		  <td><select name="foreignTable" /></td>
+		  <td><select name="foreignColumn" /></td>
+		  <td><select name="primaryTable" /></td>
+		  <td><select name="primaryColumn" /></td>
+		  <td>
+			<input type="button" value="Save" class="save" />
+			<input type="button" value="Cancel" class="cancel" />
+		  </td>
+		</tr>
+		
+	</tbody>
+	</table>
+	
+	<input type="button" class="back" value="&lt;  Back  (Data Source)" />
+	<input type="button" class="next" value="Next  (Entities)  >" />
+</div>
+
+<hr/>
+
+<div id="mappingDiv">
+	<span class="title">3. Entities</span>
+	<input type="button" class="add" value="Add Entity" />
+	<input type="button" class="add2" value="Add Attribute" />
+	<input type="button" class="edit" value="Edit" />
+	<input type="button" class="delete" value="Delete" />
+	<br/>
+	
+	<table>
+	<thead>
 		<tr>
 			<th/>
 			<th>Table</th>
@@ -82,9 +155,10 @@
 			<th>Class</th>
 			<th/>
 		</tr>
-		
+	</thead>
+	<tbody>		
 		<tr>
-			<td><input type="radio" name="choice"></td>
+			<td><input type="radio" name="mappingChoice" /></td>
 			<td/>
 			<td/>
 			<td/>
@@ -95,31 +169,28 @@
 		  <td/>
 		  <td><select name="table" /></td>
 		  <td><select name="idColumn" /></td>
-		  <td><select name="class" /></td>
+		  <td><select name="rdfClass" /></td>
 		  <td>
-			<input type="button" value="Save" id="saveButton" />
-			<input type="button" value="Cancel" id="cancelButton" />
+			<input type="button" value="Save" class="save" />
+			<input type="button" value="Cancel" class="cancel" />
 		  </td>
 		</tr>
 		
-		<tr class="attributes">
+		<tr class="level2">
 			<td/>
 			<td colspan='4'>
 				<table>
-				<tbody>
+				<thead>
 					<tr>
 					  <th/>
 					  <th>Column</th>
-					  <th>Mode</th>
 					  <th>Predicate</th>
-					  <th>Target</th>
 					  <th/>
 					</tr>
-
+				</thead>
+				<tbody>
 					<tr>
-						<td><input type="radio" name="choice"></td>
-						<td/>
-						<td/>
+						<td><input type="radio" name="mappingChoice" /></td>
 						<td/>
 						<td/>
 						<td/>
@@ -128,12 +199,10 @@
 					<tr class="edit">
 						<td/>
 						<td><select name="column" /></td>
-						<td><select name="mode" /></td>
 						<td><select name="predicate" /></td>
-						<td><select name="target" /></td>
 						<td>
-							<input type="button" value="Save" id="saveButton" />
-							<input type="button" value="Cancel" id="cancelButton" />
+							<input type="button" value="Save" class="save" />
+							<input type="button" value="Cancel" class="cancel" />
 						</td>
 					</tr>
 
@@ -143,10 +212,79 @@
 		</tr>
 	</tbody>
 	</table>
-
+	
+	<input type="button" class="back" value="&lt;  Back  (Joins)" />
+	<input type="button" class="next" value="Next  (Relations)  >" />
 </div>
 
-<div id="overlay" />
+<hr/>
+
+<div id="relationDiv">
+	<span class="title">4. Relations</span>
+	<input type="button" class="add" value="Add Relation" />
+	<input type="button" class="edit" value="Edit" />
+	<input type="button" class="delete" value="Delete" />
+	<br/>
+	
+	<table>
+	<thead>
+		<tr>
+			<th/>
+			<th>Subject Entity</th>
+			<th>Predicate</th>
+			<th>Object Entity</th>
+			<th/>
+		</tr>
+	</thead>
+	<tbody>			
+		<tr>
+			<td><input type="radio" name="relationChoice" /></td>
+			<td/>
+			<td/>
+			<td/>
+			<td/>
+		</tr>
+
+		<tr class="edit">
+		  <td/>
+		  <td><select name="subject" /></td>
+		  <td><select name="predicate" /></td>
+		  <td><select name="object" /></td>
+		  <td>
+			<input type="button" value="Save" class="save" />
+			<input type="button" value="Cancel" class="cancel" />
+		  </td>
+		</tr>
+		
+	</tbody>
+	</table>
+	
+	<input type="button" class="back" value="&lt;  Back  (Entities)" />
+	<input type="button" class="next" value="Next  (Triplify)  >" />
+</div>
+
+<hr/>
+
+<div id="triplifyDiv">
+	<span class="title">5. Triplify!</span>
+	<input type="button" id="openMapping" value="Open Mapping" class="external" />
+	<input type="button" id="downloadMapping" value="Download Mapping" class="external" />
+	<input type="button" id="openTriples" value="Open Triples" class="external" />
+	<input type="button" id="downloadTriples" value="Download Triples" class="external" />
+	<input type="button" id="sendToBiscicol" value="Send to BiSciCol" disabled="disabled" class="external" />
+	<br/>
+	<input type="button" class="back" value="&lt;  Back  (Relations)" />
+	<form id="triplifyForm" method="post" action="rest/getMapping" target="_blank">
+		<input type="hidden" name="name" />
+	</form>
+</div>
+
+<div id="footer">
+	<a href="http://biscicol.org/">BiSciCol</a> is funded from a grant from the National Science Foundation. News and updates via our <a href="http://biscicol.blogspot.com/">blog</a>
+</div>
+
+<div id="status"></div>
+<div id="overlay"></div>
 
 </body>
 </html>

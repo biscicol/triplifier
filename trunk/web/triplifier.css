@@ -2,56 +2,145 @@ table {
 	border-collapse: collapse; 
 }
 
-#dbSourceTable th, #dbSourceTable td {
+body {
+    margin: 0;
+    padding: 0;
+}
+
+hr {
+	margin: 0 8px;
+	clear: both;
+}
+
+#header, #footer {
+	margin: 0;
+    padding: 8px;
+    color: #333;
+    background-color: #ddd;
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+}
+
+#header h1 {
+	margin: 0;
+}
+
+#dbForm {
+	float: left;
+	margin: 0 50px 8px 0;
+}
+
+#dbForm td{
+	padding: 4px;
+}
+
+#uploadForm input, #uploadForm span{
+	margin: 5px;
+}
+
+#dsDescription {
+	margin-top: 8px;
+}
+
+#schemaTable {
+	margin: 8px 0;
+}
+
+#schemaTable th, #schemaTable td {
 	padding: 4px;
 	border: 2px solid #bbb; 	
 }
 
-#mappingTable {
-	border: 2px solid #bbb;
-    background-color: #eee;
+input.external {
+    color: blue;
 }
 
-#mappingTable th {
+#joinDiv td:first-child+td+td, #joinDiv tr:first-child > th:first-child+th , #joinDiv tr+tr > th:first-child+th+th {
+	border-right: 1px solid #bbb; 	
+}
+
+.active span.title {
+	color: crimson;
+}
+
+span.title {
+	font-size: 130%;
+	font-weight: bold;
+	margin-right: 16px;
+}
+
+.flexTable, #dsDiv  {
+	padding: 10px;
+}
+
+.flexTable > table {
+	margin: 4px 0;
+	border: 2px solid #bbb;
+    background-color: #eee;
+/*	color: #555; */
+}
+
+.flexTable.active > table {
+	border-color: crimson;
+/*	color: black; */
+}
+
+.flexTable > input {
+	margin: 8px 4px;
+}
+
+.flexTable > table th {
 	text-align: left;
 	padding: 4px 8px;
 }
 
-#mappingTable td {
+.flexTable > table td {
 	padding: 4px 8px;
 	border-top: 2px solid #bbb; 	
 }
 
-#mappingTable td:first-child {
+.flexTable > table td:first-child {
 	padding: 2px;
 	border-right: 2px solid #bbb; 	
 }
 
-#mappingTable > tbody > tr > td + td{
-	min-width: 120px;
+.flexTable > table > tbody > tr > td + td{
 }
 
-#mappingTable tr.attributes > td {
+.flexTable > table tr.level2 > td {
 	border-top: none;
 	padding: 0;
 }
 
-#mappingTable tr.attributes table {
-    background-color: #fff;
+.flexTable > table tr.level2 table {
+    background-color: white;
 	margin: 8px;
 }
 
-#mappingTable tr.attributes table td {
+.flexTable > table tr.level2 table td {
 	border-top: 1px solid #bbb; 	
 	border-right: none !important; 	
 }
 
-#mappingTable tr.attributes table th {
+.flexTable > table tr.level2 table th {
 	border-right: none !important; 	
 }
 
 p {
 	margin-bottom: 6px;
+}
+
+#status {
+    position: fixed;
+	width: 300px;
+	margin-left: -150px;
+    top: 48%;
+	left: 50%;
+    padding: 10px;
+    z-index: 5;
+	border: 2px solid crimson; 	
+    background-color: white;
+	font-size: 120%;
 }
 
 #overlay {
@@ -70,12 +159,16 @@ p {
     position: relative;
 }
 
-#mappingTable .edit td {
+.flexTable > table .edit td {
 	padding-left: 2px;
 	padding-right: 2px;
 }
 
-#mappingTable .editData+.edit td {
+.flexTable > table .editData+.edit td {
 	padding-top: 0;
 	border-top: none;
+}
+
+#uploadTarget {
+	display:none;
 }
