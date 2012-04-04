@@ -161,8 +161,9 @@
     <target name="war" depends="compile.module.triplifier.production">
         <war destfile="dist/triplifier.war" webxml="web/WEB-INF/web.xml">
             <fileset dir="web"/>
+            <lib dir="lib" excludes="servlet-api.jar"/>
             <classes dir="${triplifier.output.dir}"/>
-            <classes dir="" includes="biocode_example.sqlite"/>
+            <classes dir="" includes="/sqlite/*.*"/>
         </war>
     </target>
 
