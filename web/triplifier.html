@@ -63,7 +63,6 @@
 		<input type="file" name="file" size="44" /><br/>
 		<input type="submit" value="Upload file" class="external" />
 	</form>
-	<iframe id="uploadTarget" name="uploadTarget"></iframe>
 	<div id="dsDescription"></div>
 	<table id="schemaTable">
 	<thead>
@@ -267,16 +266,14 @@
 
 <div id="triplifyDiv">
 	<span class="title">5. Triplify!</span>
-	<input type="button" id="openMapping" value="Open Mapping" class="external" />
-	<input type="button" id="downloadMapping" value="Download Mapping" class="external" />
-	<input type="button" id="openTriples" value="Open Triples" class="external" />
-	<input type="button" id="downloadTriples" value="Download Triples" class="external" />
-	<input type="button" id="sendToBiscicol" value="Send to BiSciCol" disabled="disabled" class="external" />
+	<input type="button" id="getMapping" value="Get Mapping" class="external" />
+	<input type="button" id="getTriples" value="Get Triples" class="external" />
+	<input type="button" id="sendToBiSciCol" value="Send To BiSciCol" class="external" />
+	<form id="sendToBiSciColForm" method="post" action="" target="uploadTarget">
+		<input type="hidden" name="url" />
+	</form>
 	<br/>
 	<input type="button" class="back" value="&lt;  Back  (Relations)" />
-	<form id="triplifyForm" method="post" action="rest/getMapping" target="_blank">
-		<input type="hidden" name="name" />
-	</form>
 </div>
 
 <div id="footer">
@@ -285,6 +282,8 @@
 
 <div id="status"></div>
 <div id="overlay"></div>
+
+<iframe id="uploadTarget" name="uploadTarget"></iframe>
 
 </body>
 </html>

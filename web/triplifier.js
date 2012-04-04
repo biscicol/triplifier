@@ -12,7 +12,11 @@ var connection,
 		mappings:"triplifierMappings", relations:"triplifierRelations", dateTime:"triplifierDateTime"},
 	classes = ["dwc:Event", "dwc:Identification", "dwc:Occurrence"],
 	predicatesLiteral = ["dcterms:modified", "geo:lat", "geo:lon"],
-	predicatesBSC = ["bsc:leadsTo", "bsc:comesFrom"];
+	predicatesBSC = ["bsc:leadsTo", "bsc:comesFrom"],
+	biscicolUrl = "http://biscicol.org/",
+	triplifierUrl = "http://biscicol.org:8080/triplifier/";
+//	biscicolUrl = "http://localhost:8080/biscicol/",
+//	triplifierUrl = "http://localhost:8080/triplifier/";
 
 // execute once the DOM has loaded
 $(function() {
@@ -29,11 +33,11 @@ $(function() {
 	$("#dbForm").submit(inspect);	
 	$("#uploadForm").submit(upload);
 	$("#clear").click(clear);
-	$("#openMapping").click(function() {triplify("rest/getMapping", openFile);});
-	$("#downloadMapping").click(function() {triplify("rest/getMapping", downloadFile);});
-	$("#openTriples").click(function() {triplify("rest/getTriples", openFile);});
-	$("#downloadTriples").click(function() {triplify("rest/getTriples", downloadFile);});
-	$("#sendToBiscicol").click(function() {triplify("rest/sendToBiscicol");});
+	$("#getMapping").click(function() {triplify("rest/getMapping", downloadFile);});
+	$("#getTriples").click(function() {triplify("rest/getTriples", downloadFile);});
+	$("#sendToBiSciCol").click(function() {triplify("rest/getTriples", sendToBiSciCol);});
+	
+	$("#sendToBiSciColForm").attr("action", biscicolUrl + "rest/search");
 	
 	// read JSON from localStorage, display/hide elements
 	connection = localStorage.getObject(storage.connection);
@@ -46,12 +50,12 @@ $(function() {
 	else 
 		activateDS();
 	$("#status, #overlay").hide();
-	$("#uploadTarget").appendTo($('body')); // prevent re-posting on reload
+	$("#uploadTarget").appendTo($("body")); // prevent re-posting on reload
 });
 
-$(window).load(function() {
-	$("#uploadTarget").load(afterUpload);
-});
+// $(window).load(function() {
+	// $("#uploadTarget").load(afterUpload);
+// });
 
 function triplify(url, successFn) {
 	setStatus("Triplifying Data Source...");
@@ -59,33 +63,51 @@ function triplify(url, successFn) {
 		url: url,
 		type: "POST",
 		data: JSON.stringify({connection:connection, joins:joins, entities:mappings, relations:relations}),
-		contentType:"application/json; charset=utf-8",
+		contentType: "application/json; charset=utf-8",
 		dataType: "text",
 		success: successFn,
 		error: alertError
 	});
 }
 
-function openFile(url) {
-	$.ajax({
-		url: url,
-		success: showFile,
-		error: alertError
-	});
-}
+// function openFile(url) {
+	// $.ajax({
+		// url: url,
+		// success: showFile,
+		// error: alertError
+	// });
+// }
 
-function showFile(data) {
-	setStatus("");
-	var doc = window.open().document;
-	doc.open("text/plain");
-	doc.write(data);
-	doc.close();
-}
+// function showFile(data) {
+	// setStatus("");
+	// var doc = window.open().document;
+	// doc.open("text/plain");
+	// doc.write(data);
+	// doc.close();
+// }
 
 function downloadFile(url) {
 	setStatus("");
 	window.open(url);
-//	location = url;
+	// location = url;
+}
+
+function sendToBiSciCol(url) {
+	var sendToBiSciColForm = document.getElementById("sendToBiSciColForm");
+	// sendToBiSciColForm.url.value = "http://" + location.host + location.pathname.substr(0, location.pathname.lastIndexOf("/")) + "/" + url;
+	sendToBiSciColForm.url.value = triplifierUrl + url;
+	$("#uploadTarget").one("load", afterBiSciCol);
+	sendToBiSciColForm.submit();
+}
+
+function afterBiSciCol() {
+	setStatus("");
+	var data = frames.uploadTarget.document.body.textContent;
+	// distinguish response OK status by JSON format (quotes in this case)
+	if (data && data.charAt(0)=='"' && data.charAt(data.length-1)=='"')
+		window.open(biscicolUrl + "?model=" + data.substr(1, data.length-2)); 
+	else
+		alert("Error" + (data ? ":\n\n"+data : "."));	
 }
 
 function alertError(xhr, status, error) {
@@ -100,12 +122,13 @@ function upload() {
 		return false;
 	}
 	setStatus("Uploading file:</br>'" + this.file.value + "'");
+	$("#uploadTarget").one("load", afterUpload);
 	return true;
 }
 
-function afterUpload(event) {
+function afterUpload() {
 	setStatus("");
-	var data = frames["uploadTarget"].document.body.textContent;
+	var data = frames.uploadTarget.document.body.textContent;
 	if (data && data.charAt(0)=="{" && data.charAt(data.length-1)=="}")
 		readMapping(JSON.parse(data));
 	else

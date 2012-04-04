@@ -54,6 +54,7 @@ public class Connection {
 			pw.println("\td2rq:username \"" + username + "\";");
 		if (password != null && !password.isEmpty()) 
 			pw.println("\td2rq:password \"" + password + "\";");
+		pw.println("\td2rq:fetchSize \"" + (system == DBsystem.mysql ? Integer.MIN_VALUE : 500) + "\";");
 		pw.println("\t.");
 	}
 	

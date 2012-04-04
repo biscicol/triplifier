@@ -17,6 +17,7 @@ import reader.TabularDataConverter;
 import reader.plugins.TabularDataReader;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.util.FileUtils;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
@@ -135,10 +136,10 @@ public class Rest {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getTriples(Mapping mapping) throws Exception {
-		Model model = new ModelD2RQ(new File(context.getRealPath(getMapping(mapping))).toURI().toString());
-		File tripleFile = createUniqueFile("triples", "n3", getTriplesPath());
+		Model model = new ModelD2RQ(FileUtils.toURL(context.getRealPath(getMapping(mapping))));
+		File tripleFile = createUniqueFile("triples", "nt", getTriplesPath());
 		FileOutputStream fos = new FileOutputStream(tripleFile);
-		model.write(fos, "N3");
+		model.write(fos, FileUtils.langNTriple);
 		fos.close();
 		return triplesFolder + "/" + tripleFile.getName();
 	}
