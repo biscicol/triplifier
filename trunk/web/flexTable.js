@@ -26,7 +26,7 @@ function FlexTable(element, authorFn, addButtonFn, storage, backFn, nextFn, onMo
 			refresh();
 	}
 	
-	this.update = function(newItems, isActive) {
+	this.update = function(newItems) {
 		items = newItems;
 		var table = element.children("table").show();
 		table.children("tbody").children().remove();
@@ -34,7 +34,6 @@ function FlexTable(element, authorFn, addButtonFn, storage, backFn, nextFn, onMo
 			display(trTemplates.display, item).appendTo(table);
 		});
 		refresh();
-		activate(!isActive, true);
 	}
 	
 	var items, // array of objects representing flexTable content
@@ -50,7 +49,6 @@ function FlexTable(element, authorFn, addButtonFn, storage, backFn, nextFn, onMo
 	templates();
 	buttonClicks();
 	activate(true, true); // deactivate, no animation
-	// this.update(items, false);
 
 	function templates() {
 		trTemplates.edit = removeTr("tr.edit");

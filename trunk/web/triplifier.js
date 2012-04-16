@@ -1,20 +1,23 @@
-var connection, 
+var connection, // hash of connection parameters
 	schema, // array of schema tables
-	joins, 
-	mappings, // array of mappings (each mapping has an array of attributes)
-	relations,
-	allRelations,
-	allRelationsTotal,
+	joins, // array of joins
+	entities, // array of entities (each entity has an array of attributes)
+	relations, // array of relations
+	allRelations, // array of all possible relations, each allRelation is a hash with subject and array of all possible objects
+	allRelationsTotal, // .5 count of all possible relations (each relation has inverse relation, but we'll allow only one per pair)
 	schemaTotal, // total number of columns in schema
-	joinFT, mappingFT, relationFT, // FlexTable objects
+	joinFT, entityFT, relationFT, // FlexTable objects
 	dbSourceTrTemplate,
 	storage = {connection:"triplifierConnection", schema:"triplifierSchema", joins:"triplifierJoins", 
-		mappings:"triplifierMappings", relations:"triplifierRelations", dateTime:"triplifierDateTime"},
-	classes = ["dwc:Event", "dwc:Identification", "dwc:Occurrence"],
+		entities:"triplifierEntities", relations:"triplifierRelations", dateTime:"triplifierDateTime"},
+	classes = ["dwc:Occurrence", "dwc:Event", "dcterms:Location", "dwc:GeologicalContext", 
+	           "dwc:Identification", "dwc:Taxon", "dwc:ResourceRelationship", "dwc:MeasurementOrFact"],
 	predicatesLiteral = ["dcterms:modified", "geo:lat", "geo:lon"],
-	predicatesBSC = ["bsc:leadsTo", "bsc:comesFrom"],
+	predicatesBSC = ["dcterms:relation", "dcterms:source"],
 	biscicolUrl = "http://biscicol.org/",
-	triplifierUrl = "http://biscicol.org:8080/triplifier/";
+	triplifierUrl = "http://biscicol.org:8080/triplifier/"; // [hack] when file on triplifier is accessed from biscicol on the same server then port forwarding won't work so the port is set here
+//	biscicolUrl = "http://geomuseblade.colorado.edu/biscicol/",
+//	triplifierUrl = "http://geomuseblade.colorado.edu/triplifier/";
 //	biscicolUrl = "http://localhost:8080/biscicol/",
 //	triplifierUrl = "http://localhost:8080/triplifier/";
 
@@ -22,11 +25,11 @@ var connection,
 $(function() {
 	dbSourceTrTemplate = $("#schemaTable").children("tbody").children(":last").remove();
 	
-	// create empty flexTables
-	joinFT = new FlexTable($("#joinDiv"), authorJoin, addJoinButton, storage.joins, activateDS, activateMappings, onJoinModify);
-	mappingFT = new FlexTable($("#mappingDiv"), authorMapping, addMappingButton, storage.mappings,
-		activateJoins, activateRelations, onMappingModify, "attributes", authorAttribute, addAttributeButton);
-	relationFT = new FlexTable($("#relationDiv"), authorRelation, addRelationButton, storage.relations, activateMappings, activateTriplify);
+	// create empty flexTables (this also removes blank DOM elements)
+	joinFT = new FlexTable($("#joinDiv"), authorJoin, addJoinButton, storage.joins, activateDS, activateEntities, onJoinModify);
+	entityFT = new FlexTable($("#entityDiv"), authorEntity, addEntityButton, storage.entities,
+		activateJoins, activateRelations, onEntityModify, "attributes", authorAttribute, addAttributeButton);
+	relationFT = new FlexTable($("#relationDiv"), authorRelation, addRelationButton, storage.relations, activateEntities, activateTriplify);
 	triplifyFT = new FlexTable($("#triplifyDiv"), null, null, null, activateRelations);
 
 	// assign event handlers
@@ -39,13 +42,13 @@ $(function() {
 	
 	$("#sendToBiSciColForm").attr("action", biscicolUrl + "rest/search");
 	
-	// read JSON from localStorage, display/hide elements
+	// read JSON objects from localStorage, display/hide elements
 	connection = localStorage.getObject(storage.connection);
 	schema = localStorage.getObject(storage.schema);
 	joins = localStorage.getObject(storage.joins);
-	mappings = localStorage.getObject(storage.mappings);
+	entities = localStorage.getObject(storage.entities);
 	relations = localStorage.getObject(storage.relations);
-	if (connection && schema && schema.length && joins && mappings && relations) 
+	if (connection && schema && schema.length && joins && entities && relations) 
 		displayMapping();
 	else 
 		activateDS();
@@ -53,16 +56,12 @@ $(function() {
 	$("#uploadTarget").appendTo($("body")); // prevent re-posting on reload
 });
 
-// $(window).load(function() {
-	// $("#uploadTarget").load(afterUpload);
-// });
-
 function triplify(url, successFn) {
 	setStatus("Triplifying Data Source...");
 	$.ajax({
 		url: url,
 		type: "POST",
-		data: JSON.stringify({connection:connection, joins:joins, entities:mappings, relations:relations}),
+		data: JSON.stringify({connection:connection, joins:joins, entities:entities, relations:relations}),
 		contentType: "application/json; charset=utf-8",
 		dataType: "text",
 		success: successFn,
@@ -95,7 +94,7 @@ function downloadFile(url) {
 function sendToBiSciCol(url) {
 	var sendToBiSciColForm = document.getElementById("sendToBiSciColForm");
 	// sendToBiSciColForm.url.value = "http://" + location.host + location.pathname.substr(0, location.pathname.lastIndexOf("/")) + "/" + url;
-	sendToBiSciColForm.url.value = triplifierUrl + url;
+	sendToBiSciColForm.url.value = triplifierUrl + url; // [hack] when file on triplifier is accessed from biscicol on the same server then port forwarding won't work so the port is set here
 	$("#uploadTarget").one("load", afterBiSciCol);
 	sendToBiSciColForm.submit();
 }
@@ -156,7 +155,6 @@ function inspect() {
 		success: readMapping,
 		error: alertError
 	  });
-	// readMapping(JSON.parse('{"schema":[{"name":"collecting_events","columns":["Locality","Coll_EventID_collector","Collector"],"pkColumns":["Coll_EventID_collector"]},{"name":"specimens","columns":["Coll_EventID_collector","Family","Specimen_Num_Collector","SpecificEpithet","Genus"],"pkColumns":["Specimen_Num_Collector"]}],"joins":[],"mappings":[],"relations":[],"dateTime":"Feb 28, 2012 12:31:17 PM"}'));
 	return false;
 }
 
@@ -174,21 +172,16 @@ function readMapping(inspection) {
 	localStorage.setObject(storage.schema, schema);
 	if (!joins || !joins.length)
 		joins = inspection.joins;
-	if (!mappings || !mappings.length)
-		mappings = inspection.entities;
+	if (!entities || !entities.length)
+		entities = inspection.entities;
 	if (!relations || !relations.length)
 		relations = inspection.relations;
 	displayMapping();
-	// $("#dbForm, #uploadForm").slideUp();
-	// $("#schemaTable").slideDown();		
 }
 
 function displayMapping() {
-	activateDS(true);
-
 	// update schema
-	$("#dsDescription").html(
-		(connection.system == "sqlite" 
+	$("#dsDescription").html((connection.system == "sqlite" 
 			? "file: " + connection.database.substr(0, connection.database.length-7) 
 			: "database: " + connection.database + "@" + connection.host)
 		+ ", accessed: " + localStorage.getItem(storage.dateTime));
@@ -202,25 +195,31 @@ function displayMapping() {
 			columns += column + ($.inArray(column, table.pkColumns) >= 0 ? "*" : "") + ", ";
 			schemaTotal++;
 		});
-		columns = columns.substr(0, columns.length - 2) // remove last comma
+		columns = columns.substr(0, columns.length - 2); // remove last comma
 		dbSourceTrTemplate.clone().children()
 			.first().html(table.name) // write table name to first td
 			.next().html(columns) // write columns to second td
 			.end().end().end().appendTo(schemaTable);
 	});
 	
+	// update data dource
+	$.each($("#dbForm").get(0), function(i, element) {
+		if (element.type != "submit")
+			element.value = (connection.system == "sqlite" ? "" : (connection[element.name] || ""));
+	});
+	
 	// update joins, delete invalid (not in schema)
-	joinFT.update(joins, !mappings.length && !relations.length);
+	joinFT.update(joins);
 	joinFT.removeMatching(function(join) {
 		return !findInSchema(join.foreignTable, join.foreignColumn) || !findInSchema(join.primaryTable, join.primaryColumn);
 	});
 	
 	// update entities, delete invalid (not in schema)
-	mappingFT.update(mappings, mappings.length && !relations.length);
+	entityFT.update(entities);
 	var schemaTable;
-	mappingFT.removeMatching(
-		function(mapping) {
-			schemaTable = findInSchema(mapping.table, mapping.idColumn);
+	entityFT.removeMatching(
+		function(entity) {
+			schemaTable = findInSchema(entity.table, entity.idColumn);
 			return !schemaTable;
 		},
 		function(attribute) {
@@ -231,17 +230,23 @@ function displayMapping() {
 	// set allRelations, update relations, delete invalid (not in allRelations)
 	if (relations.length)
 		setAllRelations();
-	relationFT.update(relations, relations.length);
+	relationFT.update(relations);
 	relationFT.removeMatching(function(relation) {
 		var idx = indexOf(allRelations, "subject", relation.subject);
 		return idx < 0 || $.inArray(relation.object, allRelations[idx].objects) < 0;
 	});
+	
+	// activate/deactivate each section
+	activateDS(schema.length); 
+	joinFT.activate(!schema.length || entities.length || relations.length);
+	entityFT.activate(!entities.length || relations.length);
+	relationFT.activate(!relations.length);
 }
 
-function activateDS(deactivate, notAnimate) {
+function activateDS(deactivate) {
 	$("#dsDiv").toggleClass("active", !deactivate);
 	$("#dbForm, #uploadForm").toggle(!deactivate);
-	$("#clear, #dsDescription, #schemaTable").toggle(deactivate);
+	$("#clear, #dsDescription, #schemaTable").toggle(!!deactivate);
 	return true;
 }
 
@@ -250,8 +255,8 @@ function activateJoins() {
 	return true;
 }
 
-function activateMappings() {
-	mappingFT.activate();
+function activateEntities() {
+	entityFT.activate();
 	return true;
 }
 
@@ -308,20 +313,20 @@ function primaryTableChange() {
 	ob.addOptionsTo("primaryColumn").val(pk);
 }
 
-function authorMapping(tr, mapping) {
+function authorEntity(tr, entity) {
 	var ob = new OptionBuilder(tr);
 	$.each(schema, function(i, table) { 
-		if (table.name == mapping.table || countOf(mappings, "table", table.name) < table.columns.length)
+		if (table.name == entity.table || countOf(entities, "table", table.name) < table.columns.length)
 			ob.addOption(table.name, "data-schemaIdx='" + i + "'");
 	}); 
 	ob.addOptionsTo("table")
-		.prop("disabled", !!mapping.table)
+		.prop("disabled", !!entity.table)
 		.change(function() {
-			var mappingTable = schema[this.options[this.selectedIndex].getAttribute("data-schemaIdx")],
+			var entityTable = schema[this.options[this.selectedIndex].getAttribute("data-schemaIdx")],
 				pk = "";
-			$.each(mappingTable.columns, function(i, column) {
-				if (column == mapping.idColumn || indexOf(mappings, "table", mappingTable.name, "idColumn", column) < 0) {
-					if ($.inArray(column, mappingTable.pkColumns) >= 0)
+			$.each(entityTable.columns, function(i, column) {
+				if (column == entity.idColumn || indexOf(entities, "table", entityTable.name, "idColumn", column) < 0) {
+					if ($.inArray(column, entityTable.pkColumns) >= 0)
 						pk = column;
 					ob.addOption(column, "", column == pk ? "*" : "");
 				}
@@ -335,10 +340,10 @@ function authorMapping(tr, mapping) {
 	ob.addOptionsTo("rdfClass");
 }
 
-function authorAttribute(tr, attribute, mapping) {
+function authorAttribute(tr, attribute, entity) {
 	var ob = new OptionBuilder(tr);
-	$.each(findInSchema(mapping.table).columns, function(i, column) { 
-		if (attribute.column == column || indexOf(mapping.attributes, "column", column) < 0)
+	$.each(findInSchema(entity.table).columns, function(i, column) { 
+		if (attribute.column == column || indexOf(entity.attributes, "column", column) < 0)
 			ob.addOption(column);
 	});
 	ob.addOptionsTo("column");
@@ -351,17 +356,20 @@ function authorAttribute(tr, attribute, mapping) {
 function authorRelation(tr, relation) {
 	var ob = new OptionBuilder(tr);
 	$.each(allRelations, function(i, allRelation) {
-		if (allRelation.subject == relation.subject || countRelations(allRelation.subject) < allRelation.objects.length)
+		if (allRelation.subject == relation.subject 
+				|| allRelation.subject == relation.object
+				|| countRelations(allRelation.subject) < allRelation.objects.length)
 			ob.addOption(allRelation.subject, "data-allRelationIdx='" + i + "'");
 	});
 	ob.addOptionsTo("subject")
 		.change(function() {
 			var allRelation = allRelations[this.options[this.selectedIndex].getAttribute("data-allRelationIdx")];
 			$.each(allRelation.objects, function(i, object) {
-				if (object == relation.object || !searchRelations(allRelation.subject, object))
+				if (object == relation.object || object == relation.subject
+						|| !searchRelations(allRelation.subject, object))
 					ob.addOption(object);
 			});
-			ob.addOptionsTo("object")
+			ob.addOptionsTo("object");
 		})
 		.change();
 	$.each(predicatesBSC, function(i, predicate) {
@@ -375,12 +383,14 @@ function setAllRelations() {
 	allRelations = [];
 	allRelationsTotal = 0;
 	var objects;
-	$.each(mappings, function(i, subMp) {
+	$.each(entities, function(i, subMp) {
 		objects = [];
-		$.each(mappings, function(j, objMp) {
-			if (i != j && (subMp.table == objMp.table || indexOf(joins, "foreignTable", subMp.table, "primaryTable", objMp.table) >= 0)) {
+		$.each(entities, function(j, objMp) {
+			if (i != j && (subMp.table == objMp.table 
+				|| indexOf(joins, "foreignTable", subMp.table, "primaryTable", objMp.table) >= 0 
+				|| indexOf(joins, "foreignTable", objMp.table, "primaryTable", subMp.table) >= 0)) {
 				objects.push(objMp.table + "." + objMp.idColumn);
-				allRelationsTotal += (subMp.table == objMp.table ? .5 : 1);
+				allRelationsTotal += .5; // each relation has inverse relation, but we'll allow only one per pair
 			}
 		});
 		if (objects.length)
@@ -388,30 +398,18 @@ function setAllRelations() {
 	});
 }
 
-// delete relations that are not in allRelations
-// function updateRelations() {
-	// relationFT.removeMatching(function(relation) {
-		// var idx = indexOf(allRelations, "subject", relation.subject);
-		// return idx < 0 || $.inArray(relation.object, allRelations[idx].objects) < 0;
-	// });
-	// for (var rIdx = 0; rIdx < relations.length; rIdx++) {
-		// arIdx = indexOf(allRelations, "subject", relations[rIdx].subject)
-		// if (arIdx < 0 || $.inArray(relations[rIdx].object, allRelations[arIdx].objects) < 0)
-			// relations.splice(rIdx--, 1);
-	// }
-// }
-
 function onJoinModify(oldJoin, newJoin) {
 	if (!newJoin || oldJoin.foreignTable != newJoin.foreignTable || oldJoin.primaryTable != newJoin.primaryTable) {
 		relationFT.removeMatching(function(relation) {
-			return relation.subject.indexOf(oldJoin.foreignTable + ".") == 0 && relation.object.indexOf(oldJoin.primaryTable + ".") == 0;
+			return relation.subject.indexOf(oldJoin.foreignTable + ".") == 0 && relation.object.indexOf(oldJoin.primaryTable + ".") == 0
+				|| relation.subject.indexOf(oldJoin.primaryTable + ".") == 0 && relation.object.indexOf(oldJoin.foreignTable + ".") == 0;
 		});
 	}
 }
 
-function onMappingModify(oldMapping, newMapping) {
-	if (!newMapping || oldMapping.table != newMapping.table || oldMapping.idColumn != newMapping.idColumn) {
-		var deletedEntity = oldMapping.table + "." + oldMapping.idColumn;
+function onEntityModify(oldEntity, newEntity) {
+	if (!newEntity || oldEntity.table != newEntity.table || oldEntity.idColumn != newEntity.idColumn) {
+		var deletedEntity = oldEntity.table + "." + oldEntity.idColumn;
 		relationFT.removeMatching(function(relation) {
 			return relation.object == deletedEntity || relation.subject == deletedEntity;
 		});
@@ -431,16 +429,16 @@ function addJoinButton() {
 	return joins.length == schema.length - 1;
 }
 
-function addMappingButton() {
-	$("#mappingDiv > input.next").prop("disabled", !mappings.length);
-	return mappings.length == schemaTotal;
+function addEntityButton() {
+	$("#entityDiv > input.next").prop("disabled", !entities.length);
+	return entities.length == schemaTotal;
 }
 
-function addAttributeButton(mapping) {
-	if (!mapping) return true;
-	var schemaTable = findInSchema(mapping.table);
+function addAttributeButton(entity) {
+	if (!entity) return true;
+	var schemaTable = findInSchema(entity.table);
 	if (!schemaTable) return true;
-	return schemaTable.columns.length == mapping.attributes.length;
+	return schemaTable.columns.length == entity.attributes.length;
 }
 
 function addRelationButton() {
@@ -474,12 +472,10 @@ function countOf(array, property, value) {
 	return count;
 }
 
-function searchRelations(subject, object) { 
-	var found = false,
-		length = subject.indexOf(".") + 1, 
-		sameTable = subject.substr(0, length) == object.substr(0, length);
+function searchRelations(entity1, entity2) { 
+	var found = false;
 	$.each(relations, function(i, relation) {
-		if (relation.subject == subject && relation.object == object || sameTable && relation.subject == object && relation.object == subject) {
+		if (relation.subject == entity1 && relation.object == entity2 || relation.subject == entity2 && relation.object == entity1) {
 			found = true;
 			return false;
 		}
@@ -487,12 +483,10 @@ function searchRelations(subject, object) {
 	return found;
 }
 
-function countRelations(subject) { 
-	var count = 0,
-		length = subject.indexOf(".") + 1, 
-		table = subject.substr(0, length);
+function countRelations(entity) { 
+	var count = 0;
 	$.each(relations, function(i, relation) {
-		if (relation.subject == subject || relation.object == subject && relation.subject.substr(0, length) == table)
+		if (relation.subject == entity || relation.object == entity)
 			count++;
 	});
 	return count;
@@ -503,20 +497,19 @@ function OptionBuilder(container) {
     this.addOption = function(option, attributes, text) {
 		options += "<option value='" + option + "' " + (attributes || "") + ">" 
 			+ option + (text || "") + "</option>";
-	}
+	};
     this.addOptionsTo = function(name) {
 		var select = container.find("select[name='" + name + "']").html(options);
 		options = "";
 		return select;
-	}
+	};
 }
 
 Storage.prototype.setObject = function(key, value) {
 	this.setItem(key, JSON.stringify(value));
-}
+};
 
 Storage.prototype.getObject = function(key) {
 	var value = this.getItem(key);
 	return value && JSON.parse(value);
-}
-
+};
