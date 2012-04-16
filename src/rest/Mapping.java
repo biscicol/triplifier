@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import de.fuberlin.wiwiss.d2rq.algebra.Attribute;
 import de.fuberlin.wiwiss.d2rq.algebra.RelationName;
@@ -25,7 +26,7 @@ public class Mapping {
 	Mapping(Connection connection) {
 		dateTime = DateFormat.getDateTimeInstance().format(new Date());
 		this.connection = connection;
-		schema = new HashSet<DBtable>();
+		schema = new TreeSet<DBtable>();
 		joins = new HashSet<Join>();
 		entities = new HashSet<Entity>();
 		relations = new HashSet<Relation>();
@@ -35,7 +36,7 @@ public class Mapping {
 //		System.out.println("tables: " + schemaInspector.listTableNames(null));
 		DBtable table;
 		for (RelationName relationName : schemaInspector.listTableNames(null)) {
-			table = new DBtable(relationName.tableName(), new HashSet<String>(), new HashSet<String>());
+			table = new DBtable(relationName.tableName(), new TreeSet<String>(), new HashSet<String>());
 			schema.add(table);
 			for (Attribute attribute : schemaInspector.listColumns(relationName)) 
 				table.columns.add(attribute.attributeName());
