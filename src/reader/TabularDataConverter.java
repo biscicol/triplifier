@@ -142,7 +142,7 @@ public final class TabularDataConverter
      * and number of elements in the first row of the source data is created,
      * and all rows from the source are copied to the new table.
      *
-     * @param conn A valid connection to a destinatino database.
+     * @param conn A valid connection to a destination database.
      * @param tname The name to use for the table in the destination database.
      *
      * @throws SQLException

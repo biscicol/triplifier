@@ -8,17 +8,25 @@ import java.io.FileNotFoundException;
 import java.util.Iterator;
 //import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import java.util.NoSuchElementException;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.joda.time.DateTime;
 
 
 
 /**
  * TabularDataReader for Excel-format spreadsheet files.  Both Excel 97-2003
- * format (*.xls) and Excel XML (*.xlsx) format files are supported.
+ * format (*.xls) and Excel XML (*.xlsx) format files are supported.  The reader
+ * attempts to infer if cells containing numerical values actually contain dates
+ * by checking if the cell is date-formatted.  It so, the numerical value is
+ * converted to a standard ISO8601 date/time string (yyyy-MM-ddTHH:mm:ss.SSSZZ).
+ * All date-formatted values are assumed to use the Excel "1900 Date System",
+ * not the "1904 Date System".
  */
 public class ExcelReader implements TabularDataReader
 {
@@ -154,7 +162,17 @@ public class ExcelReader implements TabularDataReader
                     ret[cnt] = cell.getStringCellValue();
                     break;
                 case Cell.CELL_TYPE_NUMERIC:
-                    ret[cnt] = Double.toString(cell.getNumericCellValue());
+                    // There is no date data type in Excel, so we have to check
+                    // if this cell contains a date-formatted value.
+                    if (HSSFDateUtil.isCellDateFormatted(cell)) {
+                        // Convert the value to a Java date object, then to
+                        // ISO 8601 format using Joda-Time.
+                        DateTime date;
+                        date = new DateTime(cell.getDateCellValue());
+                        ret[cnt] = date.toString();
+                    }
+                    else
+                        ret[cnt] = Double.toString(cell.getNumericCellValue());
                     break;
                 case Cell.CELL_TYPE_BOOLEAN:
                     if (cell.getBooleanCellValue())
