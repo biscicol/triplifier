@@ -86,7 +86,7 @@ public class run
         //runReader(rm.openFile("dwca-nysm_mammals.zip", "DWCA"));
         //runReader(rm.openFile("test-dwca", "DWCA"));
         
-        TabularDataReader reader;
+        /*TabularDataReader reader;
         try {
             reader = rm.openFile("test.xlsx");
             //reader = rm.openFile("test.ods");
@@ -107,6 +107,6 @@ public class run
         } catch (Exception e) {
             throw e;
             //System.out.println(e);
-        }
+        }*/
     }
 }
