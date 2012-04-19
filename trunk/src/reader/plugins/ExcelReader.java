@@ -25,8 +25,8 @@ import org.joda.time.DateTime;
  * attempts to infer if cells containing numerical values actually contain dates
  * by checking if the cell is date-formatted.  It so, the numerical value is
  * converted to a standard ISO8601 date/time string (yyyy-MM-ddTHH:mm:ss.SSSZZ).
- * All date-formatted values are assumed to use the Excel "1900 Date System",
- * not the "1904 Date System".
+ * This should work properly with both the Excel "1900 Date System" and the
+ * "1904 Date System".
  */
 public class ExcelReader implements TabularDataReader
 {
