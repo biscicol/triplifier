@@ -104,7 +104,7 @@ public class DWCAReader implements TabularDataReader {
         // throwing an exception, even though reading the file results in
         // garbage.  To deal with this, check the extension of the file to make
         // sure it is not "xls".
-        if (filepath.endsWith(".xls"))
+        if (filepath.endsWith(".xls") || filepath.endsWith(".xlsx"))
         	return false;
         
         try {

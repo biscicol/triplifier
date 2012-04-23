@@ -79,7 +79,7 @@ public class run
         // open a file and print the data
         //runReader(rm.openFile("/Users/jdeck/bioValidatorSpreadsheets/biocode_fishes.xls"));
         //System.out.println(rm.getReader("DWCA").testFile("test.xls"));
-        runReader(rm.openFile("test.ods"));
+        runReader(rm.openFile("test.xlsx"));
         //runReader(rm.openFile("test.csv", "CSV"));
         //runReader(rm.openFile("test-archive.zip", "DWCA"));
         //runReader(rm.openFile("dwca-hsu_wildlife_mammals.zip", "DWCA"));
