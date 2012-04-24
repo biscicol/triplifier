@@ -12,18 +12,21 @@ import java.io.InputStream;
  * User: jdeck
  * Date: 4/23/12
  * Time: 4:36 PM
- * To change this template use File | Settings | File Templates.
- */
+= */
 public class ontReader {
-    Integer prefixCount = 1;
-    String rdfName;
-    Model model = ModelFactory.createDefaultModel();
-    Property propertySubProperty = null;
-    RDFNode propertyName = null;
-    Property classSubClass = null;
-    Property classProperty = null;
-    RDFNode className = null;
+    private Integer prefixCount = 1;
+    private String rdfName;
+    private Model model = ModelFactory.createDefaultModel();
+    private Property propertySubProperty = null;
+    private RDFNode propertyName = null;
+    private Property classSubClass = null;
+    private Property classProperty = null;
+    private RDFNode className = null;
 
+    /**
+     * Main class for testing purposes
+     * @param args
+     */
     public static void main(String args[]) {
         ontReader dsw = new ontReader(
                 "darwin-sw",
@@ -43,12 +46,30 @@ public class ontReader {
                 "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
                 "http://www.w3.org/2000/01/rdf-schema#subPropertyOf");
 
-        dsw.getClasses();
-        //dwc.getProperties();
+        //System.out.println(dwc.getClasses());
+        //System.out.println(dwc.getProperties());
+
+        System.out.println(dsw.getClasses());
+        System.out.println(dsw.getProperties());
     }
 
-    public ontReader(String rdfName, String filename, String cName, String cProperty, String cSubClass, String pName, String pSubProperty) {
+    public String getRdfName() {
+        return rdfName;
+    }
 
+    /**
+     * onReader reads OWL and RDF files and extracts classes and property terms from those files.
+     * The purpose of this class is not to represent relationships or ontology designations, but
+     * merely to collect terms that can be useful to assign to identifiers.
+     * @param rdfName is how the abbreviated name for referring to a particular RDF file (e.g. DwC)
+     * @param filename is the filename where we find the RDF file (e.g. dwcterms.rdf)
+     * @param cName  URI of how Classes are referred to
+     * @param cProperty URI of Class designation property (usually just rdf:type)
+     * @param cSubClass  URI of subClass Predicate
+     * @param pName  URI of Property Name
+     * @param pSubProperty  URI of subProperty Predicate
+     */
+    public ontReader(String rdfName, String filename, String cName, String cProperty, String cSubClass, String pName, String pSubProperty) {
         this.rdfName = rdfName;
         if (cName != null) className = ResourceFactory.createResource(cName);
         if (cProperty != null) classProperty = ResourceFactory.createProperty(cProperty);
@@ -67,6 +88,11 @@ public class ontReader {
         model.read(fis, null);
     }
 
+    /**
+     * Return the prefix, for formatting
+     * @param count
+     * @return
+     */
     private String prefix (int count) {
         String prefix="";
         for (int i =0 ; i < count; i++) {
@@ -75,7 +101,15 @@ public class ontReader {
         return prefix;
     }
 
-    private String json(StmtIterator iter, Property subProperty, boolean header, String type) {
+    /**
+     * Render json output of the incoming ontology
+     * @param iter
+     * @param subProperty
+     * @param header
+     * @param type
+     * @return
+     */
+    protected String json(StmtIterator iter, Property subProperty, boolean header, String type) {
         String results = "";
         if (header) {
             results += "{\n";
@@ -96,18 +130,18 @@ public class ontReader {
             results += prefix(prefixCount) + "\t\"" + type + "URI\":\"" + subject.toString() + "\"";
 
             if (subProperty != null) {
-                StmtIterator iter2 = object.getModel().listStatements(
+                StmtIterator subIter = object.getModel().listStatements(
                         null,
                         subProperty,
                         (RDFNode) ResourceFactory.createResource(subject.toString())
                 );
 
-                if (iter2.hasNext()) {
+                if (subIter.hasNext()) {
                     results += ",\n";
                     prefixCount++;
-                    results += prefix(prefixCount) + " \"subClasses\": [\n";
+                    results += prefix(prefixCount) + " \"data\": [\n";
                     prefixCount++;
-                    results += json(iter2, subProperty, false, type);
+                    results += json(subIter, subProperty, false, type);
                     prefixCount--;
                     results += prefix(prefixCount) + "]\n";
                     prefixCount--;
@@ -132,24 +166,19 @@ public class ontReader {
         return results;
     }
 
-    private void getClasses() {
-
+    public String getClasses() {
         StmtIterator iter = model.listStatements(
                 null,
                 classProperty,
                 (RDFNode) className);
-
-        System.out.println(json(iter, classSubClass, true, "class"));
+        return json(iter, classSubClass, true, "class");
     }
 
-
-    private void getProperties() {
-
+    public String getProperties() {
         StmtIterator iter = model.listStatements(
                 null,
                 null,
                 (RDFNode) propertyName);
-
-        System.out.println(json(iter, propertySubProperty, true, "property"));
+        return json(iter, propertySubProperty, true, "property");
     }
 }
