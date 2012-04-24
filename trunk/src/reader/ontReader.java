@@ -103,10 +103,10 @@ public class ontReader {
 
     /**
      * Render json output of the incoming ontology
-     * @param iter
-     * @param subProperty
-     * @param header
-     * @param type
+     * @param iter is a Statement Iterator to loop
+     * @param subProperty name of the subProperty/subClass to follow
+     * @param header true/false indicating whether we display the header fields (false for subClasses, subProperties)
+     * @param type indicates whether this is class or property
      * @return
      */
     protected String json(StmtIterator iter, Property subProperty, boolean header, String type) {
@@ -166,6 +166,10 @@ public class ontReader {
         return results;
     }
 
+    /**
+     * Render classes and subClasses (if appropriate) in JSON format
+     * @return
+     */
     public String getClasses() {
         StmtIterator iter = model.listStatements(
                 null,
@@ -174,6 +178,10 @@ public class ontReader {
         return json(iter, classSubClass, true, "class");
     }
 
+    /**
+     * Render properties and subProperties (if appropriate) in JSON format
+     * @return
+     */
     public String getProperties() {
         StmtIterator iter = model.listStatements(
                 null,
