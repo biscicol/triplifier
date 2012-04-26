@@ -69,6 +69,35 @@ function triplify(url, successFn) {
 	});
 }
 
+function loadRDF(url) {
+    // TODO: make a call to the loadRDF function!
+	// TODO: assign a success function like the other examples
+	$.ajax({
+		url: url,
+		type: "GET",
+		data: $(form).serialize(),
+		dataType: "json",
+		success: function(data) {
+			if (data) {
+				 count = 0;
+                $.each(data, function() {
+                    var key, label, color = "";
+                    alert ("yea data!");
+                    $.each(this, function(k, v) {
+                        if (k == "url") key = v;
+                        if (k == "label") label = v;
+                        if (k == "color") color = v;
+                    });
+                 });
+			} else
+			    // what to do with data if no data?
+				//noResults();
+			    alert("no data");
+		},
+		error: alertError
+		});
+}
+
 // function openFile(url) {
 	// $.ajax({
 		// url: url,
@@ -131,7 +160,7 @@ function afterUpload() {
 	if (data && data.charAt(0)=="{" && data.charAt(data.length-1)=="}")
 		readMapping(JSON.parse(data));
 	else
-		alert("Error" + (data ? ":\n\n"+data : "."));	
+		alert("Error" + (data ? ":\n\nUnable to contact server for data upload\nResponse="+data : "."));
 }
 
 function inspect() {
