@@ -2,11 +2,16 @@ package rest;
 
 import com.google.gson.Gson;
 import com.hp.hpl.jena.rdf.model.*;
+import org.apache.poi.hssf.record.IterationRecord;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Properties;
 
 /**
  * A class to read files containing Classes and Properties to use in interface, instantiated using GSON
@@ -184,6 +189,24 @@ public class RDFReader {
     }
 
     /**
+     * Return a JSON Array of Strings of the available RDF files that are defined in
+     * triplifiersettings.props
+     * @param sm
+     * @return
+     */
+    public static String RDFFilesAsJSON(SettingsManager sm) {
+        String json = "[";
+        Enumeration e = sm.getProps().propertyNames();
+        while (e.hasMoreElements()) {
+            json += "\"" + (String)e.nextElement() + "\"";
+            if (e.hasMoreElements())
+                json += ",";
+        }
+        json += "]";
+        return json;
+    }
+
+    /**
      * Main class for testing purposes
      *
      * @param args
@@ -195,9 +218,10 @@ public class RDFReader {
         } catch (FileNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+        System.out.println("Available RDF Files: " + RDFReader.RDFFilesAsJSON(sm) );
 
-        RDFReader or = new Gson().fromJson(sm.retrieveValue("dsw"), RDFReader.class);
+        RDFReader or = new Gson().fromJson(sm.retrieveValue("txn"), RDFReader.class);
         or.init();
-        System.out.println(or.getClasses());
+        System.out.println(or.getProperties());
     }
 }

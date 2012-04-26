@@ -69,30 +69,31 @@ function triplify(url, successFn) {
 	});
 }
 
-function loadRDF(url) {
-    // TODO: make a call to the loadRDF function!
-	// TODO: assign a success function like the other examples
-	$.ajax({
-		url: url,
+function getRDFFiles() {
+   	$.ajax({
+		url: "rest/getRDFFiles",
 		type: "GET",
-		data: $(form).serialize(),
 		dataType: "json",
 		success: function(data) {
 			if (data) {
-				 count = 0;
-                $.each(data, function() {
-                    var key, label, color = "";
-                    alert ("yea data!");
-                    $.each(this, function(k, v) {
-                        if (k == "url") key = v;
-                        if (k == "label") label = v;
-                        if (k == "color") color = v;
-                    });
-                 });
+                 alert(data);
 			} else
-			    // what to do with data if no data?
-				//noResults();
-			    alert("no data");
+			    alert("Unable to find RDF Files to Load");
+		},
+		error: alertError
+		});
+}
+
+function getRDF(name,type) {
+	$.ajax({
+		url: "rest/getRDF?name="+name+"&type="+type,
+		type: "GET",
+		dataType: "json",
+		success: function(data) {
+			if (data) {
+				alert(data);
+			} else
+			    alert("No data Associated with this File");
 		},
 		error: alertError
 		});
