@@ -164,9 +164,11 @@
             <lib dir="lib" excludes="servlet-api.jar"/>
             <classes dir="${triplifier.output.dir}"/>
             <classes dir="" includes="/sqlite/*.*"/>
-            <classes dir="" includes="triplifier.props"/>
+            <classes dir="" includes="triplifiersettings.props"/>
             <classes dir="" includes="dwcterms.rdf"/>
             <classes dir="" includes="dsw.owl"/>
+            <classes dir="" includes="txn.owl"/>
+
         </war>
     </target>
 

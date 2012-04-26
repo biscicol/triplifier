@@ -161,6 +161,7 @@ public class Rest {
         } catch (FileNotFoundException e) {
             return Response.status(204).build();
         }
+
         RDFReader or = new Gson().fromJson(sm.retrieveValue(name), RDFReader.class);
         or.init();
 
@@ -170,6 +171,27 @@ public class Rest {
             } else {
                 rb = Response.ok(or.getClasses());
             }
+        } catch (Exception e) {
+            return Response.status(204).build();
+        }
+
+        rb.header("Access-Control-Allow-Origin", "*");
+        return rb.build();
+    }
+    @GET
+    @Path("/getRDFFiles")
+    @Produces("application/json")
+    public Response getRDFFiles() throws MalformedURLException {
+
+        SettingsManager sm = SettingsManager.getInstance();
+        try {
+            sm.loadProperties();
+        } catch (FileNotFoundException e) {
+            return Response.status(204).build();
+        }
+
+        try {
+            rb = Response.ok(RDFReader.RDFFilesAsJSON(sm));
         } catch (Exception e) {
             return Response.status(204).build();
         }

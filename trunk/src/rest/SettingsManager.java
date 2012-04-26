@@ -25,6 +25,10 @@ public class SettingsManager
         this.propsfile = propsfile;
     }
 
+    public Properties getProps() {
+        return props;
+    }
+
     /**
      * Get a reference to the global rest.SettingsManager instance.  If this is the
      * first request for a rest.SettingsManager instance, then a new rest.SettingsManager
