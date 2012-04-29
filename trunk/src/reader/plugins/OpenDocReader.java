@@ -3,15 +3,22 @@ package reader.plugins;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.GregorianCalendar;
 import java.util.NoSuchElementException;
-import org.jopendocument.dom.spreadsheet.MutableCell;
+import org.joda.time.DateTime;
+import org.jopendocument.dom.ODValueType;
+import org.jopendocument.dom.spreadsheet.Cell;
 import org.jopendocument.dom.spreadsheet.Sheet;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
 
 
 /**
  * A reader for OpenDocument Format spreadsheets (e.g., OpenOffice,
- * LibreOffice).
+ * LibreOffice).  Unlike Excel spreadsheets, OpenDocument spreadsheets have real
+ * data types for dates and times.  If a date is encountered, the reader will
+ * convert it to a standard ISO8601 date/time string (yyyy-MM-ddTHH:mm:ss.SSSZZ).
+ * If a time is encountered, the reader will convert it to an ISO 8601 time
+ * string (HH:mm:ss.SSSZZ).
  */
 public class OpenDocReader implements TabularDataReader
 {
@@ -136,7 +143,7 @@ public class OpenDocReader implements TabularDataReader
      */
     @Override
     public String[] tableGetNextRow() {
-        MutableCell cell;
+        Cell cell;
         boolean blankrow = true;
         
         if (!tableHasNextRow())
@@ -148,19 +155,46 @@ public class OpenDocReader implements TabularDataReader
         while (blankrow && (curr_row < numrows)) {
             for (int cnt = 0; cnt < numcols; cnt++) {
                 cell = odsheet.getCellAt(cnt, curr_row);
-                ret[cnt] = cell.getTextValue();
-                
-                if (!ret[cnt].equals(""))
+
+                // see if this cell contains a date or time value
+                if (cell.getValueType() == ODValueType.TIME) {
+                    // Although not stated in the API documentation, getting the
+                    // value of a time cell returns a java.util.GregorianCalendar
+                    // object.  To prove this, run the line of code below.
+                    //System.out.println(cell.getValue().getClass().getName());
+                    
+                    // convert the time value to an ISO 8601 time string
+                    GregorianCalendar cal = (GregorianCalendar)cell.getValue();
+                    DateTime date = new DateTime(cal.getTime());
+                    ret[cnt] = date.toString("HH:mm:ss.SSSZZ");
+                }
+                else if (cell.getValueType() == ODValueType.DATE) {
+                    // Although not stated in the API documentation, getting the
+                    // value of a date cell returns a java.util.Date object.
+                    // To prove this, run the line of code below.
+                    //System.out.println(cell.getValue().getClass().getName());
+
+                    // get the date value and convert it to an ISO 8601 string
+                    DateTime date;
+                    date = new DateTime(cell.getValue());
+                    ret[cnt] = date.toString();
+                }
+                else {
+                    ret[cnt] = cell.getTextValue();
+                }
+
+                if (!ret[cnt].equals("")) {
                     blankrow = false;
+                }
             }
-        
+
             curr_row++;
         }
-        
+
         return ret;
     }
 
     @Override
     public void closeFile() {
-    }    
+    }
 }
