@@ -1,17 +1,11 @@
 package rest;
 
-import com.google.gson.Gson;
+//import com.google.gson.Gson;
 import com.hp.hpl.jena.rdf.model.*;
-import org.apache.poi.hssf.record.IterationRecord;
+import com.hp.hpl.jena.util.FileUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Properties;
+import java.util.Map;
 
 /**
  * A class to read files containing Classes and Properties to use in interface, instantiated using GSON
@@ -36,16 +30,9 @@ public class RDFReader {
     private RDFNode className = null;
 
     private String rdfName;
-    private String displayName;
-    private String filename;
-    private String cName;
-    private String cProperty;
-    private String cSubClass;
-    private String pName;
-    private String pSubProperty;
 
     /**
-     * Default empty constructor for gson
+     * Default constructor from json
      * rdfName is how the abbreviated name for referring to a particular RDF file (e.g. DwC)
      * filename is the filename where we find the RDF file (e.g. dwcterms.rdf)
      * cName  URI of how Classes are referred to
@@ -54,28 +41,25 @@ public class RDFReader {
      * pName  URI of Property Name
      * pSubProperty  URI of subProperty Predicate
      */
-    public RDFReader() {
+    public RDFReader(Map<String, String> rdfSpec) {
+    	rdfName = rdfSpec.get("rdfName");
+    	
+        className = createResource(rdfSpec.get("cName"));
+        classProperty = createProperty(rdfSpec.get("cProperty"));
+        classSubClass = createProperty(rdfSpec.get("cSubClass"));
+
+        propertyName = createResource(rdfSpec.get("pName"));
+        classProperty = createProperty(rdfSpec.get("pSubProperty"));
+
+        model.read(FileUtils.toURL(Thread.currentThread().getContextClassLoader().getResource("txn.owl").getFile()));
+    }
+    
+    private RDFNode createResource(String name) {
+    	return name != null && !name.isEmpty() ? ResourceFactory.createResource(name) : null;
     }
 
-    /**
-     * Must call init() in order to run this application and call getClass and getProperties
-     */
-    public void init() {
-        if (!cName.equals("")) className = ResourceFactory.createResource(cName);
-        if (!cProperty.equals("")) classProperty = ResourceFactory.createProperty(cProperty);
-        if (!cSubClass.equals("")) classSubClass = ResourceFactory.createProperty(cSubClass);
-
-        if (!pName.equals("")) propertyName = ResourceFactory.createResource(pName);
-        if (!pSubProperty.equals("")) propertySubProperty = ResourceFactory.createProperty(pSubProperty);
-
-        InputStream fis = null;
-        try {
-            File file = new File(Thread.currentThread().getContextClassLoader().getResource(filename).getFile());
-            fis = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        model.read(fis, null);
+    private Property createProperty(String name) {
+    	return name != null && !name.isEmpty() ? ResourceFactory.createProperty(name) : null;
     }
 
     public String getRdfName() {
@@ -189,39 +173,22 @@ public class RDFReader {
     }
 
     /**
-     * Return a JSON Array of Strings of the available RDF files that are defined in
-     * triplifiersettings.props
-     * @param sm
-     * @return
-     */
-    public static String RDFFilesAsJSON(SettingsManager sm) {
-        String json = "[";
-        Enumeration e = sm.getProps().propertyNames();
-        while (e.hasMoreElements()) {
-            json += "\"" + (String)e.nextElement() + "\"";
-            if (e.hasMoreElements())
-                json += ",";
-        }
-        json += "]";
-        return json;
-    }
-
-    /**
      * Main class for testing purposes
      *
      * @param args
+     * @throws Exception 
      */
-    public static void main(String args[]) {
-        SettingsManager sm = SettingsManager.getInstance();
+    public static void main(String args[]) throws Exception {
+    	SettingsManager sm = SettingsManager.getInstance();
         try {
             sm.loadProperties();
         } catch (FileNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        System.out.println("Available RDF Files: " + RDFReader.RDFFilesAsJSON(sm) );
+//        System.out.println("Available RDF Files: " + RDFReader.RDFFilesAsJSON(sm) );
 
-        RDFReader or = new Gson().fromJson(sm.retrieveValue("txn"), RDFReader.class);
-        or.init();
+        RDFReader or = new RDFReader(sm.retrieveJsonMap("dsw"));
         System.out.println(or.getProperties());
+        System.out.println(or.getClasses());
     }
 }

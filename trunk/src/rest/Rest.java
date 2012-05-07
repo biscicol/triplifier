@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
@@ -11,7 +13,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.google.gson.Gson;
+import org.codehaus.jackson.map.ObjectMapper;
+
 import reader.ReaderManager;
 import reader.TabularDataConverter;
 import reader.plugins.TabularDataReader;
@@ -38,8 +41,8 @@ public class Rest {
      * @return Real path of the sqlite folder with ending slash.
      */
     static String getSqlitePath() {
-        return "/Users/jdeck/glassfish3/glassfish/domains/domain1/applications/triplifier/WEB-INF/classes/sqlite";
-        //return Thread.currentThread().getContextClassLoader().getResource(sqliteFolder).getFile();
+//        return "/Users/jdeck/glassfish3/glassfish/domains/domain1/applications/triplifier/WEB-INF/classes/sqlite";
+        return Thread.currentThread().getContextClassLoader().getResource(sqliteFolder).getFile();
     }
 
     /**
@@ -153,7 +156,7 @@ public class Rest {
     @Produces("application/json")
     public Response getRDF(
             @QueryParam("type") String type,
-            @QueryParam("name") String name) throws MalformedURLException {
+            @QueryParam("name") String name) throws Exception {
 
         SettingsManager sm = SettingsManager.getInstance();
         try {
@@ -162,8 +165,7 @@ public class Rest {
             return Response.status(204).build();
         }
 
-        RDFReader or = new Gson().fromJson(sm.retrieveValue(name), RDFReader.class);
-        or.init();
+        RDFReader or = new RDFReader(sm.retrieveJsonMap(name));
 
         try {
             if (type.equalsIgnoreCase("property")) {
@@ -178,26 +180,25 @@ public class Rest {
         rb.header("Access-Control-Allow-Origin", "*");
         return rb.build();
     }
+    
+    /**
+     * Return a Map of the available RDF files that are defined in
+     * triplifiersettings.props each with its "displayName" property.
+     * 
+     * @return Available vocabularies.
+     */
     @GET
-    @Path("/getRDFFiles")
-    @Produces("application/json")
-    public Response getRDFFiles() throws MalformedURLException {
-
+    @Path("/getVocabularies")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, String> getVocabularies() throws Exception {
         SettingsManager sm = SettingsManager.getInstance();
-        try {
-            sm.loadProperties();
-        } catch (FileNotFoundException e) {
-            return Response.status(204).build();
-        }
+        sm.loadProperties();
 
-        try {
-            rb = Response.ok(RDFReader.RDFFilesAsJSON(sm));
-        } catch (Exception e) {
-            return Response.status(204).build();
-        }
-
-        rb.header("Access-Control-Allow-Origin", "*");
-        return rb.build();
+        Map<String, String> vocabulariesMap = new HashMap<String, String>();
+        for (String name : sm.getProps().stringPropertyNames()) 
+        	vocabulariesMap.put(name, sm.retrieveJsonMap(name).get("displayName"));
+        
+        return vocabulariesMap;
     }
 
 }

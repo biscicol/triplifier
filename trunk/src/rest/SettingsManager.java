@@ -3,13 +3,20 @@ package rest;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
+
 /**
- * rest.SettingsManager provides a generic way to configure BiSciCol core classes
+ * SettingsManager provides a generic way to configure BiSciCol core classes
  * from a properties file.  The basic idea is that any object that supports
- * the Configurable interface can be passed a rest.SettingsManager, and it will then
- * use the rest.SettingsManager to configure itself.  rest.SettingsManager is implemented
+ * the Configurable interface can be passed a SettingsManager, and it will then
+ * use the SettingsManager to configure itself.  SettingsManager is implemented
  * as a singleton to ensure that all BiSciCol objects use common configuration
  * information.
  */
@@ -30,13 +37,13 @@ public class SettingsManager
     }
 
     /**
-     * Get a reference to the global rest.SettingsManager instance.  If this is the
-     * first request for a rest.SettingsManager instance, then a new rest.SettingsManager
+     * Get a reference to the global SettingsManager instance.  If this is the
+     * first request for a SettingsManager instance, then a new SettingsManager
      * object will be created using the default properties file, which is
      * expected to be located in the "classes" directory of the project build
      * directory.
      *
-     * @return A reference to the global rest.SettingsManager object.
+     * @return A reference to the global SettingsManager object.
      */
     public static SettingsManager getInstance()
     {
@@ -44,17 +51,17 @@ public class SettingsManager
     }
 
     /**
-     * Get a reference to the global rest.SettingsManager object, specifying a
+     * Get a reference to the global SettingsManager object, specifying a
      * properties file to use.  If this is the first request for a
-     * SettignsManager instance, then a new rest.SettingsManager object will be
+     * SettignsManager instance, then a new SettingsManager object will be
      * created using the specified properties file.  Otherwise, the existing
-     * rest.SettingsManager will be returned and the specified properties file is
+     * SettingsManager will be returned and the specified properties file is
      * ignored.
      *
      * @param propsfile A properties file to use in initializing the
-     * rest.SettingsManager.
+     * SettingsManager.
      *
-     * @return A reference to the global rest.SettingsManager object.
+     * @return A reference to the global SettingsManager object.
      */
     public static SettingsManager getInstance(String propsfile)
     {
@@ -65,16 +72,16 @@ public class SettingsManager
     }
 
     /**
-     * Get the path of the properties file associated with this rest.SettingsManager.
+     * Get the path of the properties file associated with this SettingsManager.
      *
-     * @return The path of the properties file used by this rest.SettingsManager.
+     * @return The path of the properties file used by this SettingsManager.
      */
     public String getPropertiesFile() {
         return propsfile;
     }
 
     /**
-     * Specify a properties file for this rest.SettingsManager to use.
+     * Specify a properties file for this SettingsManager to use.
      *
      * @param propsfile The path to a properties file.
      */
@@ -83,8 +90,8 @@ public class SettingsManager
     }
 
     /**
-     * Attempt to load the properties file associated with this rest.SettingsManager.
-     * This method must be called to properly initialize the rest.SettingsManager
+     * Attempt to load the properties file associated with this SettingsManager.
+     * This method must be called to properly initialize the SettingsManager
      * before it can be used by Configurable classes.
      *
      * @throws java.io.FileNotFoundException
@@ -129,6 +136,11 @@ public class SettingsManager
     public String retrieveValue(String key, String defaultval)
     {
         return props.getProperty(key, defaultval);
+    }
+    
+    public Map<String, String> retrieveJsonMap(String key) throws Exception
+    {
+    	return new ObjectMapper().readValue(props.getProperty(key, ""), new TypeReference<Map<String, String>>() { });
     }
 }
 

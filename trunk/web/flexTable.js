@@ -1,4 +1,4 @@
-function FlexTable(element, authorFn, addButtonFn, storage, backFn, nextFn, onModifyFn, level2, author2Fn, add2ButtonFn) {
+function FlexTable(element, authorFn, addButtonFn, backFn, nextFn, onModifyFn, level2, author2Fn, add2ButtonFn) {
 
 	this.activate = activate;
 	
@@ -22,12 +22,15 @@ function FlexTable(element, authorFn, addButtonFn, storage, backFn, nextFn, onMo
 						removed = true;
 					}
 				}
-		if (removed)
+		if (removed) {
 			refresh();
+			store();
+		}
 	}
 	
-	this.update = function(newItems) {
+	this.update = function(newItems, newStorage) {
 		items = newItems;
+		storage = newStorage;
 		var table = element.children("table").show();
 		table.children("tbody").children().remove();
 		$.each(items, function(i, item) {
@@ -37,6 +40,7 @@ function FlexTable(element, authorFn, addButtonFn, storage, backFn, nextFn, onMo
 	}
 	
 	var items, // array of objects representing flexTable content
+		storage, // localStorage key used to save items
 		trTemplates = {}, // tr DOM element templates
 		idx = -1, // index of checked item in items
 		idx2 = -1, // index of checked level2 item in items[idx][level2]
@@ -73,7 +77,6 @@ function FlexTable(element, authorFn, addButtonFn, storage, backFn, nextFn, onMo
 
 	// store, check first, set buttons
 	function refresh() {
-		store();
 		if (items.length) {
 			checkedTr = element.find("input:radio").first().prop("checked", true).parent().parent();
 			idx = 0;
@@ -205,7 +208,6 @@ function FlexTable(element, authorFn, addButtonFn, storage, backFn, nextFn, onMo
 				checkedTr = temp;
 				idx2 = -1;
 				element.children("input.add2").prop("disabled", false);
-				store();
 			}
 			else {
 				if (onModifyFn)
@@ -217,6 +219,7 @@ function FlexTable(element, authorFn, addButtonFn, storage, backFn, nextFn, onMo
 				checkedTr.remove();
 				refresh();
 			}
+			store();
 		}
 	}
 

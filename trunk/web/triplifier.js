@@ -1,15 +1,17 @@
-var connection, // hash of connection parameters
+var project, // name of current project
+	connection, // hash of connection parameters
 	schema, // array of schema tables
 	joins, // array of joins
 	entities, // array of entities (each entity has an array of attributes)
 	relations, // array of relations
 	allRelations, // array of all possible relations, each allRelation is a hash with subject and array of all possible objects
-	allRelationsTotal, // .5 count of all possible relations (each relation has inverse relation, but we'll allow only one per pair)
+	allRelationsTotal, // .5 count of all possible relations (each relation has inverse relation, only one per pair is allowed)
 	schemaTotal, // total number of columns in schema
 	joinFT, entityFT, relationFT, // FlexTable objects
 	dbSourceTrTemplate,
-	storage = {connection:"triplifierConnection", schema:"triplifierSchema", joins:"triplifierJoins", 
-		entities:"triplifierEntities", relations:"triplifierRelations", dateTime:"triplifierDateTime"},
+	storage = {projects:"triplifier.projects", 
+		connection:"triplifier.connection.", schema:"triplifier.schema.", joins:"triplifier.joins.", 
+		entities:"triplifier.entities.", relations:"triplifier.relations.", dateTime:"triplifier.dateTime."},
 	classes = ["dwc:Occurrence", "dwc:Event", "dcterms:Location", "dwc:GeologicalContext", 
 	           "dwc:Identification", "dwc:Taxon", "dwc:ResourceRelationship", "dwc:MeasurementOrFact"],
 	predicatesLiteral = ["dcterms:modified", "geo:lat", "geo:lon"],
@@ -23,38 +25,114 @@ var connection, // hash of connection parameters
 
 // execute once the DOM has loaded
 $(function() {
+   	$.ajax({
+		url: "rest/getVocabularies",
+		dataType: "json",
+		success: populateVacabularies,
+		error: alertError
+		});
+	
 	dbSourceTrTemplate = $("#schemaTable").children("tbody").children(":last").remove();
 	
 	// create empty flexTables (this also removes blank DOM elements)
-	joinFT = new FlexTable($("#joinDiv"), authorJoin, addJoinButton, storage.joins, activateDS, activateEntities, onJoinModify);
-	entityFT = new FlexTable($("#entityDiv"), authorEntity, addEntityButton, storage.entities,
+	joinFT = new FlexTable($("#joinDiv"), authorJoin, addJoinButton, activateDS, activateEntities, onJoinModify);
+	entityFT = new FlexTable($("#entityDiv"), authorEntity, addEntityButton,
 		activateJoins, activateRelations, onEntityModify, "attributes", authorAttribute, addAttributeButton);
-	relationFT = new FlexTable($("#relationDiv"), authorRelation, addRelationButton, storage.relations, activateEntities, activateTriplify);
-	triplifyFT = new FlexTable($("#triplifyDiv"), null, null, null, activateRelations);
+	relationFT = new FlexTable($("#relationDiv"), authorRelation, addRelationButton, activateEntities, activateTriplify);
+	triplifyFT = new FlexTable($("#triplifyDiv"), null, null, activateRelations);
 
 	// assign event handlers
+	$("#newProjectForm").submit(newProject);	
+	$("#deleteProject").click(deleteProject);	
+	$("#deleteAll").click(deleteAll);
 	$("#dbForm").submit(inspect);	
 	$("#uploadForm").submit(upload);
-	$("#clear").click(clear);
 	$("#getMapping").click(function() {triplify("rest/getMapping", downloadFile);});
 	$("#getTriples").click(function() {triplify("rest/getTriples", downloadFile);});
 	$("#sendToBiSciCol").click(function() {triplify("rest/getTriples", sendToBiSciCol);});
 	
-	$("#sendToBiSciColForm").attr("action", biscicolUrl + "rest/search");
-	
-	// read JSON objects from localStorage, display/hide elements
-	connection = localStorage.getObject(storage.connection);
-	schema = localStorage.getObject(storage.schema);
-	joins = localStorage.getObject(storage.joins);
-	entities = localStorage.getObject(storage.entities);
-	relations = localStorage.getObject(storage.relations);
-	if (connection && schema && schema.length && joins && entities && relations) 
-		displayMapping();
-	else 
-		activateDS();
 	$("#status, #overlay").hide();
 	$("#uploadTarget").appendTo($("body")); // prevent re-posting on reload
+	$("#sendToBiSciColForm").attr("action", biscicolUrl + "rest/search");
+	
+	// populate projects section
+	var projects = [];
+	$.each(localStorage.getObject(storage.projects) || [], function(i, prj) { 
+		projects.push(projectElement(prj));
+	});
+	if (projects.length) 
+		$(projects.join("")).appendTo($("#projects ul"))
+			.find("input").change(openProject)
+			.first().prop("checked", true).change();
+	else
+		newDefaultProject();
 });
+
+function newProject() {
+	var newProject = this.project.value;
+	if (!newProject) {
+		alert("Please enter a project name.");
+		this.project.focus();
+		return false;
+	}
+	var projects = localStorage.getObject(storage.projects) || [];
+	if ($.inArray(newProject, projects) >= 0) {
+		alert("Project '" + newProject + "' already exists. Please use a different name.");
+		this.project.focus();
+		return false;
+	}
+	projects.push(newProject);
+	localStorage.setObject(storage.projects, projects);
+	$(projectElement(newProject)).appendTo($("#projects ul"))
+		.find("input").prop("checked", true).change(openProject).change();
+	return false;
+}
+
+function projectElement(prj) {
+	return "<li><input type='radio' name='projectChoice' value='" + prj + "'>" + prj + "</li>";
+}
+
+function openProject() {
+	project = this.value;
+	connection = localStorage.getObject(storage.connection + project);
+	schema = localStorage.getObject(storage.schema + project);
+	joins = localStorage.getObject(storage.joins + project);
+	entities = localStorage.getObject(storage.entities + project);
+	relations = localStorage.getObject(storage.relations + project);
+	displayMapping();
+}
+
+function deleteProject() {
+	if (!confirm("Are you sure you want to DELETE project '" + project + "'?")) 
+		return;
+	var projects = localStorage.getObject(storage.projects) || [],
+		idx = $.inArray(project, projects);
+	if (idx >= 0) {
+		projects.splice(idx, 1);
+		localStorage.setObject(storage.projects, projects);
+	}
+	localStorage.removeItem(storage.connection + project);
+	localStorage.removeItem(storage.schema + project);
+	localStorage.removeItem(storage.joins + project);
+	localStorage.removeItem(storage.entities + project);
+	localStorage.removeItem(storage.relations + project);
+	$("#projects ul").find("input[value='" + project + "']").parent().remove()
+		.end().end().find("input").first().prop("checked", true).change();
+	if (!projects.length) 
+		newDefaultProject();
+}
+
+function deleteAll() {
+	if (confirm("Are you sure you want to DELETE ALL PROJECTS?")) {
+		localStorage.clear();
+		location.reload();
+	}
+}
+
+function newDefaultProject() {
+	$("#newProjectForm input[name='project']").val("Default Project")
+		.parent("form").submit().end().val("");
+}
 
 function triplify(url, successFn) {
 	setStatus("Triplifying Data Source...");
@@ -69,19 +147,15 @@ function triplify(url, successFn) {
 	});
 }
 
-function getRDFFiles() {
-   	$.ajax({
-		url: "rest/getRDFFiles",
-		type: "GET",
-		dataType: "json",
-		success: function(data) {
-			if (data) {
-                 alert(data);
-			} else
-			    alert("Unable to find RDF Files to Load");
-		},
-		error: alertError
+function populateVacabularies(data) {
+	if (data) {
+		var checkBoxes = [];
+		$.each(data, function(vocabulary, displayName) { 
+			checkBoxes.push('<li><input type="checkbox" value="' + vocabulary + '" /> ' + displayName + '</li>');
 		});
+		$("#vocabularies ul").append(checkBoxes.join(""));
+	} else
+	    alert("Unable to find Vocabularies to Load");
 }
 
 function getRDF(name,type) {
@@ -98,22 +172,6 @@ function getRDF(name,type) {
 		error: alertError
 		});
 }
-
-// function openFile(url) {
-	// $.ajax({
-		// url: url,
-		// success: showFile,
-		// error: alertError
-	// });
-// }
-
-// function showFile(data) {
-	// setStatus("");
-	// var doc = window.open().document;
-	// doc.open("text/plain");
-	// doc.write(data);
-	// doc.close();
-// }
 
 function downloadFile(url) {
 	setStatus("");
@@ -195,26 +253,40 @@ function setStatus(status) {
 
 function readMapping(inspection) {
 	setStatus("");
-	localStorage.setItem(storage.dateTime, inspection.dateTime);
+	localStorage.setItem(storage.dateTime + project, inspection.dateTime);
 	connection = inspection.connection;
-	localStorage.setObject(storage.connection, connection);
+	localStorage.setObject(storage.connection + project, connection);
 	schema = inspection.schema;
-	localStorage.setObject(storage.schema, schema);
-	if (!joins || !joins.length)
+	localStorage.setObject(storage.schema + project, schema);
+	if (!joins || !joins.length) {
 		joins = inspection.joins;
-	if (!entities || !entities.length)
+		localStorage.setObject(storage.joins + project, joins);
+	}
+	if (!entities || !entities.length) {
 		entities = inspection.entities;
-	if (!relations || !relations.length)
+		localStorage.setObject(storage.entities + project, entities);
+	}
+	if (!relations || !relations.length) {
 		relations = inspection.relations;
+		localStorage.setObject(storage.relations + project, relations);
+	}
 	displayMapping();
 }
 
 function displayMapping() {
+	if (!connection) {
+		connection = {};
+		schema = [];
+		joins = [];
+		entities = [];
+		relations = [];
+	}
+
 	// update schema
 	$("#dsDescription").html((connection.system == "sqlite" 
 			? "file: " + connection.database.substr(0, connection.database.length-7) 
 			: "database: " + connection.database + "@" + connection.host)
-		+ ", accessed: " + localStorage.getItem(storage.dateTime));
+		+ ", accessed: " + localStorage.getItem(storage.dateTime + project));
 	schemaTotal = 0;
 	var schemaTable = $("#schemaTable"), 
 		columns;
@@ -239,13 +311,13 @@ function displayMapping() {
 	});
 	
 	// update joins, delete invalid (not in schema)
-	joinFT.update(joins);
+	joinFT.update(joins, storage.joins + project);
 	joinFT.removeMatching(function(join) {
 		return !findInSchema(join.foreignTable, join.foreignColumn) || !findInSchema(join.primaryTable, join.primaryColumn);
 	});
 	
 	// update entities, delete invalid (not in schema)
-	entityFT.update(entities);
+	entityFT.update(entities, storage.entities + project);
 	var schemaTable;
 	entityFT.removeMatching(
 		function(entity) {
@@ -260,7 +332,7 @@ function displayMapping() {
 	// set allRelations, update relations, delete invalid (not in allRelations)
 	if (relations.length)
 		setAllRelations();
-	relationFT.update(relations);
+	relationFT.update(relations, storage.relations + project);
 	relationFT.removeMatching(function(relation) {
 		var idx = indexOf(allRelations, "subject", relation.subject);
 		return idx < 0 || $.inArray(relation.object, allRelations[idx].objects) < 0;
@@ -271,21 +343,29 @@ function displayMapping() {
 	joinFT.activate(!schema.length || entities.length || relations.length);
 	entityFT.activate(!entities.length || relations.length);
 	relationFT.activate(!relations.length);
+	triplifyFT.activate(true);
+	
+	// place, show/hide vocabularies
+//	$("#vocabularies").prependTo($("body > div.active"))
+//		.toggle(!!(entities.length || relations.length))
+//		.find("input").show();
 }
 
 function activateDS(deactivate) {
 	$("#dsDiv").toggleClass("active", !deactivate);
 	$("#dbForm, #uploadForm").toggle(!deactivate);
-	$("#clear, #dsDescription, #schemaTable").toggle(!!deactivate);
+	$("#dsDescription, #schemaTable").toggle(!!deactivate);
 	return true;
 }
 
 function activateJoins() {
+	$("#vocabularies").hide();
 	joinFT.activate();
 	return true;
 }
 
 function activateEntities() {
+//	$("#vocabularies").prependTo($("#entityDiv")).show();
 	entityFT.activate();
 	return true;
 }
@@ -293,11 +373,13 @@ function activateEntities() {
 function activateRelations() {
 	setAllRelations();
 	$("#relationDiv > input.add").prop("disabled", addRelationButton());
+//	$("#vocabularies").prependTo($("#relationDiv")).show();
 	relationFT.activate();
 	return true;
 }
 
 function activateTriplify() {
+	$("#vocabularies").hide();
 	triplifyFT.activate();
 	return true;
 }
@@ -307,9 +389,7 @@ function authorJoin(tr, join) {
 	$.each(schema, function(i, table) { 
 		ob.addOption(table.name, "data-schemaIdx='" + i + "'");
 	}); 
-	ob.addOptionsTo("foreignTable")
-		.change(foreignTableChange)
-		.change();
+	ob.addOptionsTo("foreignTable").change(foreignTableChange).change();
 }
 
 function foreignTableChange() {
@@ -326,9 +406,7 @@ function foreignTableChange() {
 		if (table.name != foreignTable.name)
 			ob.addOption(table.name, "data-schemaIdx='" + i + "'");
 	}); 
-	ob.addOptionsTo("primaryTable")
-		.change(primaryTableChange)
-		.change();
+	ob.addOptionsTo("primaryTable").change(primaryTableChange).change();
 }
 
 function primaryTableChange() {
@@ -349,8 +427,7 @@ function authorEntity(tr, entity) {
 		if (table.name == entity.table || countOf(entities, "table", table.name) < table.columns.length)
 			ob.addOption(table.name, "data-schemaIdx='" + i + "'");
 	}); 
-	ob.addOptionsTo("table")
-		.prop("disabled", !!entity.table)
+	ob.addOptionsTo("table").prop("disabled", !!entity.table)
 		.change(function() {
 			var entityTable = schema[this.options[this.selectedIndex].getAttribute("data-schemaIdx")],
 				pk = "";
@@ -444,15 +521,6 @@ function onEntityModify(oldEntity, newEntity) {
 			return relation.object == deletedEntity || relation.subject == deletedEntity;
 		});
 	}
-}
-
-function clear() {
-	if (confirm("This will clear all Data Source, Joins, Entities and Relations information. Are you sure?")) {
-		localStorage.clear();
-		location.reload();
-		return true;
-	}
-	return false;
 }
 
 function addJoinButton() { 
