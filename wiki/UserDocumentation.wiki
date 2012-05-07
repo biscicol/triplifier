@@ -1,0 +1,86 @@
+#summary User documentation for the Triplifier.
+
+= Introduction =
+
+The BiSciCol triplifier is part of the BiSciCol project. The goal of the triplifier is to provide an easy way to convert just about any structured data into RDF triples so the data can be shared with the BiSciCol system. 
+
+
+= Documentation =
+
+==Data Source==
+
+
+Two options for data source: Database connection or File upload.
+
+[image]
+
+*Database connection*
+
+Direct connection to a SQL database is supported (MySQL, PostgreSQL, Oracle, Microsoft SQL Server).
+
+*File upload*
+
+Files in the following formats are currently supported:  CSV, Excel spreadsheets (both XLS and XLSX files), OpenDocument spreadsheets (e.g., OpenOffice), and Darwin Core archives.
+
+We do not support direct uploads of SQL text files.  Instead, we support connecting directly to a SQL database (see Database connection above).
+
+
+==Joins==
+
+Identify foreign and primary keys of imported data.
+
+[image]
+
+==Entities==
+
+*Add Entity:* Associate uploaded data with Darwin Core classes. 
+
+_Available classes_:
+dwc:Event
+dwc:Identification
+dwc:Occurrence
+
+[image]
+
+*Add Attribute:* Assign predicates to selected table columns.
+
+_Available attributes_:
+dcterms:modified
+geo:lat
+geo:lon
+
+[image]
+
+==Relations==
+
+Add relationships between Subject entities and Object entities. 
+
+_Available relations_:
+bsc:leadsTo
+bsc:comesFrom
+
+[image]
+
+*Relations to be updated to dcterms:relation (nondirectional) and dcterms:source (directional).
+
+
+==Triplify!==
+
+Three options: Get Mapping, Get Triples and Send To BiSciCol
+*Note: must allow popups to get mapping and triples.
+
+[image]
+
+*Get Mapping*
+
+Returns mapping file of inputted data.
+
+[image]
+
+*Get Triples*
+
+Returns triples from inputted data.
+
+[image]
+
+*Send To BiSciCol*
