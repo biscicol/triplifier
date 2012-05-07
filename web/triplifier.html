@@ -17,9 +17,20 @@
 
 <div id="header"><h1>Triplifier by BiSciCol Prototype</h1></div>
 
+<div id="projects">
+	<form id="newProjectForm" action="">
+		<input type="button" id="deleteProject" value="Delete Project" />
+		<input type="button" id="deleteAll" value="Delete All" />
+		New Project:
+		<input type="text" name="project" size="20" />
+		<input type="submit" value="Create" />
+	</form>
+	<h4>Select Project:</h4>
+	<ul></ul>
+</div>
+
 <div id="dsDiv">
-	<span class="title">1. Data Source</span>
-	<input type="button" id="clear" value="Clear All" />
+	<h2>1. Data Source</h2>
 	<br/>
 	<form id="dbForm" action="">
 		<table>
@@ -83,7 +94,7 @@
 <hr/>
 
 <div id="joinDiv">
-	<span class="title">2. Joins</span>
+	<h2>2. Joins</h2>
 	<input type="button" class="add" value="Add Join" />
 	<input type="button" class="edit" value="Edit" />
 	<input type="button" class="delete" value="Delete" />
@@ -138,7 +149,7 @@
 <hr/>
 
 <div id="entityDiv">
-	<span class="title">3. Entities</span>
+	<h2>3. Entities</h2>
 	<input type="button" class="add" value="Add Entity" />
 	<input type="button" class="add2" value="Add Attribute" />
 	<input type="button" class="edit" value="Edit" />
@@ -219,7 +230,7 @@
 <hr/>
 
 <div id="relationDiv">
-	<span class="title">4. Relations</span>
+	<h2>4. Relations</h2>
 	<input type="button" class="add" value="Add Relation" />
 	<input type="button" class="edit" value="Edit" />
 	<input type="button" class="delete" value="Delete" />
@@ -265,7 +276,7 @@
 <hr/>
 
 <div id="triplifyDiv">
-	<span class="title">5. Triplify!</span>
+	<h2>5. Triplify!</h2>
 	<input type="button" id="getMapping" value="Get Mapping" class="external" />
 	<input type="button" id="getTriples" value="Get Triples" class="external" />
 	<input type="button" id="sendToBiSciCol" value="Send To BiSciCol" class="external" />
@@ -279,6 +290,8 @@
 <div id="footer">
 	<a href="http://biscicol.org/">BiSciCol</a> is funded from a grant from the National Science Foundation. News and updates via our <a href="http://biscicol.blogspot.com/">blog</a>
 </div>
+
+<div id="vocabularies"><h4>Vocabularies:</h4><ul /></div>
 
 <div id="status"></div>
 <div id="overlay"></div>

@@ -21,8 +21,58 @@ hr {
     border-bottom: 1px solid gray;
 }
 
-#header h1 {
+#projects {
 	margin: 0;
+	padding: 8px;
+    background-color: #eee;
+    border-bottom: 1px solid gray;
+}
+
+#projects h4 {
+	margin-bottom: 4px;
+}
+
+#projects ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	display: inline;
+}
+
+#projects li {
+	margin: 0 8px 0 0;
+	display: inline;
+}
+
+#newProjectForm {
+	float: right;
+}
+
+#deleteAll {
+	margin-right: 20px;
+}
+
+h1, h4 {
+	margin: 0;
+}
+
+#vocabularies {
+	display: none;
+	float: right;
+	padding: 8px;
+	margin: 0 0 10px 0;
+    background-color: #eee;
+    border: 2px solid blue;
+}
+
+#vocabularies ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+#vocabularies li {
+	margin: 4px 0;
 }
 
 #dbForm {
@@ -59,13 +109,12 @@ input.external {
 	border-right: 1px solid #bbb; 	
 }
 
-.active span.title {
+.active h2 {
 	color: crimson;
 }
 
-span.title {
-	font-size: 130%;
-	font-weight: bold;
+h2 {
+	display: inline;
 	margin-right: 16px;
 }
 
