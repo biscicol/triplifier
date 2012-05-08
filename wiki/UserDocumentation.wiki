@@ -1,8 +1,7 @@
-#summary User documentation for the Triplifier.
 
 = Introduction =
 
-The BiSciCol triplifier is part of the BiSciCol project. The goal of the triplifier is to provide an easy way to convert just about any structured data into RDF triples so the data can be shared with the BiSciCol system. 
+The Triplifier is part of the BiSciCol project. The goal of the Triplifier is to provide an easy way to convert just about any structured data into RDF triples so the data can be shared with the BiSciCol system. 
 
 
 = Documentation =
@@ -84,3 +83,5 @@ Returns triples from inputted data.
 [image]
 
 *Send To BiSciCol*
+
+Sends RDF output to BiSciCol. Data does not get sent to any public repository or permanently become a part of the BiSciCol system.
