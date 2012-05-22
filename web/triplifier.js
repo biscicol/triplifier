@@ -1,4 +1,5 @@
 var project, // name of current project
+	lastProject = 0, //
 	connection, // hash of connection parameters
 	schema, // array of schema tables
 	joins, // array of joins
@@ -15,7 +16,7 @@ var project, // name of current project
 	classes = ["dwc:Occurrence", "dwc:Event", "dcterms:Location", "dwc:GeologicalContext", 
 	           "dwc:Identification", "dwc:Taxon", "dwc:ResourceRelationship", "dwc:MeasurementOrFact"],
 	predicatesLiteral = ["dcterms:modified", "geo:lat", "geo:lon"],
-	predicatesBSC = ["dcterms:relation", "dcterms:source"],
+	predicatesBSC = ["ma:isSourceOf", "ma:isRelatedTo"],
 	biscicolUrl = "http://biscicol.org/",
 	triplifierUrl = "http://biscicol.org:8080/triplifier/"; // [hack] when file on triplifier is accessed from biscicol on the same server then port forwarding won't work so the port is set here
 //	biscicolUrl = "http://geomuseblade.colorado.edu/biscicol/",
@@ -43,10 +44,14 @@ $(function() {
 
 	// assign event handlers
 	$("#newProjectForm").submit(newProject);	
+	$("#exportForm").submit(exportProject);	
+	$("#importFile").change(importProject);	
+	$("#importProject").click(function() {$("#importFile").val("").click();});	
 	$("#deleteProject").click(deleteProject);	
 	$("#deleteAll").click(deleteAll);
-	$("#dbForm").submit(inspect);	
+	$("#dbForm").submit(inspect);
 	$("#uploadForm").submit(upload);
+	$("#dsDiv > input.next").click(function() {activateDS(true);  activateJoins();});	
 	$("#getMapping").click(function() {triplify("rest/getMapping", downloadFile);});
 	$("#getTriples").click(function() {triplify("rest/getTriples", downloadFile);});
 	$("#sendToBiSciCol").click(function() {triplify("rest/getTriples", sendToBiSciCol);});
@@ -61,8 +66,8 @@ $(function() {
 		projects.push(projectElement(prj));
 	});
 	if (projects.length) 
-		$(projects.join("")).appendTo($("#projects ul"))
-			.find("input").change(openProject)
+		$(projects.join("")).appendTo($("#projects"))
+			.filter("input").change(openProject)
 			.first().prop("checked", true).change();
 	else
 		newDefaultProject();
@@ -83,13 +88,14 @@ function newProject() {
 	}
 	projects.push(newProject);
 	localStorage.setObject(storage.projects, projects);
-	$(projectElement(newProject)).appendTo($("#projects ul"))
-		.find("input").prop("checked", true).change(openProject).change();
+	$(projectElement(newProject)).appendTo($("#projects"))
+		.first("input").prop("checked", true).change(openProject).change();
 	return false;
 }
 
 function projectElement(prj) {
-	return "<li><input type='radio' name='projectChoice' value='" + prj + "'>" + prj + "</li>";
+	lastProject++;
+	return "<input type='radio' name='projectChoice' value='" + prj + "' id='p" + lastProject + "' /><label for='p" + lastProject + "'>" + prj + "</label>";
 }
 
 function openProject() {
@@ -116,8 +122,8 @@ function deleteProject() {
 	localStorage.removeItem(storage.joins + project);
 	localStorage.removeItem(storage.entities + project);
 	localStorage.removeItem(storage.relations + project);
-	$("#projects ul").find("input[value='" + project + "']").parent().remove()
-		.end().end().find("input").first().prop("checked", true).change();
+	$("#projects").find("input[value='" + project + "']").next().remove().end().remove()
+		.end().find("input[type='radio']").first().prop("checked", true).change();
 	if (!projects.length) 
 		newDefaultProject();
 }
@@ -132,6 +138,43 @@ function deleteAll() {
 function newDefaultProject() {
 	$("#newProjectForm input[name='project']").val("Default Project")
 		.parent("form").submit().end().val("");
+}
+
+function exportProject() {
+	this.filename.value = project.replace(/\s+/g, "_") + ".trp";
+	this.content.value = JSON.stringify({project:project, 
+		dateTime:localStorage.getItem(storage.dateTime + project), 
+		connection:connection, schema:schema, joins:joins, entities:entities, relations:relations});
+}
+
+function importProject() {
+    var reader = new FileReader();
+    reader.onload = readProject;
+    reader.readAsText(this.files[0]);
+}
+
+function readProject() {
+	try {
+		var projectObj = JSON.parse(this.result),
+			projects = localStorage.getObject(storage.projects) || [],
+			newProject = projectObj.project,
+			i = 1;
+		while ($.inArray(newProject, projects) >= 0)
+			newProject = projectObj.project + "." + i++;
+		projects.push(newProject);
+		localStorage.setObject(storage.projects, projects);
+		localStorage.setItem(storage.dateTime + newProject, projectObj.dateTime);
+		localStorage.setObject(storage.connection + newProject, projectObj.connection);
+		localStorage.setObject(storage.schema + newProject, projectObj.schema);
+		localStorage.setObject(storage.joins + newProject, projectObj.joins);
+		localStorage.setObject(storage.entities + newProject, projectObj.entities);
+		localStorage.setObject(storage.relations + newProject, projectObj.relations);
+		$(projectElement(newProject)).appendTo($("#projects"))
+			.first("input").prop("checked", true).change(openProject).change();
+	}
+	catch(err) {
+		alert("Error reading file.");
+	}	
 }
 
 function triplify(url, successFn) {
@@ -318,14 +361,14 @@ function displayMapping() {
 	
 	// update entities, delete invalid (not in schema)
 	entityFT.update(entities, storage.entities + project);
-	var schemaTable;
+	var schemaTbl;
 	entityFT.removeMatching(
 		function(entity) {
-			schemaTable = findInSchema(entity.table, entity.idColumn);
-			return !schemaTable;
+			schemaTbl = findInSchema(entity.table, entity.idColumn);
+			return !schemaTbl;
 		},
 		function(attribute) {
-			return $.inArray(attribute.column, schemaTable.columns) < 0;
+			return $.inArray(attribute.column, schemaTbl.columns) < 0;
 		}
 	);
 	
@@ -354,7 +397,8 @@ function displayMapping() {
 function activateDS(deactivate) {
 	$("#dsDiv").toggleClass("active", !deactivate);
 	$("#dbForm, #uploadForm").toggle(!deactivate);
-	$("#dsDescription, #schemaTable").toggle(!!deactivate);
+	$("#dsDescription, #schemaTable").toggle(!!schema.length);	
+	$("#dsDiv > input.next").toggle(!deactivate && !!schema.length);	
 	return true;
 }
 

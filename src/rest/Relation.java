@@ -35,7 +35,7 @@ public class Relation {
 			pw.println("\td2rq:belongsToClassMap " + "map:" + subjClassMap + ";");
 			pw.println("\td2rq:property " + predicate + ";");
 			pw.println("\td2rq:refersToClassMap " + "map:" + objClassMap + ";");
-			pw.println("\td2rq:join \"" + subjTbl + "." + join.foreignColumn + " => " + objTbl + "." + join.primaryColumn + "\";");
+			pw.println("\td2rq:join \"" + join.foreignTable + "." + join.foreignColumn + " => " + join.primaryTable + "." + join.primaryColumn + "\";");
 			pw.println("\t.");		
 		}
 	}
