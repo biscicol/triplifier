@@ -1,7 +1,6 @@
 package rest;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.HashMap;
@@ -12,8 +11,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.codehaus.jackson.map.ObjectMapper;
 
 import reader.ReaderManager;
 import reader.TabularDataConverter;
@@ -199,6 +196,24 @@ public class Rest {
         	vocabulariesMap.put(name, sm.retrieveJsonMap(name).get("displayName"));
         
         return vocabulariesMap;
+    }
+
+    /**
+     * Download a file with a given filename and content.
+     * 
+     * @param filename   Name of the file.
+     * @param content    Content of the file.
+     * @return Response with 'attachment' Content-Disposition header.
+     */
+    @POST
+    @Path("/download")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response download(@FormParam("filename") String filename, @FormParam("content") String content) {
+        return Response
+        		.ok(content)
+        		.header("Content-Disposition", "attachment; filename=" + filename)
+        		.build();
     }
 
 }

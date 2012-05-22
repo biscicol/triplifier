@@ -21,6 +21,10 @@ hr {
     border-bottom: 1px solid gray;
 }
 
+#header a {
+	float: right;
+}
+
 #projects {
 	margin: 0;
 	padding: 8px;
@@ -32,24 +36,25 @@ hr {
 	margin-bottom: 4px;
 }
 
-#projects ul {
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
-	display: inline;
-}
-
-#projects li {
+#projects label {
 	margin: 0 8px 0 0;
-	display: inline;
 }
 
-#newProjectForm {
+#projects input:checked + label {
+	color: crimson;
+	font-weight: bold;
+}
+
+#projectFunctions {
 	float: right;
 }
 
-#deleteAll {
-	margin-right: 20px;
+#projectFunctions form {
+	display: inline;
+}
+
+#newProjectForm, #importProject {
+	margin-right: 24px;
 }
 
 h1, h4 {
@@ -90,6 +95,7 @@ h1, h4 {
 
 #dsDescription {
 	margin-top: 8px;
+	clear: both;
 }
 
 #schemaTable {
@@ -218,6 +224,6 @@ p {
 	border-top: none;
 }
 
-#uploadTarget {
-	display:none;
+#uploadTarget, #importFile {
+	display: none;
 }

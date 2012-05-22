@@ -55,9 +55,10 @@ public class Mapping {
 			relation.printD2RQ(pw, this);
 	}
 
-	Join findJoin(String foreignTable, String primaryTable) {
+	Join findJoin(String table1, String table2) {
 		for (Join join : joins) 
-			if (foreignTable.equals(join.foreignTable) && primaryTable.equals(join.primaryTable)) 
+			if (table1.equals(join.foreignTable) && table2.equals(join.primaryTable) || 
+					table1.equals(join.primaryTable) && table2.equals(join.foreignTable)) 
 				return join;
 		return null;
 	}
@@ -82,6 +83,7 @@ public class Mapping {
 		pw.println("@prefix bsc: <http://biscicol.org/biscicol.rdf#> .");
 		pw.println("@prefix dcterms: <http://purl.org/dc/terms/> .");
 		pw.println("@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .");
+		pw.println("@prefix ma: <http://www.w3.org/ns/ma-ont#> .");
 		pw.println();
 	}
 }

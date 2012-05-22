@@ -15,18 +15,29 @@
 
 <body>
 
-<div id="header"><h1>Triplifier by BiSciCol Prototype</h1></div>
+<div id="header">
+	<a href="http://code.google.com/p/triplifier/wiki/UserDocumentation">Help</a>
+	<h1>Triplifier by BiSciCol Prototype</h1>
+</div>
 
 <div id="projects">
-	<form id="newProjectForm" action="">
-		<input type="button" id="deleteProject" value="Delete Project" />
+	<div id="projectFunctions">
+		<form id="newProjectForm" action="">
+			New Project:
+			<input type="text" name="project" size="20" />
+			<input type="submit" value="Create" />
+		</form>
+		<form id="exportForm" method="post" action="rest/download">
+			<input type="hidden" name="filename" />
+			<input type="hidden" name="content" />
+			<input type="submit" value="Export" />
+		</form>
+		<input type="file" id="importFile" />
+		<input type="button" id="importProject" value="Import" />
+		<input type="button" id="deleteProject" value="Delete" />
 		<input type="button" id="deleteAll" value="Delete All" />
-		New Project:
-		<input type="text" name="project" size="20" />
-		<input type="submit" value="Create" />
-	</form>
+	</div>
 	<h4>Select Project:</h4>
-	<ul></ul>
 </div>
 
 <div id="dsDiv">
@@ -89,6 +100,7 @@
 		</tr>
 	</tbody>
 	</table>
+	<input type="button" class="next" value="Next  (Joins)  >" />
 </div>
 
 <hr/>
