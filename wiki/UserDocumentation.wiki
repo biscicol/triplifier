@@ -22,12 +22,17 @@ Files in the following formats are currently supported:  CSV, Excel spreadsheets
 
 We do not support direct uploads of SQL text files.  Instead, we support connecting directly to a SQL database (see Database connection above).
 
+*Sample of a successful data source upload or connection:
+
+http://triplifier.googlecode.com/svn/trunk/web/photos/1%20data%20source%20table.png
+
 
 ==Joins==
 
 Identify foreign and primary keys of imported data.
 
 http://triplifier.googlecode.com/svn/trunk/web/photos/2%20joins.png
+
 
 ==Entities==
 
@@ -49,6 +54,7 @@ geo:lon
 
 http://triplifier.googlecode.com/svn/trunk/web/photos/3%20attributes.png
 
+
 ==Relations==
 
 Add relationships between Subject entities and Object entities. 
@@ -59,7 +65,7 @@ bsc:comesFrom
 
 http://triplifier.googlecode.com/svn/trunk/web/photos/4%20relations.png
 
-*Relations to be updated to dcterms:relation (nondirectional) and dcterms:source (directional).
+*Relations to be updated soon.
 
 
 ==Triplify!==
