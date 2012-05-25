@@ -5,6 +5,10 @@ The Triplifier is part of the BiSciCol project. The goal of the Triplifier is to
 
 = Documentation =
 
+==Select Project==
+
+The configuration settings for each session may be saved as a project using the import and export functions. Projects are saved as .trp files and may be sent to other computers to be imported. Uploaded files are hosted on the BiSciCol server.
+
 ==Data Source==
 
 
@@ -89,4 +93,4 @@ http://triplifier.googlecode.com/svn/trunk/web/photos/5%20triples.png
 
 *Send To BiSciCol*
 
-Sends RDF output to BiSciCol. Data does not get sent to any public repository or permanently become a part of the BiSciCol system.
+Sends a copy of the triple output to the BiSciCol server. Data does not get sent to any public repository or permanently become a part of the BiSciCol system. However, a publishing method for triples is being designed.
