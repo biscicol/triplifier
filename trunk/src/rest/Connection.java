@@ -8,6 +8,10 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 import de.fuberlin.wiwiss.d2rq.map.Database;
 
+/**
+ * Represents a database connection, can be used to generate a JDBC URL, 
+ * make a new D2RQ Database or generate a D2RQ Mapping entry.
+ */
 public class Connection {
 	public DBsystem system;
 	public String host;
@@ -45,7 +49,13 @@ public class Connection {
 		database.setUsername(username);
 		database.setPassword(password);
 		return database;
-}
+	}
+	
+    /**
+     * Generate D2RQ Mapping Language representation of the database connection.
+     *
+     * @param pw PrintWriter used to write output to.
+     */
 	void printD2RQ(PrintWriter pw) throws SQLException {
 		pw.println("map:database a d2rq:Database;");
 		pw.println("\td2rq:jdbcDriver \"" + system.driver + "\";");

@@ -2,6 +2,10 @@ package rest;
 
 import java.util.Set;
 
+/**
+ * A set of DBtables constitutes a database schema.
+ * Implements Comparable to enable sorting by name.
+ */
 public class DBtable implements Comparable<DBtable> {
 	public String name;
 	public Set<String> columns;

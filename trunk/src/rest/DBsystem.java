@@ -1,5 +1,9 @@
 package rest;
 
+/**
+ * Enumerates supported database systems with their JDBC drivers.
+ * Needs the driver jars in path.
+ */
 public enum DBsystem {
 	sqlite ("org.sqlite.JDBC"), 
 	mysql ("com.mysql.jdbc.Driver"), 

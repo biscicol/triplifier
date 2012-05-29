@@ -23,10 +23,16 @@ import com.sun.jersey.multipart.FormDataParam;
 
 import de.fuberlin.wiwiss.d2rq.ModelD2RQ;
 
+/**
+ * Provides RESTful web services using Jersey JAX-RS implementation. 
+ * Many of the public methods use Jackson Mapper to translate between 
+ * JSON (received from/sent to the client) and Java objects,
+ * Jersey POJOMappingFeature (requires entry in web.xml) allows to 
+ * achieve this without any special annotations of mapped Java classes,
+ * sometimes argument-less constructor is needed.
+ */
 @Path("/")
 public class Rest {
-    Response.ResponseBuilder rb;
-
     private static final String sqliteFolder = "sqlite";
     private static final String triplesFolder = "triples";
     @Context
@@ -53,7 +59,7 @@ public class Rest {
     }
 
     /**
-     * Upload file, convert into sqlite database, create Mapping representation of tabular data.
+     * Upload file, convert into sqlite database, return Mapping representation of tabular data.
      *
      * @param inputStream        File to be uploaded.
      * @param contentDisposition Form-data content disposition header.
@@ -87,7 +93,7 @@ public class Rest {
     /**
      * Write InputStream to File.
      *
-     * @param inputStream Source of the file.
+     * @param inputStream Input to read from.
      * @param file        File to write to.
      */
     private void writeFile(InputStream inputStream, File file) throws Exception {
@@ -115,6 +121,12 @@ public class Rest {
         return file;
     }
 
+    /**
+     * Inspect the database, return Mapping representation of schema.
+     *
+     * @param connection Database connection.
+     * @return Mapping representation of the database schema.
+     */
     @POST
     @Path("/inspect")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -123,6 +135,12 @@ public class Rest {
         return new Mapping(connection);
     }
 
+    /**
+     * Translate given Mapping into D2RQ Mapping Language.
+     *
+     * @param mapping Mapping to translate.
+     * @return URL to n3 file with D2RQ Mapping Language representation of given Mapping.
+     */
     @POST
     @Path("/getMapping")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -135,6 +153,13 @@ public class Rest {
         return triplesFolder + "/" + mapFile.getName();
     }
 
+    /**
+     * Generate RDF triples from given Mapping. 
+     * As intermediate step D2RQ Mapping Language is created.
+     *
+     * @param mapping Mapping to triplify.
+     * @return URL to n-triples file generated from given Mapping.
+     */
     @POST
     @Path("/getTriples")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -154,6 +179,7 @@ public class Rest {
     public Response getRDF(
             @QueryParam("type") String type,
             @QueryParam("name") String name) throws Exception {
+        Response.ResponseBuilder rb;
 
         SettingsManager sm = SettingsManager.getInstance();
         try {
@@ -179,7 +205,7 @@ public class Rest {
     }
     
     /**
-     * Return a Map of the available RDF files that are defined in
+     * Return a Map of available RDF files that are defined in
      * triplifiersettings.props each with its "displayName" property.
      * 
      * @return Available vocabularies.

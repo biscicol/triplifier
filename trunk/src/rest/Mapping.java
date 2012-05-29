@@ -13,6 +13,12 @@ import de.fuberlin.wiwiss.d2rq.algebra.RelationName;
 import de.fuberlin.wiwiss.d2rq.dbschema.DatabaseSchemaInspector;
 import de.fuberlin.wiwiss.d2rq.map.Database;
 
+/**
+ * Performs two major tasks: 
+ * - constructor inspects SQL database and generates schema,
+ * - printD2RQ translates connection, entities and relations
+ *   into D2RQ Mapping Language.
+ */
 public class Mapping { 
 	public String dateTime;
 	public Connection connection;
@@ -21,8 +27,18 @@ public class Mapping {
 	public Set<Entity> entities;
 	public Set<Relation> relations;
 
-	Mapping() {} // for construction from JSON
+	/**
+	 * For construction from JSON.
+	 */
+	Mapping() {}
 
+    /**
+     * Create Mapping with dateTime, connection and schema only
+     * (joins, entities and relations are empty). Schema is based
+     * on inspection of given database connection.
+     *
+     * @param connection SQL database connection parameters.
+     */
 	Mapping(Connection connection) {
 		dateTime = DateFormat.getDateTimeInstance().format(new Date());
 		this.connection = connection;
@@ -46,6 +62,11 @@ public class Mapping {
 		database.connectedDB().close();
 	}
 
+    /**
+     * Generate D2RQ Mapping Language representation of connection, entities and relations.
+     *
+     * @param pw PrintWriter used to write output to.
+     */
 	void printD2RQ(PrintWriter pw) throws SQLException {
 		printPrefixes(pw);
 		connection.printD2RQ(pw);
@@ -55,6 +76,13 @@ public class Mapping {
 			relation.printD2RQ(pw, this);
 	}
 
+    /**
+     * Find Join between table1 and table2.
+     *
+     * @param table1 Table name.
+     * @param table2 Table name.
+     * @return Matching Join or null if not found.
+     */
 	Join findJoin(String table1, String table2) {
 		for (Join join : joins) 
 			if (table1.equals(join.foreignTable) && table2.equals(join.primaryTable) || 
@@ -63,6 +91,13 @@ public class Mapping {
 		return null;
 	}
 
+    /**
+     * Find Entity defined by given table and idColumn.
+     *
+     * @param table Table name.
+     * @param idColumn IdColumn name.
+     * @return Matching Entity or null if not found.
+     */
 	Entity findEntity(String table, String idColumn) {
 		for (Entity entity : entities) 
 			if (table.equals(entity.table) && idColumn.equals(entity.idColumn)) 
@@ -70,6 +105,11 @@ public class Mapping {
 		return null;
 	}
 
+    /**
+     * Generate all possible RDF prefixes.
+     *
+     * @param pw PrintWriter used to write output to.
+     */
 	private void printPrefixes(PrintWriter pw) {
 		pw.println("@prefix map: <" + "" + "> .");
 		//	out.println("@prefix db: <" + "" + "> .");
