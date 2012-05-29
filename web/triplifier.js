@@ -389,9 +389,9 @@ function displayMapping() {
 	triplifyFT.activate(true);
 	
 	// place, show/hide vocabularies
-//	$("#vocabularies").prependTo($("body > div.active"))
-//		.toggle(!!(entities.length || relations.length))
-//		.find("input").show();
+	$("#vocabularies").prependTo($("body > div.active"))
+		.toggle(!!(entities.length || relations.length))
+		.find("input").show();
 }
 
 function activateDS(deactivate) {
@@ -409,7 +409,7 @@ function activateJoins() {
 }
 
 function activateEntities() {
-//	$("#vocabularies").prependTo($("#entityDiv")).show();
+	$("#vocabularies").prependTo($("#entityDiv")).show();
 	entityFT.activate();
 	return true;
 }
@@ -417,7 +417,7 @@ function activateEntities() {
 function activateRelations() {
 	setAllRelations();
 	$("#relationDiv > input.add").prop("disabled", addRelationButton());
-//	$("#vocabularies").prependTo($("#relationDiv")).show();
+	$("#vocabularies").prependTo($("#relationDiv")).show();
 	relationFT.activate();
 	return true;
 }

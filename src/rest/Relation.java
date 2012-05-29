@@ -2,11 +2,22 @@ package rest;
 
 import java.io.PrintWriter;
 
+/**
+ * Represents a relation between the subject and object Entities.
+ * Subject and object Entities are in the form 'table.idColumn'.
+ * Can generate a D2RQ Mapping entry.
+ */
 public class Relation {
-	public String subject;
+	public String subject; 
 	public String predicate;
 	public String object;
 
+    /**
+     * Generate D2RQ Mapping Language representation of the Relation.
+     *
+     * @param pw PrintWriter used to write output to.
+     * @param mapping Mapping containing related Entities (and the Join if the related Entities come from different tables).
+     */
 	void printD2RQ(PrintWriter pw, Mapping mapping) {
 		String[] subjArray = subject.split("\\."),
 			objArray = object.split("\\.");

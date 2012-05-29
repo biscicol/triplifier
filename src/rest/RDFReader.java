@@ -187,7 +187,7 @@ public class RDFReader {
         }
 //        System.out.println("Available RDF Files: " + RDFReader.RDFFilesAsJSON(sm) );
 
-        RDFReader or = new RDFReader(sm.retrieveJsonMap("dsw"));
+        RDFReader or = new RDFReader(sm.retrieveJsonMap("dwc"));
         System.out.println(or.getProperties());
         System.out.println(or.getClasses());
     }

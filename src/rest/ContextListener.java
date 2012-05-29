@@ -8,6 +8,11 @@ import java.util.Enumeration;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+/**
+ * Registers/unregisters JDBC drivers listed in DBsystem
+ * when context is initialized/destroyed.
+ * Needs an entry in web.xml.
+ */
 public class ContextListener implements ServletContextListener {
 
 	@Override
