@@ -1,6 +1,6 @@
 = Introduction =
 
-The Triplifier is part of the [http://www.biscicol.org BiSciCol] project. The goal of the Triplifier is to provide an easy way to convert just about any structured data into RDF triples so the data can be shared with the [http://www.biscicol.org BiSciCol] system. 
+The Triplifier is part of the [http://biscicol.blogspot.com BiSciCol] project. The goal of the Triplifier is to provide an easy way to convert just about any structured data into RDF triples so the data can be shared with the [http://www.biscicol.org BiSciCol] system. 
 
 
 = Documentation =
