@@ -3,8 +3,7 @@ package rest;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -135,9 +134,17 @@ public class SettingsManager
         return props.getProperty(key, defaultval);
     }
     
+    /**
+     * Get the JSON value associated with the specified key; the value has to be JSON
+     * that is translated to String pairs using Jackson Mapper.
+     *
+     * @param key The key to search for in the properties file.
+     *
+     * @return A JSON value associated with the key translated to a Java object.
+     */
     public Map<String, String> retrieveJsonMap(String key) throws Exception
     {
-    	return new ObjectMapper().readValue(props.getProperty(key, ""), new TypeReference<Map<String, String>>() { });
-    }
+    	return new ObjectMapper().readValue(props.getProperty(key, ""), new TypeReference<LinkedHashMap<String, String>>() { });
+    }    
 }
 

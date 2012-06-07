@@ -1,22 +1,21 @@
 var project, // name of current project
 	lastProject = 0, //
-	connection, // hash of connection parameters
-	schema, // array of schema tables
-	joins, // array of joins
-	entities, // array of entities (each entity has an array of attributes)
-	relations, // array of relations
-	allRelations, // array of all possible relations, each allRelation is a hash with subject and array of all possible objects
-	allRelationsTotal, // .5 count of all possible relations (each relation has inverse relation, only one per pair is allowed)
-	schemaTotal, // total number of columns in schema
+	lastVocabulary = 0,
+	vocabularies = {}, // hash of vocabularies downloaded in current session
+	connection, // hash of connection parameters in current project
+	schema, // array of schema tables in current project
+	joins, // array of joins in current project
+	entities, // array of entities (each entity has an array of attributes) in current project
+	relations, // array of relations in current project
+	allRelations, // array of all possible relations, each allRelation is a hash with subject and array of all possible objects in current project
+	allRelationsTotal, // .5 count of all possible relations (each relation has inverse relation, only one per pair is allowed) in current project
+	schemaTotal, // total number of columns in schema in current project
 	joinFT, entityFT, relationFT, // FlexTable objects
 	dbSourceTrTemplate,
-	storage = {projects:"triplifier.projects", 
+	storage = {projects:"triplifier.projects", vocabularies:"triplifier.vocabularies",
 		connection:"triplifier.connection.", schema:"triplifier.schema.", joins:"triplifier.joins.", 
 		entities:"triplifier.entities.", relations:"triplifier.relations.", dateTime:"triplifier.dateTime."},
-	classes = ["dwc:Occurrence", "dwc:Event", "dcterms:Location", "dwc:GeologicalContext", 
-	           "dwc:Identification", "dwc:Taxon", "dwc:ResourceRelationship", "dwc:MeasurementOrFact"],
-	predicatesLiteral = ["dcterms:modified", "geo:lat", "geo:lon"],
-	predicatesBSC = ["ma:isSourceOf", "ma:isRelatedTo"],
+	relationPredicates = ["ma:isSourceOf", "ma:isRelatedTo"],
 	biscicolUrl = "http://biscicol.org/",
 	triplifierUrl = "http://biscicol.org:8080/triplifier/"; // [hack] when file on triplifier is accessed from biscicol on the same server then port forwarding won't work so the port is set here
 //	biscicolUrl = "http://geomuseblade.colorado.edu/biscicol/",
@@ -28,8 +27,11 @@ var project, // name of current project
 $(function() {
    	$.ajax({
 		url: "rest/getVocabularies",
+		type: "POST",
+		data: JSON.stringify(localStorage.getObject(storage.vocabularies) || []),
+		contentType: "application/json; charset=utf-8",
 		dataType: "json",
-		success: populateVacabularies,
+		success: populateVocabularies,
 		error: alertError
 		});
 	
@@ -55,12 +57,16 @@ $(function() {
 	$("#getMapping").click(function() {triplify("rest/getMapping", downloadFile);});
 	$("#getTriples").click(function() {triplify("rest/getTriples", downloadFile);});
 	$("#sendToBiSciCol").click(function() {triplify("rest/getTriples", sendToBiSciCol);});
-	
-	$("#status, #overlay").hide();
+	$("#showVocabularyUpload").click(function() {$("#overlay, #vocabularyUpload").fadeIn();});
+	$("#hideVocabularyUpload").click(function() {$("#overlay, #vocabularyUpload").fadeOut();});
+	$("#vocabularyUploadLocalForm").submit(vocabularyUploadLocal);
+	$("#vocabularyLoadUrlForm").submit(vocabularyLoadUrl);
+
+	$("#dbForm, #uploadForm, #dsDiv > input.next, #vocabularies, #status, #overlay, #vocabularyUpload").hide();
 	$("#uploadTarget").appendTo($("body")); // prevent re-posting on reload
 	$("#sendToBiSciColForm").attr("action", biscicolUrl + "rest/search");
 	
-	// populate projects section
+	// populate projects section, load project
 	var projects = [];
 	$.each(localStorage.getObject(storage.projects) || [], function(i, prj) { 
 		projects.push(projectElement(prj));
@@ -68,9 +74,9 @@ $(function() {
 	if (projects.length) 
 		$(projects.join("")).appendTo($("#projects"))
 			.filter("input").change(openProject)
-			.first().prop("checked", true).change();
+			.first().prop("checked", true).change(); // load first project
 	else
-		newDefaultProject();
+		newDefaultProject(); // load default project
 });
 
 function newProject() {
@@ -177,6 +183,92 @@ function readProject() {
 	}	
 }
 
+function populateVocabularies(data) {
+	if (data) {
+		var checkBoxes = [];
+		$.each(data, function(vocabName, displayName) { 
+			checkBoxes.push(vocabularyElement(vocabName, displayName));
+		});
+		$(checkBoxes.join("")).appendTo($("#vocabularies div"))
+			.filter("input").change(getVocabulary)
+			.first().prop("checked", true).change();
+	} else
+	    alert("Unable to find Vocabularies to Load");
+}
+
+function vocabularyElement(vocabName, displayName) {
+	lastVocabulary++;
+	return "<input type='radio' name='vocabularyChoice' value='" + vocabName + "' id='v" + lastVocabulary + "' /><label for='v" + lastVocabulary + "'>" + displayName + "</label><br />";
+}
+
+function vocabularyUploadLocal() {
+	return vocabularyLoad(this.file, "Please select a vocabulary file to upload.");
+}
+
+function vocabularyLoadUrl() {
+	return vocabularyLoad(this.url, "Please enter a URL to load vocabulary from.");
+}
+
+function vocabularyLoad(reqField, reqMessage) {
+	if (!reqField.value) {
+		alert(reqMessage);
+		reqField.focus();
+		return false;
+	}
+	$("#vocabularyUpload").css("z-index", 2);	
+	setStatus("Loading...");
+	$("#uploadTarget").one("load", afterVocabulary);
+	return true;
+}
+
+function afterVocabulary() {
+	$("#status").hide();
+	$("#vocabularyUpload").css("z-index", 5);	
+	var data = frames.uploadTarget.document.body.textContent;
+	// distinguish response OK status by JSON format
+	if (isJson(data)) {
+		var vocabulary = JSON.parse(data),
+			vocabularyStorage = localStorage.getObject(storage.vocabularies) || [];
+		vocabularyStorage.push(vocabulary.name);
+		localStorage.setObject(storage.vocabularies, vocabularyStorage);
+		vocabularies[vocabulary.name] = vocabulary;
+		$(vocabularyElement(vocabulary.name, vocabulary.name)).appendTo($("#vocabularies div"))
+			.first("input").prop("checked", true).change(getVocabulary);
+		alert("Vocabulary '" + vocabulary.name + "' uploaded successfully.");
+		$("#hideVocabularyUpload").click();
+	}
+	else
+		alert("Error" + (data ? ":\n\n"+data : "."));	
+}
+
+function getVocabulary() {
+	if (!vocabularies[this.value])
+		$.ajax({
+			url: "rest/getVocabulary",
+			type: "POST",
+			data: this.value,
+			contentType: "text/plain; charset=utf-8",
+			dataType: "json",
+			success: function(vocabulary) {vocabularies[vocabulary.name] = vocabulary;},
+			error: alertError
+		});
+}
+
+function getSelectedVocabulary() {
+	return vocabularies[$("#vocabularies input:checked").val()];
+}
+
+function alertError(xhr, status, error) {
+	setStatus("");
+	alert(status + (xhr.status==500 ? ":\n\n"+xhr.responseText : (error ? ": "+error : "")));
+}
+
+function downloadFile(url) {
+	setStatus("");
+	window.open(url);
+	// location = url;
+}
+
 function triplify(url, successFn) {
 	setStatus("Triplifying Data Source...");
 	$.ajax({
@@ -190,38 +282,6 @@ function triplify(url, successFn) {
 	});
 }
 
-function populateVacabularies(data) {
-	if (data) {
-		var checkBoxes = [];
-		$.each(data, function(vocabulary, displayName) { 
-			checkBoxes.push('<li><input type="checkbox" value="' + vocabulary + '" /> ' + displayName + '</li>');
-		});
-		$("#vocabularies ul").append(checkBoxes.join(""));
-	} else
-	    alert("Unable to find Vocabularies to Load");
-}
-
-function getRDF(name,type) {
-	$.ajax({
-		url: "rest/getRDF?name="+name+"&type="+type,
-		type: "GET",
-		dataType: "json",
-		success: function(data) {
-			if (data) {
-				alert(data);
-			} else
-			    alert("No data Associated with this File");
-		},
-		error: alertError
-		});
-}
-
-function downloadFile(url) {
-	setStatus("");
-	window.open(url);
-	// location = url;
-}
-
 function sendToBiSciCol(url) {
 	var sendToBiSciColForm = document.getElementById("sendToBiSciColForm");
 	// sendToBiSciColForm.url.value = "http://" + location.host + location.pathname.substr(0, location.pathname.lastIndexOf("/")) + "/" + url;
@@ -233,16 +293,11 @@ function sendToBiSciCol(url) {
 function afterBiSciCol() {
 	setStatus("");
 	var data = frames.uploadTarget.document.body.textContent;
-	// distinguish response OK status by JSON format (quotes in this case)
-	if (data && data.charAt(0)=='"' && data.charAt(data.length-1)=='"')
+	// distinguish response OK status by JSON format
+	if (isJson(data))
 		window.open(biscicolUrl + "?model=" + data.substr(1, data.length-2)); 
 	else
 		alert("Error" + (data ? ":\n\n"+data : "."));	
-}
-
-function alertError(xhr, status, error) {
-	setStatus("");
-	alert(status + (xhr.status==500 ? ":\n\n"+xhr.responseText : (error ? ": "+error : "")));
 }
 
 function upload() {
@@ -259,7 +314,8 @@ function upload() {
 function afterUpload() {
 	setStatus("");
 	var data = frames.uploadTarget.document.body.textContent;
-	if (data && data.charAt(0)=="{" && data.charAt(data.length-1)=="}")
+	// distinguish response OK status by JSON format
+	if (isJson(data))
 		readMapping(JSON.parse(data));
 	else
 		alert("Error" + (data ? ":\n\nUnable to contact server for data upload\nResponse="+data : "."));
@@ -291,7 +347,7 @@ function inspect() {
 
 function setStatus(status) {
 	$("#status").html(status);
-	$("#status, #overlay").toggle(!!status);
+	$("#status, #overlay").fadeToggle(status);
 }
 
 function readMapping(inspection) {
@@ -347,7 +403,7 @@ function displayMapping() {
 			.end().end().end().appendTo(schemaTable);
 	});
 	
-	// update data dource
+	// update data source
 	$.each($("#dbForm").get(0), function(i, element) {
 		if (element.type != "submit")
 			element.value = (connection.system == "sqlite" ? "" : (connection[element.name] || ""));
@@ -381,35 +437,35 @@ function displayMapping() {
 		return idx < 0 || $.inArray(relation.object, allRelations[idx].objects) < 0;
 	});
 	
+	// place, show/hide vocabularies
+//	$("#vocabularies").prependTo(relations.length ? $("#relationDiv") : $("#entityDiv"))
+//		.toggle(!!(entities.length || relations.length));
+	$("#vocabularies").fadeToggle(!!entities.length && !relations.length);
+	
 	// activate/deactivate each section
 	activateDS(schema.length); 
 	joinFT.activate(!schema.length || entities.length || relations.length);
 	entityFT.activate(!entities.length || relations.length);
 	relationFT.activate(!relations.length);
 	triplifyFT.activate(true);
-	
-	// place, show/hide vocabularies
-	$("#vocabularies").prependTo($("body > div.active"))
-		.toggle(!!(entities.length || relations.length))
-		.find("input").show();
 }
 
 function activateDS(deactivate) {
 	$("#dsDiv").toggleClass("active", !deactivate);
-	$("#dbForm, #uploadForm").toggle(!deactivate);
-	$("#dsDescription, #schemaTable").toggle(!!schema.length);	
-	$("#dsDiv > input.next").toggle(!deactivate && !!schema.length);	
+	$("#dbForm, #uploadForm").fadeToggle(!deactivate);
+	$("#dsDescription, #schemaTable").fadeToggle(!!schema.length);	
+	$("#dsDiv > input.next").fadeToggle(!deactivate && !!schema.length);	
 	return true;
 }
 
 function activateJoins() {
-	$("#vocabularies").hide();
+	$("#vocabularies").fadeOut();
 	joinFT.activate();
 	return true;
 }
 
 function activateEntities() {
-	$("#vocabularies").prependTo($("#entityDiv")).show();
+	$("#vocabularies").fadeIn();//.prependTo($("#entityDiv")).show();
 	entityFT.activate();
 	return true;
 }
@@ -417,13 +473,14 @@ function activateEntities() {
 function activateRelations() {
 	setAllRelations();
 	$("#relationDiv > input.add").prop("disabled", addRelationButton());
-	$("#vocabularies").prependTo($("#relationDiv")).show();
+	$("#vocabularies").fadeOut();
+//	$("#vocabularies").prependTo($("#relationDiv")).show();
 	relationFT.activate();
 	return true;
 }
 
 function activateTriplify() {
-	$("#vocabularies").hide();
+//	$("#vocabularies").hide();
 	triplifyFT.activate();
 	return true;
 }
@@ -485,8 +542,10 @@ function authorEntity(tr, entity) {
 			ob.addOptionsTo("idColumn").val(pk);
 		})
 		.change();
-	$.each(classes, function(i, class_) { 
-		ob.addOption(class_);
+	var vocabulary = getSelectedVocabulary(),
+		prefix = vocabulary.prefix ? vocabulary.prefix + ":" : "";
+	$.each(vocabulary.classes, function(i, class_) { 
+		ob.addOption(prefix + class_.name);
 	});
 	ob.addOptionsTo("rdfClass");
 }
@@ -498,8 +557,10 @@ function authorAttribute(tr, attribute, entity) {
 			ob.addOption(column);
 	});
 	ob.addOptionsTo("column");
-	$.each(predicatesLiteral, function(i, predicate) {
-		ob.addOption(predicate);
+	var vocabulary = getSelectedVocabulary(),
+		prefix = vocabulary.prefix ? vocabulary.prefix + ":" : "";
+	$.each(vocabulary.properties, function(i, property) {
+		ob.addOption(prefix + property.name);
 	});
 	ob.addOptionsTo("predicate");
 }
@@ -523,7 +584,7 @@ function authorRelation(tr, relation) {
 			ob.addOptionsTo("object");
 		})
 		.change();
-	$.each(predicatesBSC, function(i, predicate) {
+	$.each(relationPredicates, function(i, predicate) {
 		ob.addOption(predicate);
 	});
 	ob.addOptionsTo("predicate");
@@ -647,6 +708,16 @@ function OptionBuilder(container) {
 	};
 }
 
+function isJson(data) {
+	if (!data)
+		return false;
+	var firstChar = data.charAt(0),
+		lastChar = data.charAt(data.length-1);
+	return firstChar=='{' && lastChar=='}'
+			|| firstChar=='[' && lastChar==']'
+			|| firstChar=='"' && lastChar=='"';
+}
+	
 Storage.prototype.setObject = function(key, value) {
 	this.setItem(key, JSON.stringify(value));
 };
@@ -654,4 +725,11 @@ Storage.prototype.setObject = function(key, value) {
 Storage.prototype.getObject = function(key) {
 	var value = this.getItem(key);
 	return value && JSON.parse(value);
+};
+
+jQuery.prototype.fadeToggle = function(fadeIn) {
+	if (fadeIn)
+		this.fadeIn();
+	else
+		this.fadeOut();
 };

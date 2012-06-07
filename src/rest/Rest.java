@@ -1,10 +1,14 @@
 package rest;
 
 import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
@@ -35,6 +39,7 @@ import de.fuberlin.wiwiss.d2rq.ModelD2RQ;
 public class Rest {
     private static final String sqliteFolder = "sqlite";
     private static final String triplesFolder = "triples";
+    private static final String vocabulariesFolder = "vocabularies";
     @Context
     private static ServletContext context;
 
@@ -46,6 +51,15 @@ public class Rest {
     static String getSqlitePath() {
 //        return "/Users/jdeck/glassfish3/glassfish/domains/domain1/applications/triplifier/WEB-INF/classes/sqlite";
         return Thread.currentThread().getContextClassLoader().getResource(sqliteFolder).getFile();
+    }
+
+    /**
+     * Get real path of the vocabularies folder in classes folder.
+     *
+     * @return Real path of the vocabularies folder with ending slash.
+     */
+    static String getVocabulariesPath() {
+        return Thread.currentThread().getContextClassLoader().getResource(vocabulariesFolder).getFile();
     }
 
     /**
@@ -66,15 +80,15 @@ public class Rest {
      * @return Mapping representation of tabular data in the file.
      */
     @POST
-    @Path("/upload")
+    @Path("/uploadDataSource")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Mapping uploadModel(
+    public Mapping uploadDataSource(
             @FormDataParam("file") InputStream inputStream,
             @FormDataParam("file") FormDataContentDisposition contentDisposition)
             throws Exception {
         String fileName = contentDisposition.getFileName();
-        File sqliteFile = createUniqueFile(fileName, "sqlite", getSqlitePath());
+        File sqliteFile = createUniqueFile(fileName + ".sqlite", getSqlitePath());
         if (fileName.endsWith(".sqlite"))
             writeFile(inputStream, sqliteFile);
         else {
@@ -108,16 +122,20 @@ public class Rest {
     /**
      * Create new file in given folder, add incremental number to base if filename already exists.
      *
-     * @param base   Base part of the name of the file.
-     * @param ext    Extension of the name of the file.
+     * @param fileName Name of the file.
      * @param folder Folder where the file is created.
      * @return The new file.
      */
-    private File createUniqueFile(String base, String ext, String folder) {
-        File file = new File(folder + base + "." + ext);
+    private File createUniqueFile(String fileName, String folder) {
+    	int dotIndex = fileName.lastIndexOf('.');
+    	if (dotIndex == -1)
+    		dotIndex = fileName.length();
+    	String base = fileName.substring(0, dotIndex);
+    	String ext = fileName.substring(dotIndex);
+        File file = new File(folder + fileName);
         int i = 1;
         while (file.exists())
-            file = new File(folder + base + "." + i++ + "." + ext);
+            file = new File(folder + base + "." + i++ + ext);
         return file;
     }
 
@@ -146,7 +164,7 @@ public class Rest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public String getMapping(Mapping mapping) throws Exception {
-        File mapFile = createUniqueFile("mapping", "n3", getTriplesPath());
+        File mapFile = createUniqueFile("mapping.n3", getTriplesPath());
         PrintWriter pw = new PrintWriter(mapFile);
         mapping.printD2RQ(pw);
         pw.close();
@@ -166,62 +184,120 @@ public class Rest {
     @Produces(MediaType.TEXT_PLAIN)
     public String getTriples(Mapping mapping) throws Exception {
         Model model = new ModelD2RQ(FileUtils.toURL(context.getRealPath(getMapping(mapping))));
-        File tripleFile = createUniqueFile("triples", "nt", getTriplesPath());
+        File tripleFile = createUniqueFile("triples.nt", getTriplesPath());
         FileOutputStream fos = new FileOutputStream(tripleFile);
         model.write(fos, FileUtils.langNTriple);
         fos.close();
         return triplesFolder + "/" + tripleFile.getName();
     }
 
-    @GET
-    @Path("/getRDF")
-    @Produces("application/json")
-    public Response getRDF(
-            @QueryParam("type") String type,
-            @QueryParam("name") String name) throws Exception {
-        Response.ResponseBuilder rb;
-
-        SettingsManager sm = SettingsManager.getInstance();
-        try {
-            sm.loadProperties();
-        } catch (FileNotFoundException e) {
-            return Response.status(204).build();
-        }
-
-        RDFReader or = new RDFReader(sm.retrieveJsonMap(name));
-
-        try {
-            if (type.equalsIgnoreCase("property")) {
-                rb = Response.ok(or.getProperties());
-            } else {
-                rb = Response.ok(or.getClasses());
-            }
-        } catch (Exception e) {
-            return Response.status(204).build();
-        }
-
-        rb.header("Access-Control-Allow-Origin", "*");
-        return rb.build();
+    /**
+     * Upload local RDF file, 
+     * place the file in vocabularies folder,
+     * extract vocabulary from the file. 
+     * 
+     * @param inputStream File to be uploaded.
+     * @param contentDisposition Form-data content disposition header.
+     * @return Vocabulary extracted from the uploaded file.
+     * @throws Exception 
+     */
+    @POST
+    @Path("/uploadVocabulary")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Vocabulary uploadVocabulary(
+            @FormDataParam("file") InputStream inputStream,
+            @FormDataParam("file") FormDataContentDisposition contentDisposition) throws Exception {
+    	File file = createUniqueFile(contentDisposition.getFileName(), getVocabulariesPath());
+        writeFile(inputStream, file);
+        return getVocabulary(file.getName());      
     }
     
     /**
-     * Return a Map of available RDF files that are defined in
-     * triplifiersettings.props each with its "displayName" property.
+     * Upload RDF file from URL,
+     * place the file in vocabularies folder,
+     * extract vocabulary from the file. 
      * 
-     * @return Available vocabularies.
+     * @param urlString URL of file to be uploaded.
+     * @return Vocabulary extracted from the uploaded file.
+     * @throws Exception 
      */
-    @GET
-    @Path("/getVocabularies")
+    @POST
+    @Path("/uploadVocabulary")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public Map<String, String> getVocabularies() throws Exception {
+    public Vocabulary uploadVocabulary(@FormParam("url") String urlString) throws Exception {
+    	// assume http if no protocol provided
+    	if (!urlString.contains("://"))
+    		urlString = "http://" + urlString;
+    
+    	// open URLConnection
+    	URLConnection connection = new URL(urlString).openConnection();
+        InputStream inputStream = connection.getInputStream();
+
+        // try to read filename from Content-Disposition header
+        String fileName = connection.getHeaderField("Content-Disposition");
+        if (fileName != null) {
+            int start = fileName.indexOf("filename=\"") + 10;
+            int end = fileName.indexOf("\"", start);
+            fileName = fileName.substring(start, end);
+        } 
+        // if above fails, try to read filename from URL
+        if (fileName == null || fileName.isEmpty())
+            fileName = urlString.substring(urlString.lastIndexOf("/") + 1);
+
+        // if above fails, use some default filename
+        if (fileName.isEmpty())
+            fileName = "upload.rdf";
+
+    	File file = createUniqueFile(fileName, getVocabulariesPath());
+        writeFile(inputStream, file);
+        return getVocabulary(file.getName());      
+    }
+
+    /**
+     * Extract vocabulary from given file. 
+     * 
+     * @param fileName Name of the RDF file in vocabularies folder.
+     * @return Vocabulary extracted from the file.
+     * @throws Exception 
+     */
+    @POST
+    @Path("/getVocabulary")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Vocabulary getVocabulary(String fileName) throws Exception {
+        return new RDFReader(fileName).getVocabulary(); 
+    }
+    
+    /**
+     * Return a Map of available RDF files defined in triplifiersettings.props: 
+     * "vocabularies", each with its "displayName" property,
+     * plus given user vocabulary files if they exist in vocabularies folder. 
+     * 
+     * @param userVocabularies Names of user vocabulary files.
+     * @return Available vocabularies.
+     * @throws Exception 
+     */
+    @POST
+    @Path("/getVocabularies")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, String> getVocabularies(List<String> userVocabularies) throws Exception {
+        Map<String, String> vocabulariesMap = new LinkedHashMap<String, String>();
+        
         SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
+        for (Entry<String, String> vocabularyEntry : sm.retrieveJsonMap("vocabularies").entrySet())
+        	vocabulariesMap.put(vocabularyEntry.getKey(), 
+        			sm.retrieveJsonMap(vocabularyEntry.getValue()).get("displayName"));
 
-        Map<String, String> vocabulariesMap = new HashMap<String, String>();
-        for (String name : sm.getProps().stringPropertyNames()) 
-        	vocabulariesMap.put(name, sm.retrieveJsonMap(name).get("displayName"));
-        
-        return vocabulariesMap;
+        String vocabulariesPath = getVocabulariesPath();
+    	for (String vocabularyFileName : userVocabularies)
+	   		if (new File(vocabulariesPath + vocabularyFileName).exists())
+	        	vocabulariesMap.put(vocabularyFileName, vocabularyFileName);
+
+    	return vocabulariesMap;
     }
 
     /**

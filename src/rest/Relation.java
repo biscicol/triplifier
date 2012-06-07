@@ -13,7 +13,7 @@ public class Relation {
 	public String object;
 
     /**
-     * Generate D2RQ Mapping Language representation of the Relation.
+     * Generate D2RQ Mapping Language representation of this Relation.
      *
      * @param pw PrintWriter used to write output to.
      * @param mapping Mapping containing related Entities (and the Join if the related Entities come from different tables).

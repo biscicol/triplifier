@@ -14,7 +14,7 @@ public class Entity {
 	public Set<Attribute> attributes;
 	
     /**
-     * Generate D2RQ Mapping Language representation of the Entity with Attributes.
+     * Generate D2RQ Mapping Language representation of this Entity with Attributes.
      *
      * @param pw PrintWriter used to write output to.
      */
@@ -22,15 +22,20 @@ public class Entity {
 		pw.println("map:" + classMap() + " a d2rq:ClassMap;");
 		pw.println("\td2rq:dataStorage " + "map:database;");
 		pw.println("\td2rq:uriColumn \"" + table + "." + idColumn + "\";");
-	//	pw.println("\td2rq:uriPattern \"@@" + mapping.table + "." + mapping.idColumn + "@@\";");
-	//	pw.println("\td2rq:uriPattern \"" + mapping.table + "/@@" + mapping.table + "." + mapping.idColumn + "|urlify@@\";");
+	//	pw.println("\td2rq:uriPattern \"@@" + table + "." + idColumn + "@@\";");
+	//	pw.println("\td2rq:uriPattern \"" + table + "/@@" + table + "." + idColumn + "|urlify@@\";");
 		pw.println("\td2rq:class " + rdfClass + ";");
-	//	pw.println("\td2rq:classDefinitionLabel \"" + mapping.table + "\";");
+	//	pw.println("\td2rq:classDefinitionLabel \"" + table + "\";");
 		pw.println("\t.");
 		for (Attribute attribute : attributes)
 			attribute.printD2RQ(pw, classMap(), table);
 	}
 	
+    /**
+     * Generate D2RQ Mapping Language ClassMap name of this Entity.
+     *
+     * @return D2RQ Mapping ClassMap name.
+     */
 	String classMap() {
 		return table + "_" + idColumn;
 	}

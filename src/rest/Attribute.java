@@ -11,7 +11,7 @@ public class Attribute {
 	public String predicate;
 
     /**
-     * Generate D2RQ Mapping Language representation of the Attribute.
+     * Generate D2RQ Mapping Language representation of this Attribute.
      *
      * @param pw PrintWriter used to write output to.
      * @param classMap D2RQ Mapping Language ClassMap that this Attribute belongs to.
