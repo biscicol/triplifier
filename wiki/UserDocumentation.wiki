@@ -1,13 +1,13 @@
 = Introduction =
 
-The Triplifier is part of the BiSciCol project. The goal of the Triplifier is to provide an easy way to convert just about any structured data into RDF triples so the data can be shared with the BiSciCol system. 
+The Triplifier is part of the biscicol project. The goal of the Triplifier is to provide an easy way to convert just about any structured data into RDF triples so the data can be shared with the BiSciCol system. 
 
 
 = Documentation =
 
 ==Select Project==
 
-The configuration settings for each session may be saved as a project using the import and export functions. Projects are saved as .trp files and may be sent to other computers to be imported. Uploaded files are hosted on the BiSciCol server.
+The configuration settings for each session may be saved as a project using the import and export functions. Projects are saved as .trp files and may be sent to other computers to be imported.
 
 ==Data Source==
 
@@ -24,7 +24,9 @@ Direct connection to a SQL database is supported (MySQL, PostgreSQL, Oracle, Mic
 
 Files in the following formats are currently supported:  CSV, Excel spreadsheets (both XLS and XLSX files), OpenDocument spreadsheets (e.g., OpenOffice), and Darwin Core archives.
 
-We do not support direct uploads of SQL text files.  Instead, we support connecting directly to a SQL database (see Database connection above).
+We do not support direct uploads of SQL text files.  Instead, we support connecting directly to a SQL database (see Database connection above). 
+
+Uploaded files are hosted on the Triplifier server.
 
 *Sample of a successful data source upload or connection:
 
