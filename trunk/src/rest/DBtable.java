@@ -3,7 +3,7 @@ package rest;
 import java.util.Set;
 
 /**
- * A set of DBtables constitutes a database schema.
+ * Represents a table in a database schema.
  * Implements Comparable to enable sorting by name.
  */
 public class DBtable implements Comparable<DBtable> {

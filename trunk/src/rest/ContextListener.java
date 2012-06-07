@@ -15,9 +15,11 @@ import javax.servlet.ServletContextListener;
  */
 public class ContextListener implements ServletContextListener {
 
+	/**
+	 * Register supported JDBC drivers.
+	 */
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		// register supported jdbc drivers
 		for (DBsystem dbs : DBsystem.values())
 			try {
 				Class.forName(dbs.driver);
@@ -26,9 +28,11 @@ public class ContextListener implements ServletContextListener {
 			}		
 	}
 
+	/**
+	 * Unregister all registered JDBC drivers.
+	 */
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
-		// unregister all jdbc drivers
 		Enumeration<Driver> drivers = DriverManager.getDrivers();
 		while (drivers.hasMoreElements()) {
 			try {

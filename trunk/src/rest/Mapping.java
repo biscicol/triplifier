@@ -63,7 +63,7 @@ public class Mapping {
 	}
 
     /**
-     * Generate D2RQ Mapping Language representation of connection, entities and relations.
+     * Generate D2RQ Mapping Language representation of this Mapping's connection, entities and relations.
      *
      * @param pw PrintWriter used to write output to.
      */

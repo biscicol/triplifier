@@ -19,14 +19,26 @@ public class Connection {
 	public String password;
 	public String username;
 
-	Connection() {} // for construction from JSON
+	/**
+	 * For construction from JSON.
+	 */
+	Connection() {}
 
+	/**
+	 * Create Connection to a sqlite file, where
+	 * database = file name, host = path
+	 */
 	Connection(File sqliteFile) {
 		system = DBsystem.sqlite;
 		host = sqliteFile.getParent().replace("\\", "/");
 		database = sqliteFile.getName();
 	}
 	
+	/**
+	 * Generate a JDBC URL specific to DBsystem.
+	 * 
+     * @return JDBC URL.
+	 */
 	String getJdbcUrl() {
 		switch(system) {
 			case mysql:
@@ -43,6 +55,11 @@ public class Connection {
 		return null;
 	}
 	
+	/**
+	 * Create D2RQ Database from the database connection.
+	 * 
+     * @return D2RQ Database.
+	 */
 	Database getD2RQdatabase() {
 		Database database = new Database(ResourceFactory.createResource());
 		database.setJDBCDSN(getJdbcUrl());
@@ -52,7 +69,7 @@ public class Connection {
 	}
 	
     /**
-     * Generate D2RQ Mapping Language representation of the database connection.
+     * Generate D2RQ Mapping Language representation of this Connection.
      *
      * @param pw PrintWriter used to write output to.
      */

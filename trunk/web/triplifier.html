@@ -30,19 +30,18 @@
 		<form id="exportForm" method="post" action="rest/download">
 			<input type="hidden" name="filename" />
 			<input type="hidden" name="content" />
-			<input type="submit" value="Export" />
+			<input type="submit" value="Export" class="external" />
 		</form>
 		<input type="file" id="importFile" />
 		<input type="button" id="importProject" value="Import" />
 		<input type="button" id="deleteProject" value="Delete" />
-		<input type="button" id="deleteAll" value="Delete All" />
+		<input type="button" id="deleteAll" value="Delete ALL" class="external" />
 	</div>
-	<h4>Select Project:</h4>
+	<h3>Projects:</h3>
 </div>
 
 <div id="dsDiv">
 	<h2>1. Data Source</h2>
-	<br/>
 	<form id="dbForm" action="">
 		<table>
 			<tr>
@@ -80,7 +79,7 @@
 			</tr>
 		</table>
 	</form>
-	<form id="uploadForm" enctype="multipart/form-data" method="post" action="rest/upload" target="uploadTarget">
+	<form id="uploadForm" enctype="multipart/form-data" method="post" action="rest/uploadDataSource" target="uploadTarget">
 		<span>File upload:</span><br/>
 		<input type="file" name="file" size="44" /><br/>
 		<input type="submit" value="Upload file" class="external" />
@@ -161,6 +160,13 @@
 <hr/>
 
 <div id="entityDiv">
+	<div id="vocabularies">
+		<h4>Vocabularies:</h4>
+		<div></div>
+		<hr />
+		<input type="button" id="showVocabularyUpload" value="Upload custom..." />
+	</div>
+	
 	<h2>3. Entities</h2>
 	<input type="button" class="add" value="Add Entity" />
 	<input type="button" class="add2" value="Add Attribute" />
@@ -242,7 +248,7 @@
 <hr/>
 
 <div id="relationDiv">
-	<h2>4. Relations</h2>
+	<h2>4. Entity Relations</h2>
 	<input type="button" class="add" value="Add Relation" />
 	<input type="button" class="edit" value="Edit" />
 	<input type="button" class="delete" value="Delete" />
@@ -295,7 +301,6 @@
 	<form id="sendToBiSciColForm" method="post" action="" target="uploadTarget">
 		<input type="hidden" name="url" />
 	</form>
-	<br/>
 	<input type="button" class="back" value="&lt;  Back  (Relations)" />
 </div>
 
@@ -303,7 +308,22 @@
 	<a href="http://biscicol.org/">BiSciCol</a> is funded from a grant from the National Science Foundation. News and updates via our <a href="http://biscicol.blogspot.com/">blog</a>
 </div>
 
-<div id="vocabularies"><h4>Vocabularies:</h4><ul /></div>
+<div id="vocabularyUpload">
+	<h3>Custom vocabulary:</h3>
+    Upload vocabulary from local file:<br/>
+	<form id="vocabularyUploadLocalForm" enctype="multipart/form-data" method="post" action="rest/uploadVocabulary" target="uploadTarget">
+		<input type="file" name="file" size="44" /><br/>
+		<input type="submit" name="submitBtn" value="Upload" />
+	</form>
+	<hr />
+	Load vocabulary from URL:<br/>
+	<form id="vocabularyLoadUrlForm" method="post" action="rest/uploadVocabulary" target="uploadTarget">
+		<input type="text" name="url" size="56" /><br/>
+		<input type="submit" name="submitBtn" value="Load" />
+	</form>
+	<hr />
+	<input type="button" id="hideVocabularyUpload" value="Cancel" />
+</div>
 
 <div id="status"></div>
 <div id="overlay"></div>

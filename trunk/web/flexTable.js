@@ -78,7 +78,7 @@ function FlexTable(element, authorFn, addButtonFn, backFn, nextFn, onModifyFn, l
 	// store, check first, set buttons
 	function refresh() {
 		if (items.length) {
-			checkedTr = element.find("input:radio").first().prop("checked", true).parent().parent();
+			checkedTr = element.find("table input:radio").first().prop("checked", true).parent().parent();
 			idx = 0;
 			idx2 = -1;
 		}
@@ -92,10 +92,8 @@ function FlexTable(element, authorFn, addButtonFn, backFn, nextFn, onModifyFn, l
 		var inputs = element.find("input");
 		if (notAnimate)
 			inputs.toggle(!deactivate);
-		else if (deactivate)
-			inputs.slideUp();
 		else
-			inputs.slideDown();
+			inputs.fadeToggle(!deactivate);
 	}
 
 	function add() { 
@@ -120,7 +118,7 @@ function FlexTable(element, authorFn, addButtonFn, backFn, nextFn, onModifyFn, l
 
 	function styleEdit(tr, isEnd) {
 		tr.parent().siblings("thead").add(isEdit && checkedTr).toggleClass("editData", !isEnd); // table header row
-		$("#overlay").toggle(!isEnd);
+		$("#overlay").fadeToggle(!isEnd);
 	}
 
 	function author(item) {
