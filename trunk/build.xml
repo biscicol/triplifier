@@ -2,7 +2,7 @@
 <project name="triplifier" default="all">
 
 
-    <property name="jdk.home.1.6" value="/usr" />
+    <property name="jdk.home.1.6" value="C:\\Program Files\\Java\\jdk1.6.0_31" />
 
     <!-- Compiler options -->
 
@@ -164,11 +164,8 @@
             <lib dir="lib" excludes="servlet-api.jar"/>
             <classes dir="${triplifier.output.dir}"/>
             <classes dir="" includes="/sqlite/*.*"/>
+            <classes dir="" includes="/vocabularies/*.*"/>
             <classes dir="" includes="triplifiersettings.props"/>
-            <classes dir="" includes="dwcterms.rdf"/>
-            <classes dir="" includes="dsw.owl"/>
-            <classes dir="" includes="txn.owl"/>
-
         </war>
     </target>
 
