@@ -22,7 +22,7 @@ Direct connection to a SQL database is supported (MySQL, PostgreSQL, Oracle, Mic
 
 *File upload*
 
-Files in the following formats are currently supported:  CSV, Excel spreadsheets (both XLS and XLSX files), OpenDocument spreadsheets (e.g., OpenOffice), and Darwin Core archives.
+Files in the following formats are currently supported:  CSV, Excel spreadsheets (both XLS and XLSX files), !OpenDocument spreadsheets (e.g., !OpenOffice), and Darwin Core archives.
 
 We do not support direct uploads of SQL text files.  Instead, we support connecting directly to a SQL database (see Database connection above). 
 
@@ -76,7 +76,7 @@ http://triplifier.googlecode.com/svn/trunk/web/photos/4%20relations.png
 
 ==Triplify!==
 
-Three options: Get Mapping, Get Triples and Send To BiSciCol
+Three options: Get Mapping, Get Triples and Send To !BiSciCol
 *Note: must allow popups to get mapping and triples.
 
 http://triplifier.googlecode.com/svn/trunk/web/photos/5%20triplify.png
@@ -95,4 +95,4 @@ http://triplifier.googlecode.com/svn/trunk/web/photos/5%20triples.png
 
 *Send To BiSciCol*
 
-Sends a copy of the triple output to the BiSciCol server. Data does not get sent to any public repository or permanently become a part of the BiSciCol system. However, a publishing method for triples is being designed.
+Sends a copy of the triple output to the !BiSciCol server. Data does not get sent to any public repository or permanently become a part of the !BiSciCol system. However, a publishing method for triples is being designed.
