@@ -112,17 +112,11 @@ public class Mapping {
      */
 	private void printPrefixes(PrintWriter pw) {
 		pw.println("@prefix map: <" + "" + "> .");
-		//	out.println("@prefix db: <" + "" + "> .");
-		//	out.println("@prefix vocab: <" + "vocab" + "> .");
 		pw.println("@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .");
 		pw.println("@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .");
 		pw.println("@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .");
 		pw.println("@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .");
 		pw.println("@prefix jdbc: <http://d2rq.org/terms/jdbc/> .");
-		pw.println("@prefix dwc: <http://rs.tdwg.org/dwc/terms/index.htm#> .");
-		pw.println("@prefix bsc: <http://biscicol.org/biscicol.rdf#> .");
-		pw.println("@prefix dcterms: <http://purl.org/dc/terms/> .");
-		pw.println("@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .");
 		pw.println("@prefix ma: <http://www.w3.org/ns/ma-ont#> .");
 		pw.println();
 	}

@@ -5,12 +5,17 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Triplifier</title>
 
-    <link rel="stylesheet" type="text/css" href="triplifier.css" />
+    <link rel="stylesheet" type="text/css" href="combined.min.css" />
 
-    <script type="text/javascript" src="jquery.js"></script>
-    <script type="text/javascript" src="jquery.formparams.min.js"></script>
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="combined.min.js"></script>
+    
+<!--<link rel="stylesheet" type="text/css" href="triplifier.css" /> -->
+<!--<script type="text/javascript" src="jquery.dom.form_params.js"></script>
     <script type="text/javascript" src="flexTable.js"></script>
     <script type="text/javascript" src="triplifier.js"></script>
+    <script type="text/javascript" src="projectManager.js"></script>
+    <script type="text/javascript" src="vocabularyManager.js"></script> -->
 </head>
 
 <body>
@@ -21,23 +26,24 @@
 </div>
 
 <div id="projects">
-	<div id="projectFunctions">
-		<form id="newProjectForm" action="">
+	<div class="functions">
+		<form class="new" action="">
 			New Project:
 			<input type="text" name="project" size="20" />
 			<input type="submit" value="Create" />
 		</form>
-		<form id="exportForm" method="post" action="rest/download">
+		<form class="export" method="post" action="rest/download">
 			<input type="hidden" name="filename" />
 			<input type="hidden" name="content" />
 			<input type="submit" value="Export" class="external" />
 		</form>
-		<input type="file" id="importFile" />
-		<input type="button" id="importProject" value="Import" />
-		<input type="button" id="deleteProject" value="Delete" />
-		<input type="button" id="deleteAll" value="Delete ALL" class="external" />
+		<input type="file" class="importFile" />
+		<input type="button" class="import" value="Import" />
+		<input type="button" class="delete" value="Delete" />
+		<input type="button" class="deleteAll" value="Delete ALL" class="external" />
 	</div>
 	<h3>Projects:</h3>
+	<div class="project"><input type='radio' name='projectChoice' /><label /></div>
 </div>
 
 <div id="dsDiv">
@@ -162,9 +168,9 @@
 <div id="entityDiv">
 	<div id="vocabularies">
 		<h4>Vocabularies:</h4>
-		<div></div>
+		<div class="vocabulary"><input type='radio' name='vocabularyChoice' /><label class="external" /></div>
 		<hr />
-		<input type="button" id="showVocabularyUpload" value="Upload custom..." />
+		<input type="button" class="showUpload" value="Upload custom..." />
 	</div>
 	
 	<h2>3. Entities</h2>
@@ -197,7 +203,10 @@
 		  <td/>
 		  <td><select name="table" /></td>
 		  <td><select name="idColumn" /></td>
-		  <td><select name="rdfClass" /></td>
+		  <td>
+			<input type="hidden" name="rdfClass[name]" />
+		  	<select name="rdfClass[uri]" />
+		  </td>
 		  <td>
 			<input type="button" value="Save" class="save" />
 			<input type="button" value="Cancel" class="cancel" />
@@ -227,7 +236,10 @@
 					<tr class="edit">
 						<td/>
 						<td><select name="column" /></td>
-						<td><select name="predicate" /></td>
+						<td>
+							<input type="hidden" name="rdfProperty[name]" />
+							<select name="rdfProperty[uri]" />
+						</td>
 						<td>
 							<input type="button" value="Save" class="save" />
 							<input type="button" value="Cancel" class="cancel" />
@@ -311,18 +323,18 @@
 <div id="vocabularyUpload">
 	<h3>Custom vocabulary:</h3>
     Upload vocabulary from local file:<br/>
-	<form id="vocabularyUploadLocalForm" enctype="multipart/form-data" method="post" action="rest/uploadVocabulary" target="uploadTarget">
+	<form class="uploadLocal" enctype="multipart/form-data" method="post" action="rest/uploadVocabulary" target="uploadTarget">
 		<input type="file" name="file" size="44" /><br/>
-		<input type="submit" name="submitBtn" value="Upload" />
+		<input type="submit" name="submitBtn" value="Upload" class="external" />
 	</form>
 	<hr />
 	Load vocabulary from URL:<br/>
-	<form id="vocabularyLoadUrlForm" method="post" action="rest/uploadVocabulary" target="uploadTarget">
+	<form class="loadUrl" method="post" action="rest/uploadVocabulary" target="uploadTarget">
 		<input type="text" name="url" size="56" /><br/>
-		<input type="submit" name="submitBtn" value="Load" />
+		<input type="submit" name="submitBtn" value="Load" class="external" />
 	</form>
 	<hr />
-	<input type="button" id="hideVocabularyUpload" value="Cancel" />
+	<input type="button" class="hideUpload" value="Cancel" />
 </div>
 
 <div id="status"></div>

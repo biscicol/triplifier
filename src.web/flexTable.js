@@ -131,12 +131,10 @@ function FlexTable(element, authorFn, addButtonFn, backFn, nextFn, onModifyFn, l
 
     function authorX(editTrTemplate, item, authorXFn, saveFn) {
 		var tr = editTrTemplate.clone();
-		authorXFn(tr, item, items[idx]);
 		tr.find("input.save").click(saveFn).prop("disabled", false); // disabled: firefox bug fix
 		tr.find("input.cancel").click(cancel).prop("disabled", false); // disabled: firefox bug fix
-		$.each(item, function(name, value) { 
-			tr.find("select[name='" + name + "']").val(value).change();
-		});
+		authorXFn(tr, item, items[idx]);
+		tr.formParams(item); // set form values, fire change events
 		return tr;
 	}
 
@@ -162,7 +160,7 @@ function FlexTable(element, authorFn, addButtonFn, backFn, nextFn, onModifyFn, l
 
 	function saveX(button, itemsX, idxX, displayTrTemplate, newFn, onModifyXFn) {
 		var tr = $(button).parent().parent(),
-			item = tr.formParams();
+			item = tr.formParams(); // read form values
 		if (isEdit) {
 			if (onModifyXFn)
 				onModifyXFn(itemsX[idxX], item);
@@ -226,8 +224,10 @@ function FlexTable(element, authorFn, addButtonFn, backFn, nextFn, onModifyFn, l
 			td = result.children().first(); // first td
 		td.children("input").change(radioChange).prop("checked", true);
 		$.each(item, function(name, value) { 
-			if (name != level2)
-				td = td.next().html(value); // write value to next sibling (td)
+			if (name != level2) {
+				var vKeys = (value.substr ? [] : Object.keys(value)); // extract keys from Object-like value
+				td = td.next().html(value[vKeys[0]] || value).attr("title", value[vKeys[1]]); // write value to next sibling (td)
+			}
 			else {
 				result = result.add(trTemplates.level2.clone());
 				var table2 = result.last().children().children("table");

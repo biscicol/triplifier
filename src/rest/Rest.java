@@ -30,10 +30,12 @@ import de.fuberlin.wiwiss.d2rq.ModelD2RQ;
 /**
  * Provides RESTful web services using Jersey JAX-RS implementation. 
  * Many of the public methods use Jackson Mapper to translate between 
- * JSON (received from/sent to the client) and Java objects,
- * Jersey POJOMappingFeature (requires entry in web.xml) allows to 
+ * JSON (received from/sent to the client) and Java objects.
+ * Jersey POJOMappingFeature (entry in web.xml) allows to 
  * achieve this without any special annotations of mapped Java classes,
- * sometimes argument-less constructor is needed.
+ * sometimes argument-less constructor is needed. Exception handling
+ * is achieved through a custom error page for error 500 (entry in web.xml),
+ * this eliminates the need for try-catch blocks.
  */
 @Path("/")
 public class Rest {

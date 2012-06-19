@@ -10,7 +10,7 @@ import java.util.Set;
 public class Entity {
 	public String table;
 	public String idColumn;
-	public String rdfClass;
+	public VocabularyItem rdfClass;
 	public Set<Attribute> attributes;
 	
     /**
@@ -24,7 +24,7 @@ public class Entity {
 		pw.println("\td2rq:uriColumn \"" + table + "." + idColumn + "\";");
 	//	pw.println("\td2rq:uriPattern \"@@" + table + "." + idColumn + "@@\";");
 	//	pw.println("\td2rq:uriPattern \"" + table + "/@@" + table + "." + idColumn + "|urlify@@\";");
-		pw.println("\td2rq:class " + rdfClass + ";");
+		pw.println("\td2rq:class <" + rdfClass.uri + ">;");
 	//	pw.println("\td2rq:classDefinitionLabel \"" + table + "\";");
 		pw.println("\t.");
 		for (Attribute attribute : attributes)
