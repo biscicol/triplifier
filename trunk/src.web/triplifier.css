@@ -17,7 +17,7 @@ table {
 }
 
 /* Buttons that require network connection */
-input.external {
+.external {
     color: blue;
 }
 
@@ -46,25 +46,30 @@ input.external {
 	margin-bottom: 4px;
 }
 
-#projects label {
+#projects div.project {
+	display: inline;
 	margin: 0 8px 0 0;
 }
 
-#projects input:checked + label {
+#projects div.project input:checked + label {
 	color: crimson;
 	font-weight: bold;
 }
 
-#projectFunctions {
+#projects div.functions {
 	float: right;
 }
 
-#projectFunctions form {
+#projects div.functions form {
 	display: inline;
 }
 
-#newProjectForm, #importProject {
+#projects form.new, #projects input.import {
 	margin-right: 24px;
+}
+
+#projects input.importFile {
+	display: none;
 }
 
 #dbForm {
@@ -175,7 +180,7 @@ input.external {
 }
 
 .editData td, .editData th, .edit td {
-    z-index: 4;
+    z-index: 1;
     position: relative;
 }
 
@@ -185,14 +190,12 @@ input.external {
 	margin: 0 0 10px 0;
     background-color: #eee;
     border: 2px solid blue;
+    z-index: 1;
+	position: relative;
 }
 
-#vocabularies div input {
-	margin-top: 6px;
-}
-
-#vocabularies hr {
-	margin: 6px 0 8px 0;
+#vocabularies div.vocabulary {
+	margin-top: 4px;
 }
 
 #vocabularyUpload {
@@ -202,7 +205,7 @@ input.external {
     top: 30%;
 	left: 50%;
     padding: 10px;
-    z-index: 5;
+    z-index: 3;
 	border: 2px solid blue; 	
     background-color: white;
 }
@@ -226,7 +229,7 @@ input.external {
     top: 48%;
 	left: 50%;
     padding: 10px;
-    z-index: 5;
+    z-index: 4;
 	border: 2px solid crimson; 	
     background-color: white;
 	font-size: 120%;
@@ -240,9 +243,8 @@ input.external {
     right: 0;
     background-color: #ddd;
     opacity: 0.75;
-    z-index: 3;
 }
 
-#uploadTarget, #importFile {
+#uploadTarget {
 	display: none;
 }

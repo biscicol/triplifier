@@ -19,8 +19,8 @@ OWLspec = {"cName":"http://www.w3.org/2002/07/owl#Class","cProperty":"http://www
 vocabularies = {"dwcterms.rdf":"dwcVocabulary","dsw.owl":"dswVocabulary","txn.owl":"txnVocabulary"}
 
 # settings used to read vocabulary files
-dswVocabulary = {"prefix":"dsw","displayName":"Darwin-SW","spec":"OWLspec","subClasses":"true","subProperties":"false"}
-dwcVocabulary = {"prefix":"dwc","displayName":"Darwin Core","spec":"RDFspec","subClasses":"false","subProperties":"true"}
-txnVocabulary = {"prefix":"txn","displayName":"Taxon Concept","spec":"OWLspec","subClasses":"false","subProperties":"true"}
+dwcVocabulary = {"displayName":"Darwin Core","spec":"RDFspec","subClasses":"false","subProperties":"true"}
+dswVocabulary = {"displayName":"Darwin-SW","spec":"OWLspec","subClasses":"true","subProperties":"false"}
+txnVocabulary = {"displayName":"Taxon Concept","spec":"OWLspec","subClasses":"false","subProperties":"true"}
 # default settings for reading user vocabularies
 defaultVocabulary = {"spec":"OWLspec","subClasses":"true","subProperties":"false"}

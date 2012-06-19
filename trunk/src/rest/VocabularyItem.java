@@ -14,6 +14,11 @@ public class VocabularyItem implements Comparable<VocabularyItem> {
 	public String uri;
 	public Set<VocabularyItem> subItems;
 	
+	/**
+	 * For construction from JSON.
+	 */
+	VocabularyItem() {}
+	
 	VocabularyItem(String name, String uri, Set<VocabularyItem> subItems) {
 		this.name = name;
 		this.uri = uri;
