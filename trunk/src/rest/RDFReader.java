@@ -3,6 +3,7 @@ package rest;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileUtils;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -19,8 +20,10 @@ public class RDFReader {
     private Property propertySubProperty = null; // URI of subProperty Predicate
     private RDFNode propertyName = null; // URI of Property Name
     private Property classSubClass = null; // URI of subClass Predicate
-    private Property classProperty = null; // URI of Class designation property (usually just rdf:type)
+    private Property classProperty = null; // URI of Class designation property (usually rdf:type)
     private RDFNode className = null; // URI of how Classes are referred to
+    private Property domainProperty = null; // URI of domain designation property (usually rdfs:domain)
+    private Property rangeProperty = null; // URI of range designation property (usually rdfs:range)
 
     private String fileName; // filename of the RDF file (e.g. dwcterms.rdf)
 
@@ -45,6 +48,8 @@ public class RDFReader {
 
         propertyName = createResource(spec.get("pName"));
         propertySubProperty = "true".equals(settings.get("subProperties")) ? createProperty(spec.get("pSubProperty")) : null;
+        domainProperty = createProperty(spec.get("domain"));
+        rangeProperty = createProperty(spec.get("range"));
         
         String fileUrl = FileUtils.toURL(Rest.getVocabulariesPath() + fileName);
         model.read(fileUrl);
@@ -61,31 +66,53 @@ public class RDFReader {
     }
 
     /**
-     * Recursively extract vocabulary items from given Iterator.
+     * Recursively extract sub-properties from given Iterator.
      *
      * @param iter Model Statement Iterator to loop through.
-     * @param subProperty subProperty/subClass to follow.
-     * @return A set of extracted vocabulary items.
+     * @return A set of extracted RDF properties.
      */
-    private Set<VocabularyItem> getSubItems(StmtIterator iter, Property subProperty) {
-    	Set<VocabularyItem> subItems = new TreeSet<VocabularyItem>();
+    private Set<RDFproperty> getSubProperties(StmtIterator iter) {
+    	Set<RDFproperty> subItems = new TreeSet<RDFproperty>();
     	while (iter.hasNext()) {
-            Statement stmt = iter.nextStatement();
-            Resource subject = stmt.getSubject();     // get the subject
-            RDFNode object = stmt.getObject();      // get the object
+            Resource subject = iter.nextStatement().getSubject();
             
-        	Set<VocabularyItem> subSubItems = null;
-            if (subProperty != null) {
-	            StmtIterator subIter = object.getModel().listStatements(
-	                    null,
-	                    subProperty,
-	                    (RDFNode) subject
-	            );
-	            subSubItems = getSubItems(subIter, subProperty);
-            }
+        	Set<RDFproperty> subSubItems = null;
+            if (propertySubProperty != null) 
+	            subSubItems = getSubProperties(subject.getModel()
+	            		.listStatements(null, propertySubProperty, subject));
             
-            subItems.add(new VocabularyItem(subject.getLocalName(), 
-            		subject.toString(), subSubItems));
+            subItems.add(new RDFproperty(subject.getLocalName(), subject.toString(), subSubItems, 
+            		getProperties(subject, domainProperty), getProperties(subject, rangeProperty)));
+        }
+    	return subItems;
+    }
+
+    private Set<String> getProperties(Resource resource, Property property) {
+    	if (property == null)
+    		return null;
+    	Set<String> properties = new HashSet<String>(2);
+        StmtIterator domainIter = resource.getModel().listStatements(resource, property, (RDFNode) null);
+    	while (domainIter.hasNext()) 
+    		properties.add(domainIter.nextStatement().getObject().toString());
+    	return properties;
+    }
+    
+    /**
+     * Recursively extract sub-classes from given Iterator.
+     *
+     * @param iter Model Statement Iterator to loop through.
+     * @return A set of extracted RDF classes.
+     */
+    private Set<RDFClass> getSubClasses(StmtIterator iter) {
+    	Set<RDFClass> subItems = new TreeSet<RDFClass>();
+    	while (iter.hasNext()) {
+            Resource subject = iter.nextStatement().getSubject();
+            
+        	Set<RDFClass> subSubItems = null;
+            if (classSubClass != null) 
+	            subSubItems = getSubClasses(subject.getModel().listStatements(null, classSubClass, subject));
+            
+            subItems.add(new RDFClass(subject.getLocalName(), subject.toString(), subSubItems));
         }
     	return subItems;
     }
@@ -98,8 +125,7 @@ public class RDFReader {
     public Vocabulary getVocabulary() {
        	StmtIterator propIter = model.listStatements(null, null, propertyName);
         StmtIterator classIter = model.listStatements(null, classProperty, className);
-        return new Vocabulary(fileName,getSubItems(propIter, propertySubProperty),
-        		getSubItems(classIter, classSubClass));
+        return new Vocabulary(fileName, getSubProperties(propIter), getSubClasses(classIter));
     }
 
     /**
