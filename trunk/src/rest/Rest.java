@@ -16,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import reader.ReaderManager;
 import reader.TabularDataConverter;
 import reader.plugins.TabularDataReader;
@@ -51,7 +52,6 @@ public class Rest {
      * @return Real path of the sqlite folder with ending slash.
      */
     static String getSqlitePath() {
-//        return "/Users/jdeck/glassfish3/glassfish/domains/domain1/applications/triplifier/WEB-INF/classes/sqlite";
         return Thread.currentThread().getContextClassLoader().getResource(sqliteFolder).getFile();
     }
 
@@ -185,7 +185,8 @@ public class Rest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public String getTriples(Mapping mapping) throws Exception {
-        Model model = new ModelD2RQ(FileUtils.toURL(context.getRealPath(getMapping(mapping))));
+        Model model = new ModelD2RQ(FileUtils.toURL(context.getRealPath(getMapping(mapping))),"N3","urn:");
+
         File tripleFile = createUniqueFile("triples.nt", getTriplesPath());
         FileOutputStream fos = new FileOutputStream(tripleFile);
         model.write(fos, FileUtils.langNTriple);
@@ -269,7 +270,8 @@ public class Rest {
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     public Vocabulary getVocabulary(String fileName) throws Exception {
-        return new RDFReader(fileName).getVocabulary(); 
+        Vocabulary vocabulary= new RDFReader(fileName).getVocabulary();
+        return vocabulary;
     }
     
     /**
@@ -287,6 +289,7 @@ public class Rest {
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, String> getVocabularies(List<String> userVocabularies) throws Exception {
         Map<String, String> vocabulariesMap = new LinkedHashMap<String, String>();
+
         
         SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
