@@ -51,7 +51,7 @@ public class RDFReader {
         domainProperty = createProperty(spec.get("domain"));
         rangeProperty = createProperty(spec.get("range"));
         
-        String fileUrl = FileUtils.toURL(Rest.getVocabulariesPath() + fileName);
+        String fileUrl = FileUtils.toURL(Rest.getVocabulariesPath() + "/" + fileName);
         model.read(fileUrl);
         
     	this.fileName = fileName;
@@ -80,8 +80,9 @@ public class RDFReader {
             if (propertySubProperty != null) 
 	            subSubItems = getSubProperties(subject.getModel()
 	            		.listStatements(null, propertySubProperty, subject));
-            
-            subItems.add(new RDFproperty(subject.getLocalName(), subject.toString(), subSubItems, 
+
+
+            subItems.add(new RDFproperty(subject.getLocalName(), subject.toString(), subSubItems,
             		getProperties(subject, domainProperty), getProperties(subject, rangeProperty)));
         }
     	return subItems;
@@ -111,7 +112,8 @@ public class RDFReader {
         	Set<RDFClass> subSubItems = null;
             if (classSubClass != null) 
 	            subSubItems = getSubClasses(subject.getModel().listStatements(null, classSubClass, subject));
-            
+
+
             subItems.add(new RDFClass(subject.getLocalName(), subject.toString(), subSubItems));
         }
     	return subItems;
@@ -125,7 +127,8 @@ public class RDFReader {
     public Vocabulary getVocabulary() {
        	StmtIterator propIter = model.listStatements(null, null, propertyName);
         StmtIterator classIter = model.listStatements(null, classProperty, className);
-        return new Vocabulary(fileName, getSubProperties(propIter), getSubClasses(classIter));
+        Vocabulary v = new Vocabulary(fileName, getSubProperties(propIter), getSubClasses(classIter));
+        return v;
     }
 
     /**
@@ -139,7 +142,7 @@ public class RDFReader {
         sm.loadProperties();
 //        System.out.println("Available RDF Files: " + RDFReader.RDFFilesAsJSON(sm) );
 
-        RDFReader or = new RDFReader("dsw.owl");
+        RDFReader or = new RDFReader("dwcterms.rdf");
         
 //        System.out.println(or.getProperties());
 //        System.out.println(or.getClasses());
