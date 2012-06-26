@@ -340,16 +340,17 @@ function authorAttribute(tr, attribute, entity) {
 			ob.addOption(column);
 	});
 	ob.addOptionsTo("column");
-	authorRdfControls(tr, ob, "rdfProperty", "properties");
+	authorRdfControls(tr, ob, "rdfProperty", "properties", entity.rdfClass.uri);
 }
 
-function authorRdfControls(tr, ob, element, items) {
+function authorRdfControls(tr, ob, element, items, entityClass) {
 	vocabularyManager.onChangeFn(function() {
 		var vocabulary = vocabularyManager.getSelectedVocabulary(),
 			hasItems = vocabulary && vocabulary[items] && vocabulary[items].length;
 		if (hasItems) {
 			$.each(vocabulary[items], function(i, item) {
-				ob.addOption(item.uri, "title='" + item.uri + "'", item.name);
+				if (!entityClass || !item.domain || $.inArray(entityClass, item.domain) >= 0)
+					ob.addOption(item.uri, "title='" + item.uri + "'", item.name);
 			});
 			ob.addOptionsTo(element + "[uri]").change(function() {
 				tr.find("input[name='" + element + "[name]']").val(this.options[this.selectedIndex].innerHTML);

@@ -1,28 +1,24 @@
 package rest;
 
-import java.util.Set;
-
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * Represents either a class or a property in a vocabulary.
+ * Represents an item in a vocabulary with name and URI only.
  * Implements Comparable to enable sorting by name.
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY) // omit empty (or null) fields in JSON serialization
 public class VocabularyItem implements Comparable<VocabularyItem> {
 	public String name; 
 	public String uri;
-	public Set<VocabularyItem> subItems;
 	
 	/**
 	 * For construction from JSON.
 	 */
 	VocabularyItem() {}
-	
-	VocabularyItem(String name, String uri, Set<VocabularyItem> subItems) {
+
+	VocabularyItem(String name, String uri) {
 		this.name = name;
 		this.uri = uri;
-		this.subItems = subItems;
 	}
 
 	@Override
