@@ -1,7 +1,6 @@
 
 import java.io.FileNotFoundException;
 import reader.ReaderManager;
-import reader.TabularDataConverter;
 import reader.plugins.*;
 
 
@@ -41,23 +40,23 @@ public class run
     
     private static void runReaders() {
         TabularDataReader reader = new CSVReader();
-        reader.openFile("test.csv");
+        reader.openFile("sampledata/test.csv");
         
         runReader(reader);
         testFile(reader, "test_file.csv");
         System.out.println();
         
         reader = new ExcelReader();
-        reader.openFile("test.xls");
+        reader.openFile("sampledata/test.xls");
         runReader(reader);
         System.out.println();
         
-        reader.openFile("test.xlsx");
+        reader.openFile("sampledata/test.xlsx");
         runReader(reader);
         System.out.println();
         
         reader = new OpenDocReader();
-        reader.openFile("test.ods");
+        reader.openFile("sampledata/test.ods");
         runReader(reader);        
     }
 
@@ -79,7 +78,8 @@ public class run
         // open a file and print the data
         //runReader(rm.openFile("/Users/jdeck/bioValidatorSpreadsheets/biocode_fishes.xls"));
         //System.out.println(rm.getReader("DWCA").testFile("test.xls"));
-        runReader(rm.openFile("test.xlsx"));
+        //System.out.println(Thread.currentThread().getContextClassLoader().getResource("sqlite").getFile());
+        runReader(rm.openFile("sampledata/test.xlsx"));
         //runReader(rm.openFile("test.xlsx"));
         //runReader(rm.openFile("test.csv", "CSV"));
         //runReader(rm.openFile("test-archive.zip", "DWCA"));

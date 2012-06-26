@@ -8,8 +8,6 @@ import de.fuberlin.wiwiss.d2rq.map.PropertyBridge;
 import de.fuberlin.wiwiss.d2rq.parser.MapParser;
 import de.fuberlin.wiwiss.d2rq.pp.PrettyPrinter;
 
-import java.io.*;
-
 /**
  * Created by IntelliJ IDEA.
  * User: jdeck
@@ -54,7 +52,7 @@ public class d2rqtest {
     }
 
     static void ukiTest() {
-        Mapping mapping = new MapParser(FileManager.get().loadModel("biocode_example_mapping.n3"), "http://localhost/resource/").parse();
+        Mapping mapping = new MapParser(FileManager.get().loadModel("sampledata/biocode_example_mapping.n3"), "http://localhost/resource/").parse();
 
         for (Object o : mapping.classMapResources()) {
             Resource r = (Resource) o;
