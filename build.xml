@@ -2,7 +2,9 @@
 <project name="triplifier" default="all">
 
 
-    <property name="jdk.home.1.6" value="C:\\Program Files\\Java\\jdk1.6.0_31" />
+<!--JBD Commented following out -->
+    <!--<property name="jdk.home.1.6" value="C:\\Program Files\\Java\\jdk1.6.0_31" />-->
+    <property name="jdk.home.1.6" value="/usr"/>
 
     <!-- Compiler options -->
 
@@ -205,8 +207,8 @@
 	        <fileset dir="${triplifier.web.output.dir}" includes="${triplifier.web.combined}.min.js, ${triplifier.web.combined}.min.css" />
             <lib dir="lib" excludes="servlet-api.jar, yuicompressor*.jar"/>
             <classes dir="${triplifier.output.dir}"/>
-            <classes dir="" includes="/sqlite/*.*"/>
-            <classes dir="" includes="/vocabularies/*.*"/>
+            <classes dir="" includes="sqlite/*.*"/>
+            <classes dir="" includes="vocabularies/*.*"/>
             <classes dir="" includes="triplifiersettings.props"/>
         </war>
     </target>
