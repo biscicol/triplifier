@@ -1,16 +1,13 @@
-# JSON representations of RDF/OWL Specifications that can be called from triplifier interface
-# dsw = {"rdfName":"dsw","displayName":"Darwin-SW","filename":"dsw.owl","cName":"http://www.w3.org/2002/07/owl#Class","cProperty":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type","cSubClass":"http://www.w3.org/2000/01/rdf-schema#subClassOf","pName":"http://www.w3.org/2002/07/owl#ObjectProperty","pSubProperty":""}
-# dwc = {"rdfName":"dwc","displayName":"Darwin Core","filename":"dwcterms.rdf","cName":"http://www.w3.org/2000/01/rdf-schema#Class","cProperty":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type","cSubClass":"","pName":"http://www.w3.org/1999/02/22-rdf-syntax-ns#Property","pSubProperty":"http://www.w3.org/2000/01/rdf-schema#subPropertyOf"}
-# txn = {"rdfName":"txn","displayName":"Taxon Concept","filename":"txn.owl","cName":"http://www.w3.org/2002/07/owl#Class","cProperty":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type","cSubClass":"","pName":"http://www.w3.org/2002/07/owl#ObjectProperty","pSubProperty":"http://www.w3.org/2000/01/rdf-schema#subPropertyOf"}
-
 # specifications for reading various RDF files:
 # cName: URI of how Classes are referred to
 # cProperty: URI of Class designation property (usually just rdf:type)
 # cSubClass: URI of subClass Predicate
 # pName: URI of Property Name
 # pSubProperty: URI of subProperty Predicate
+# domain: URI of domain property
+# range: URI of range property
 RDFspec = {"cName":"http://www.w3.org/2000/01/rdf-schema#Class","cProperty":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type","cSubClass":"http://www.w3.org/2000/01/rdf-schema#subClassOf","pName":"http://www.w3.org/1999/02/22-rdf-syntax-ns#Property","pSubProperty":"http://www.w3.org/2000/01/rdf-schema#subPropertyOf"}
-OWLspec = {"cName":"http://www.w3.org/2002/07/owl#Class","cProperty":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type","cSubClass":"http://www.w3.org/2000/01/rdf-schema#subClassOf","pName":"http://www.w3.org/2002/07/owl#ObjectProperty","pSubProperty":"http://www.w3.org/2000/01/rdf-schema#subPropertyOf"}
+OWLspec = {"cName":"http://www.w3.org/2002/07/owl#Class","cProperty":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type","cSubClass":"http://www.w3.org/2000/01/rdf-schema#subClassOf","pName":"http://www.w3.org/2002/07/owl#ObjectProperty","pSubProperty":"http://www.w3.org/2000/01/rdf-schema#subPropertyOf","domain":"http://www.w3.org/2000/01/rdf-schema#domain","range":"http://www.w3.org/2000/01/rdf-schema#range"}
 
 # built-in vocabularies provided in Triplifier
 # pair of fileName and vocabulary settings property
