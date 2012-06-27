@@ -16,7 +16,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import reader.ReaderManager;
 import reader.TabularDataConverter;
 import reader.plugins.TabularDataReader;
@@ -185,7 +184,7 @@ public class Rest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public String getTriples(Mapping mapping) throws Exception {
-        Model model = new ModelD2RQ(FileUtils.toURL(context.getRealPath(getMapping(mapping))),"N3","urn:");
+        Model model = new ModelD2RQ(FileUtils.toURL(context.getRealPath(getMapping(mapping))), FileUtils.langN3, "urn:");
 
         File tripleFile = createUniqueFile("triples.nt", getTriplesPath());
         FileOutputStream fos = new FileOutputStream(tripleFile);
