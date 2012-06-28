@@ -1,4 +1,5 @@
 #summary Information for software developers who would like to use the triplifier.
+#labels Featured,Phase-Implementation
 
 ==Introduction==
 
