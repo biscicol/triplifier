@@ -1,0 +1,19 @@
+#summary How to structure identifiers for BiSciCol
+#labels Featured,Phase-Design
+
+= Introduction =
+
+
+The semantic web relies on valid URIs to be able to traverse relationships between objects.  This document describes how to deal with this in the context of BiSciCol.
+
+= Details =
+
+Valid URIs contain a URI scheme name  (such as "http", "ftp", "urn", or "file") followed by a colon and then any identifying content.  Without the URI scheme, the identifier is not a valid URI and the content associated with this identifier will not be linkable to other content in the semantic web.  
+
+Most databases do not currently use valid URIs as identifiers, but we encourage people to create them.  There are many available resources for doing this.  We encourage people to look into the following technologies for creating identifiers that are useful on the semantic web:
+
+*[http://n2t.net/ezid/ EZID]
+*[http://www.doi.org/ DOI]
+*[http://purl.oclc.org/docs/index.html Purl]
+
+In the Triplifier interface, we have created a temporary namespace, "urn:x-biscicol:" that users can optionally use to convert their literal identifiers into URIs.   To implement this option, select "Literal" under "ID Type" when creating Entities.  Please note that this is not meant to be a permanent URI, ensure global uniqueness, or resolve anywhere.  It is designed as a convenience for people to test the contents of their dataset in the BiSciCol system or on the semantic web.  For data you wish to publish and link to other datasets, we strongly encourage implementing one of the above identifier technologies in your database system.  
