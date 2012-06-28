@@ -16,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import reader.ReaderManager;
 import reader.TabularDataConverter;
 import reader.plugins.TabularDataReader;
@@ -90,9 +91,9 @@ public class Rest {
             throws Exception {
         String fileName = contentDisposition.getFileName();
         File sqliteFile = createUniqueFile(fileName + ".sqlite", getSqlitePath());
-        if (fileName.endsWith(".sqlite"))
+        if (fileName.endsWith(".sqlite"))  {
             writeFile(inputStream, sqliteFile);
-        else {
+        } else {
             File tempFile = File.createTempFile("upload", fileName);
             writeFile(inputStream, tempFile);
             ReaderManager rm = new ReaderManager();
@@ -184,7 +185,10 @@ public class Rest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public String getTriples(Mapping mapping) throws Exception {
-        Model model = new ModelD2RQ(FileUtils.toURL(context.getRealPath(getMapping(mapping))), FileUtils.langN3, "urn:");
+        System.gc();
+        SettingsManager sm = SettingsManager.getInstance();
+        sm.loadProperties();
+        Model model = new ModelD2RQ(FileUtils.toURL(context.getRealPath(getMapping(mapping))),"N3",sm.retrieveValue("defaultURI","urn:x-biscicol:"));
 
         File tripleFile = createUniqueFile("triples.nt", getTriplesPath());
         FileOutputStream fos = new FileOutputStream(tripleFile);

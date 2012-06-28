@@ -330,7 +330,14 @@ function authorEntity(tr, entity) {
 			ob.addOptionsTo("idColumn").val(pk);
 		})
 		.change();
+
+	// ID Type Options
+	ob.addOption("URI","","URI");
+	ob.addOption("Literal","","Literal");
+	ob.addOptionsTo("idTypeColumn");
+
 	authorRdfControls(tr, ob, "rdfClass", "classes");
+
 }
 
 function authorAttribute(tr, attribute, entity) {

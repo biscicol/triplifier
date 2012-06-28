@@ -21,3 +21,4 @@ dswVocabulary = {"displayName":"Darwin-SW","spec":"OWLspec","subClasses":"true",
 txnVocabulary = {"displayName":"Taxon Concept","spec":"OWLspec","subClasses":"false","subProperties":"true"}
 # default settings for reading user vocabularies
 defaultVocabulary = {"spec":"OWLspec","subClasses":"true","subProperties":"false"}
+defaultURI = urn:x-biscicol:
