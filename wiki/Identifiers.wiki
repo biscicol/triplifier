@@ -16,6 +16,6 @@ Most databases do not currently use valid URIs as identifiers, but we encourage 
   * [http://www.doi.org/ DOI]
   * [http://purl.oclc.org/docs/index.html Purl]
 
-== Converting Literals to URIs ==
+== Temporary Measure for converting Literals to URIs ==
 
 Literals in the semantic web are any text strings that are not URIs.  In the [http://biscicol.org/triplifier Triplifier] interface, we have created a temporary namespace, "urn:x-biscicol:" that users can optionally use to convert their literal identifiers into URIs.   To implement this option, select "Literal" under "ID Type" when creating Entities.  Please note that this is not meant to be a permanent URI, ensure global uniqueness, or resolve anywhere.  It is designed as a convenience for people to test the contents of their dataset in the BiSciCol system or on the semantic web.  For data you wish to publish and link to other datasets, we strongly encourage implementing one of the identifier technologies listed in the *URIs* section above.
