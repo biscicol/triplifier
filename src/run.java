@@ -71,14 +71,16 @@ public class run {
         // create the ReaderManager and load the plugins
         ReaderManager rm = new ReaderManager();
         try {
-            rm.LoadReaders();
+            rm.loadReaders();
         } catch (FileNotFoundException e) {
             System.out.println(e);
         }
 
         // print descriptions for all supported file formats
-        for (TabularDataReader reader : rm)
+        for (TabularDataReader reader : rm) {
             System.out.println(reader.getFormatDescription() + " ");
+            System.out.println(reader.getFormatString());
+        }
         System.out.println();
 
         // open a file and print the data
@@ -87,7 +89,7 @@ public class run {
         //System.out.println(Thread.currentThread().getContextClassLoader().getResource("sqlite").getFile());
         //runReader(rm.openFile("sampledata/test.xlsx"));
 
-        //runReader(rm.openFile("test.xlsx"));
+        runReader(rm.openFile("sampledata/test.xlsx"));
         //runReader(rm.openFile("test.csv", "CSV"));
         //runReader(rm.openFile("test-archive.zip", "DWCA"));
         //runReader(rm.openFile("dwca-hsu_wildlife_mammals.zip", "DWCA"));
@@ -98,7 +100,7 @@ public class run {
         // condensed method to test mapping file logic
         // John testing some code here to read the biocode_template.xls file and apply some sample mapping
         // that i'm tweeking on the fly with samplemapping.n3
-        rm.LoadReaders();
+        /*rm.LoadReaders();
         TabularDataReader tdr = rm.openFile("sampledata/biocode_template.xls");
         TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:/tmp/triples.sqlite");
         tdc.convert();
@@ -108,7 +110,7 @@ public class run {
                 );
         FileOutputStream fos = new FileOutputStream("/tmp/triples.nt");
         model.write(fos, FileUtils.langN3);
-        fos.close();
+        fos.close();*/
 
         /*
  TabularDataReader reader;
