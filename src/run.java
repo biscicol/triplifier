@@ -104,7 +104,7 @@ public class run {
         tdc.convert();
         tdr.closeFile();
         //
-        Model model = new ModelD2RQ(FileUtils.toURL("/Users/jdeck/IdeaProjects/triplifier/sampledata/samplemapping.n3")
+        Model model = new ModelD2RQ(FileUtils.toURL("sampledata/biocode_example_mapping.n3")
                 );
         FileOutputStream fos = new FileOutputStream("/tmp/triples.nt");
         model.write(fos, FileUtils.langN3);
