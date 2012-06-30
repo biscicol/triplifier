@@ -31,7 +31,7 @@ public class ReaderManager implements Iterable<TabularDataReader>
      * 
      * @throws FileNotFoundException 
      */
-    public void LoadReaders() throws FileNotFoundException {
+    public void loadReaders() throws FileNotFoundException {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         
         // get location of the plugins package

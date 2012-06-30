@@ -97,7 +97,7 @@ public class Rest {
             File tempFile = File.createTempFile("upload", fileName);
             writeFile(inputStream, tempFile);
             ReaderManager rm = new ReaderManager();
-            rm.LoadReaders();
+            rm.loadReaders();
             TabularDataReader tdr = rm.openFile(tempFile.getPath());
             TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + sqliteFile.getPath());
             tdc.convert();
