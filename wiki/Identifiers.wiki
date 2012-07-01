@@ -22,4 +22,4 @@ If your identifiers are already valid URIs (e.g. urn:1234 or http://biocode.berk
 
 == Converting Literals to URIs ==
 
-If your identifers are not valid URIs (as is the case with most database identifiers) then you can easily convert them into valid URIs in the triplifiers by assigning a prefix to identifiers for each entity in the Entities section of the triplifier.   For, example, if you have an identifier that is "856" then you can make it globally unique and resolvable by entering a prefix, such as "http://biocode.berkeley.edu/events/", which will then result in a valid URI of http://biocode.berkeley.edu/events/856.
+If your identifers are not valid URIs (as is the case with most database identifiers) then you can easily convert them into valid URIs in the triplifier by assigning a prefix to identifiers for each entity in the Entities section of the triplifier.   For, example, if you have an identifier that is "856" then you can make it globally unique and resolvable by entering a prefix, such as "http://biocode.berkeley.edu/events/", which will then result in a valid URI of http://biocode.berkeley.edu/events/856.
