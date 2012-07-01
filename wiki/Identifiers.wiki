@@ -4,7 +4,7 @@
 = Introduction =
 
 
-The semantic web relies on valid URIs to be able to traverse relationships between objects.  This document describes how to deal with this in the context of BiSciCol.
+The semantic web relies on valid URIs to be able to traverse relationships between objects.  This document describes how to deal with this in the context of the Triplifier, specifically when entering values in the "ID Prefix" field.
 
 == URIs ==
 
@@ -16,6 +16,10 @@ Most databases do not currently use valid URIs as identifiers, but we encourage 
   * [http://www.doi.org/ DOI]
   * [http://purl.oclc.org/docs/index.html Purl]
 
-== Temporary Measure for converting Literals to URIs ==
+== If your data is already structured to use URIs ==
 
-Literals in the semantic web are any text strings that are not URIs.  In the [http://biscicol.org/triplifier Triplifier] interface, we have created a temporary namespace, "urn:x-biscicol:" that users can optionally use to convert their literal identifiers into URIs.   To implement this option, select "Literal" under "ID Type" when creating Entities.  Please note that this is not meant to be a permanent URI, ensure global uniqueness, or resolve anywhere.  It is designed as a convenience for people to test the contents of their dataset in the BiSciCol system or on the semantic web.  For data you wish to publish and link to other datasets, we strongly encourage implementing one of the identifier technologies listed in the *URIs* section above.
+If your identifiers are already valid URIs (e.g. urn:1234 or http://biocode.berkeley.edu/events/856) then leave the text box blank.
+
+== Converting Literals to URIs ==
+
+If your identifers are not valid URIs (as is the case with most database identifiers) then you can easily convert them into valid URIs in the triplifiers by assigning a prefix to identifiers for each entity in the Entities section of the triplifier.   For, example, if you have an identifier that is "856" then you can make it globally unique and resolvable by entering a prefix, such as "http://biocode.berkeley.edu/events/", which will then result in a valid URI of http://biocode.berkeley.edu/events/856.
