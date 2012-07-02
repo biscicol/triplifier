@@ -12,13 +12,13 @@ var project = {project:"",dateTime:"",connection:{},schema:[],joins:[],entities:
 	vocabularyManager,
 	dbSourceTrTemplate,
 	relationPredicates = ["ma:isSourceOf", "ma:isRelatedTo"],
-//	biscicolUrl = "http://biscicol.org/",
-//	triplifierUrl = "http://biscicol.org:8080/triplifier/"; // [hack] when file on triplifier is accessed from biscicol on the same server then port forwarding won't work so the port is set here
+	biscicolUrl = "http://biscicol.org/",
+	triplifierUrl = "http://biscicol.org:8080/triplifier/"; // [hack] when file on triplifier is accessed from biscicol on the same server then port forwarding won't work so the port is set here
 
 //	biscicolUrl = "http://geomuseblade.colorado.edu/biscicol/",
 //	triplifierUrl = "http://geomuseblade.colorado.edu/triplifier/";
-	biscicolUrl = "http://johns-macbook-air-2.local:8080/biscicol/",
-	triplifierUrl = "http://johns-macbook-air-2.local:8080/triplifier/";
+//	biscicolUrl = "http://johns-macbook-air-2.local:8080/biscicol/",
+//	triplifierUrl = "http://johns-macbook-air-2.local:8080/triplifier/";
 
 // execute once the DOM has loaded
 $(function() {
