@@ -4,6 +4,7 @@ var project = {project:"",dateTime:"",connection:{},schema:[],joins:[],entities:
 //	joins, // array of joins in current project
 //	entities, // array of entities (each entity has an array of attributes) in current project
 //	relations, // array of relations in current project
+//  dataset, // hash of dataset information in current project
 	allRelations, // array of all possible relations, each allRelation is a hash with subject and array of all possible objects in current project
 	allRelationsTotal, // .5 count of all possible relations (each relation has inverse relation, only one per pair is allowed) in current project
 	schemaTotal, // total number of columns in schema in current project
@@ -11,12 +12,13 @@ var project = {project:"",dateTime:"",connection:{},schema:[],joins:[],entities:
 	vocabularyManager,
 	dbSourceTrTemplate,
 	relationPredicates = ["ma:isSourceOf", "ma:isRelatedTo"],
-	biscicolUrl = "http://biscicol.org/",
-	triplifierUrl = "http://biscicol.org:8080/triplifier/"; // [hack] when file on triplifier is accessed from biscicol on the same server then port forwarding won't work so the port is set here
+//	biscicolUrl = "http://biscicol.org/",
+//	triplifierUrl = "http://biscicol.org:8080/triplifier/"; // [hack] when file on triplifier is accessed from biscicol on the same server then port forwarding won't work so the port is set here
+
 //	biscicolUrl = "http://geomuseblade.colorado.edu/biscicol/",
 //	triplifierUrl = "http://geomuseblade.colorado.edu/triplifier/";
-//	biscicolUrl = "http://localhost:8080/biscicol/",
-//	triplifierUrl = "http://localhost:8080/triplifier/";
+	biscicolUrl = "http://johns-macbook-air-2.local:8080/biscicol/",
+	triplifierUrl = "http://johns-macbook-air-2.local:8080/triplifier/";
 
 // execute once the DOM has loaded
 $(function() {
@@ -56,15 +58,22 @@ function alertError(xhr, status, error) {
 function downloadFile(url) {
 	setStatus("");
 	window.open(url);
-	// location = url;
 }
 
 function triplify(url, successFn) {
 	setStatus("Triplifying Data Source...");
+	// Set the dataseturi to link to top level object on the server
+	var dataseturi = {};
+    dataseturi.name = dataSourceName();
 	$.ajax({
 		url: url,
 		type: "POST",
-		data: JSON.stringify({connection:project.connection, joins:project.joins, entities:project.entities, relations:project.relations}),
+		data: JSON.stringify({
+		    connection:project.connection,
+		    joins:project.joins,
+		    entities:project.entities,
+		    relations:project.relations,
+		    dataseturi:dataseturi}),
 		contentType: "application/json; charset=utf-8",
 		dataType: "text",
 		success: successFn,
@@ -75,7 +84,9 @@ function triplify(url, successFn) {
 function sendToBiSciCol(url) {
 	var sendToBiSciColForm = document.getElementById("sendToBiSciColForm");
 	// sendToBiSciColForm.url.value = "http://" + location.host + location.pathname.substr(0, location.pathname.lastIndexOf("/")) + "/" + url;
-	sendToBiSciColForm.url.value = triplifierUrl + url; // [hack] when file on triplifier is accessed from biscicol on the same server then port forwarding won't work so the port is set here
+
+	// [hack] when file on triplifier is accessed from biscicol on the same server then port forwarding won't work so the port is set here
+	sendToBiSciColForm.url.value = triplifierUrl + url;
 	$("#uploadTarget").one("load", afterBiSciCol);
 	sendToBiSciColForm.submit();
 }
@@ -85,7 +96,7 @@ function afterBiSciCol() {
 	var data = frames.uploadTarget.document.body.textContent;
 	// distinguish response OK status by JSON format
 	if (isJson(data))
-		window.open(biscicolUrl + "?model=" + data.substr(1, data.length-2)); 
+		window.open(biscicolUrl + "?model=" + data.substr(1, data.length-2) + "&id="+dataSourceName());
 	else
 		alert("Error" + (data ? ":\n\n"+data : "."));	
 }
@@ -159,6 +170,20 @@ function readItem(inspection, key) {
 	localStorage.setObject(getStorageKey(key, project.project), inspection[key]);
 }
 
+function dataSourceName() {
+   // NOTE: d2rq was re-writing dataSourceName() beginning with file: This was frustrating, so
+   // i opted instead to use the BiSciCol namespace.  Ultimately, we want users to have some
+   // control over the identity of their published dataset.
+   //var name= project.connection.system == "sqlite"
+	//    ? "file:" + project.connection.database.substr(0, project.connection.database.length-7)
+	//	: "database:" + project.connection.database + "@" + project.connection.host;
+   var name= project.connection.system == "sqlite"
+	    ? "urn:x-biscicol:" + project.connection.database.substr(0, project.connection.database.length-7)
+		: "urn:x-biscicol:" + project.connection.database + "@" + project.connection.host;
+       // remove leading and trailing space
+   name = $.trim(name);
+   return name.replace(/ /g,'_');
+}
 function displayMapping() {
 	if (!project.connection) {
 		project.dateTime = "";
@@ -167,13 +192,11 @@ function displayMapping() {
 		project.joins = [];
 		project.entities = [];
 		project.relations = [];
+		project.dataseturi = {};
 	}
 
 	// update schema
-	$("#dsDescription").html((project.connection.system == "sqlite" 
-			? "file: " + project.connection.database.substr(0, project.connection.database.length-7) 
-			: "database: " + project.connection.database + "@" + project.connection.host)
-		+ ", accessed: " + project.dateTime);
+	$("#dsDescription").html(dataSourceName() + ", accessed: " + project.dateTime);
 	schemaTotal = 0;
 	var schemaTable = $("#schemaTable"), 
 		columns;
@@ -312,29 +335,40 @@ function primaryTableChange() {
 
 function authorEntity(tr, entity) {
 	var ob = new OptionBuilder(tr);
+	//var count =0;
 	$.each(project.schema, function(i, table) { 
 		if (table.name == entity.table || countOf(project.entities, "table", table.name) < table.columns.length)
 			ob.addOption(table.name, "data-schemaIdx='" + i + "'");
-	}); 
+		//count = i;
+	});
+	// Add The Dataset itself as another entity option
+	//count++;
+    //ob.addOption("DataSet","data-schemaIdx='" + count + "'");
+
 	ob.addOptionsTo("table").prop("disabled", !!entity.table)
 		.change(function() {
-			var entityTable = project.schema[this.options[this.selectedIndex].getAttribute("data-schemaIdx")],
-				pk = "";
-			$.each(entityTable.columns, function(i, column) {
-				if (column == entity.idColumn || indexOf(project.entities, "table", entityTable.name, "idColumn", column) < 0) {
-					if ($.inArray(column, entityTable.pkColumns) >= 0)
-						pk = column;
-					ob.addOption(column, "", column + (column == pk ? "*" : ""));
-				}
-			});
-			ob.addOptionsTo("idColumn").val(pk);
+		    var entityTable = project.schema[this.options[this.selectedIndex].getAttribute("data-schemaIdx")],
+				    pk = "";
+		    //if (entityTable == undefined) {
+            //     ob.hide("idColumn");
+		    //} else {
+		    //    ob.show("idColumn");
+			    $.each(entityTable.columns, function(i, column) {
+				    if (column == entity.idColumn || indexOf(project.entities, "table", entityTable.name, "idColumn", column) < 0) {
+					    if ($.inArray(column, entityTable.pkColumns) >= 0)
+						    pk = column;
+					    ob.addOption(column, "", column + (column == pk ? "*" : ""));
+				    }
+			        });
+			    ob.addOptionsTo("idColumn").val(pk);
+			// }
 		})
 		.change();
 
 	// ID Type Options
-	ob.addOption("URI","","URI");
-	ob.addOption("Literal","","Literal");
-	ob.addOptionsTo("idTypeColumn");
+	//ob.addOption("URI","","URI");
+	//ob.addOption("Literal","","Literal");
+	//ob.addOptionsTo("idPrefixColumn");
 
 	authorRdfControls(tr, ob, "rdfClass", "classes");
 
@@ -409,8 +443,14 @@ function setAllRelations() {
 				allRelationsTotal += .5; // each relation has inverse relation, but we'll allow only one per pair
 			}
 		});
+
+        //// Get the DataSet and locaiton itself to use for linking
+		//objects.push("DataSet."+dataSourceName());
+		//allRelationsTotal += .5;
+
 		if (objects.length)
 			allRelations.push({subject:subMp.table + "." + subMp.idColumn, objects:objects});
+
 	});
 }
 
@@ -509,6 +549,12 @@ function OptionBuilder(container) {
 		var select = container.find("select[name='" + name + "']").html(options);
 		options = "";
 		return select;
+	};
+	this.hide = function(name) {
+		container.find("select[name='" + name + "']").hide();
+	};
+	this.show = function(name) {
+		container.find("select[name='" + name + "']").show();
 	};
 }
 

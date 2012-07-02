@@ -3,10 +3,7 @@ package rest;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.text.DateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import de.fuberlin.wiwiss.d2rq.algebra.Attribute;
 import de.fuberlin.wiwiss.d2rq.algebra.RelationName;
@@ -26,6 +23,7 @@ public class Mapping {
 	public Set<Join> joins;
 	public Set<Entity> entities;
 	public Set<Relation> relations;
+    public Dataseturi dataseturi;
 
 	/**
 	 * For construction from JSON.
@@ -59,6 +57,7 @@ public class Mapping {
 			for (Attribute attribute : schemaInspector.primaryKeyColumns(relationName)) 
 				table.pkColumns.add(attribute.attributeName());
 		}
+
 		database.connectedDB().close();
 	}
 
@@ -74,6 +73,7 @@ public class Mapping {
 			entity.printD2RQ(pw);
 		for (Relation relation : relations)
 			relation.printD2RQ(pw, this);
+        dataseturi.printD2RQ(pw, this);
 	}
 
     /**

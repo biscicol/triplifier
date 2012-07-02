@@ -130,7 +130,7 @@
             <include name="src"/>
         </dirset>
     </path>
-
+              <!--
 	<target name="js.concat" description="Concatenate JavaScript source files">
 	    <concat destfile="${triplifier.web.output.dir}/${triplifier.web.combined}.js" fixlastline="yes">
 	        <filelist dir="${triplifier.web.source.dir}" 
@@ -167,7 +167,7 @@
 	</target>
 	
     <target name="build.web" depends="js.concat, js.min, css.concat, css.min" description="Build web modules"/>
-
+              -->
 	<target name="compile.module.triplifier" depends="compile.module.triplifier.production"
             description="Compile module Triplifier"/>
 
@@ -199,12 +199,14 @@
 
     <target name="clean" depends="clean.module.triplifier" description="cleanup all"/>
 
-    <target name="build.modules" depends="init, clean, compile.module.triplifier, build.web, war" description="build all modules"/>
+    <!--<target name="build.modules" depends="init, clean, compile.module.triplifier, build.web, war" description="build all modules"/>-->
+    <target name="build.modules" depends="init, clean, compile.module.triplifier, war" description="build all modules"/>
+
 
     <target name="war" depends="compile.module.triplifier.production">
         <war destfile="dist/triplifier.war" webxml="web/WEB-INF/web.xml">
             <fileset dir="web"/>
-	        <fileset dir="${triplifier.web.output.dir}" includes="${triplifier.web.combined}.min.js, ${triplifier.web.combined}.min.css" />
+	        <!--<fileset dir="${triplifier.web.output.dir}" includes="${triplifier.web.combined}.min.js, ${triplifier.web.combined}.min.css" />-->
             <lib dir="lib" excludes="servlet-api.jar, yuicompressor*.jar"/>
             <classes dir="${triplifier.output.dir}"/>
             <classes dir="" includes="sqlite/*.*"/>

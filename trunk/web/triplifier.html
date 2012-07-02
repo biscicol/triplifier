@@ -5,17 +5,19 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Triplifier</title>
 
-    <link rel="stylesheet" type="text/css" href="combined.min.css" />
+
+   <!-- <link rel="stylesheet" type="text/css" href="combined.min.css" />-->
 
 	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script type="text/javascript" src="combined.min.js"></script>
+    <!--<script type="text/javascript" src="combined.min.js"></script>-->
     
-<!--<link rel="stylesheet" type="text/css" href="triplifier.css" /> -->
-<!--<script type="text/javascript" src="jquery.dom.form_params.js"></script>
+<link rel="stylesheet" type="text/css" href="triplifier.css" />
+
+<script type="text/javascript" src="jquery.dom.form_params.js"></script>
     <script type="text/javascript" src="flexTable.js"></script>
     <script type="text/javascript" src="triplifier.js"></script>
     <script type="text/javascript" src="projectManager.js"></script>
-    <script type="text/javascript" src="vocabularyManager.js"></script> -->
+    <script type="text/javascript" src="vocabularyManager.js"></script>
 </head>
 
 <body>
@@ -186,7 +188,7 @@
 			<th/>
 			<th>Table</th>
 			<th>ID Column</th>
-            <th><a href="http://code.google.com/p/triplifier/wiki/Identifiers" target="_blank">ID Type</a></th>
+            <th><a href="http://code.google.com/p/triplifier/wiki/Identifiers" target="_blank">ID Prefix</a></th>
 			<th>Class</th>
 			<th/>
 		</tr>
@@ -205,7 +207,7 @@
 		  <td/>
 		  <td><select name="table" /></td>
 		  <td><select name="idColumn" /></td>
-          <td><select name="idTypeColumn" /></td>
+          <td><input type=text name="idPrefixColumn" /></td>
 		  <td>
 			<input type="hidden" name="rdfClass[name]" />
 		  	<select name="rdfClass[uri]" />
