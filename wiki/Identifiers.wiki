@@ -18,8 +18,8 @@ Most databases do not currently use valid URIs as identifiers, but we encourage 
 
 == If your data is already structured to use URIs ==
 
-If your identifiers are already valid URIs (e.g. urn:1234 or http://biocode.berkeley.edu/events/856) then leave the text box blank.
+If your identifiers are already valid URIs (e.g. urn:1234 or http://biocode.berkeley.edu/events/856) then you can directly express your IDs in the Entity section of the triplifier.  You can leave the "ID Prefix" textbox blank.
 
 == Converting Literals to URIs ==
 
-If your identifers are not valid URIs (as is the case with most database identifiers) then you can easily convert them into valid URIs in the triplifier by assigning a prefix to identifiers for each entity in the Entities section of the triplifier.   For, example, if you have an identifier that is "856" then you can make it globally unique and resolvable by entering a prefix, such as "http://biocode.berkeley.edu/events/", which will then result in a valid URI of http://biocode.berkeley.edu/events/856.
+If your identifers are not valid URIs (as is the case with most database identifiers) then you can easily convert them into valid URIs in the triplifier by assigning a prefix to identifiers for each entity in the Entities section of the triplifier.  See "Entities", "ID Prefix", when you are entering a new Entity.  For, example, if you have an identifier that is "856" then you can make it globally unique and resolvable by entering a prefix, such as "http://biocode.berkeley.edu/events/", which will then result in a valid URI of http://biocode.berkeley.edu/events/856.
