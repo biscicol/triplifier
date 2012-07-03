@@ -66,13 +66,7 @@ public class Dataseturi {
         pw.println("map:DataSet_" + subjClassMap + " a d2rq:PropertyBridge;");
         pw.println("\td2rq:belongsToClassMap map:DataSet;");
         pw.println("\td2rq:property ma:isSourceOf;");
-        // This will use the exact value from the database, whether a valid URI or not
-        if (subjEntity.idPrefixColumn.equalsIgnoreCase("") || subjEntity.idPrefixColumn == null) {
-            pw.println("\td2rq:uriColumn \"" + subjEntity.getColumn() + "\";");
-            // This will apply the idPrefixColumn pattern
-        } else {
-            pw.println("\td2rq:uriPattern \"" + subjEntity.idPrefixColumn + "@@" + subjEntity.getColumn() + "@@\";");
-        }
+        pw.println(mapping.getColumnPrefix(subjEntity));
         pw.println("\t.");
 
     }

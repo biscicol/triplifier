@@ -19,17 +19,11 @@ public class Entity {
      *
      * @param pw PrintWriter used to write output to.
      */
-	void printD2RQ(PrintWriter pw) {
+	void printD2RQ(PrintWriter pw, Mapping mapping) {
 
 		pw.println("map:" + classMap() + " a d2rq:ClassMap;");
 		pw.println("\td2rq:dataStorage " + "map:database;");
-        // This will use the exact value from the database, whether a valid URI or not
-		if (idPrefixColumn.equalsIgnoreCase("") || idPrefixColumn == null) {
-            pw.println("\td2rq:uriColumn \"" + getColumn() + "\";");
-        // This assigns the default urn:x-biscicol: patter before the identifier, ensuring it is a URI
-        } else {
-            pw.println("\td2rq:uriPattern \""+ idPrefixColumn + "@@" + getColumn() + "@@\";");
-        }
+        pw.println(mapping.getColumnPrefix(this));
 	//	pw.println("\td2rq:uriPattern \"" + table + "/@@" + table + "." + idColumn + "|urlify@@\";");
 		pw.println("\td2rq:class <" + rdfClass.uri + ">;");
         // ensures non-null values
