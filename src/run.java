@@ -71,7 +71,7 @@ public class run {
         // create the ReaderManager and load the plugins
         ReaderManager rm = new ReaderManager();
         try {
-            rm.LoadReaders();
+            rm.loadReaders();
         } catch (FileNotFoundException e) {
             System.out.println(e);
         }
