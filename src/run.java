@@ -71,7 +71,7 @@ public class run {
         // create the ReaderManager and load the plugins
         ReaderManager rm = new ReaderManager();
         try {
-            rm.loadReaders();
+            rm.LoadReaders();
         } catch (FileNotFoundException e) {
             System.out.println(e);
         }
@@ -89,12 +89,16 @@ public class run {
         //System.out.println(Thread.currentThread().getContextClassLoader().getResource("sqlite").getFile());
         //runReader(rm.openFile("sampledata/test.xlsx"));
 
-        runReader(rm.openFile("sampledata/test.xlsx"));
+        TabularDataReader tdr = rm.openFile("sampledata/biocode_template.xls");
+         TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:/tmp/triples.sqlite");
+
+        //runReader(rm.openFile("sampledata/test.xlsx"));
         //runReader(rm.openFile("test.csv", "CSV"));
         //runReader(rm.openFile("test-archive.zip", "DWCA"));
         //runReader(rm.openFile("dwca-hsu_wildlife_mammals.zip", "DWCA"));
         //runReader(rm.openFile("dwca-nysm_mammals.zip", "DWCA"));
         //runReader(rm.openFile("test-dwca", "DWCA"));
+
 
 
         // condensed method to test mapping file logic
