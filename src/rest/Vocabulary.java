@@ -9,9 +9,9 @@ import java.util.Set;
 public class Vocabulary {
 	public String name;
 	public Set<RDFproperty> properties;
-	public Set<RDFClass> classes;
+	public Set<RDFclass> classes;
 
-	Vocabulary(String name, Set<RDFproperty> properties, Set<RDFClass> classes) {
+	Vocabulary(String name, Set<RDFproperty> properties, Set<RDFclass> classes) {
 		this.name = name;
 		this.properties = properties;
 		this.classes = classes;

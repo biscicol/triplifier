@@ -16,7 +16,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import reader.ReaderManager;
 import reader.TabularDataConverter;
 import reader.plugins.TabularDataReader;
@@ -166,6 +165,12 @@ public class Rest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public String getMapping(Mapping mapping) throws Exception {
+    	return getMapping(mapping, false);
+    }
+
+    private String getMapping(Mapping mapping, Boolean verifyFile) throws Exception {
+    	if (verifyFile)
+    		mapping.connection.verifyFile();
         File mapFile = createUniqueFile("mapping.n3", getTriplesPath());
         PrintWriter pw = new PrintWriter(mapFile);
         mapping.printD2RQ(pw);
@@ -188,7 +193,8 @@ public class Rest {
         System.gc();
         SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
-        Model model = new ModelD2RQ(FileUtils.toURL(context.getRealPath(getMapping(mapping))),"N3",sm.retrieveValue("defaultURI","urn:x-biscicol:"));
+        Model model = new ModelD2RQ(FileUtils.toURL(context.getRealPath(getMapping(mapping, true))), 
+        		FileUtils.langN3, sm.retrieveValue("defaultURI","urn:x-biscicol:"));
 
         File tripleFile = createUniqueFile("triples.nt", getTriplesPath());
         FileOutputStream fos = new FileOutputStream(tripleFile);
@@ -273,7 +279,7 @@ public class Rest {
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     public Vocabulary getVocabulary(String fileName) throws Exception {
-        Vocabulary vocabulary= new RDFReader(fileName).getVocabulary();
+        Vocabulary vocabulary= new RDFreader(fileName).getVocabulary();
         return vocabulary;
     }
     
@@ -292,7 +298,6 @@ public class Rest {
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, String> getVocabularies(List<String> userVocabularies) throws Exception {
         Map<String, String> vocabulariesMap = new LinkedHashMap<String, String>();
-
         
         SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();

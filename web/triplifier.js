@@ -192,7 +192,6 @@ function displayMapping() {
 		project.joins = [];
 		project.entities = [];
 		project.relations = [];
-		project.dataseturi = {};
 	}
 
 	// update schema
