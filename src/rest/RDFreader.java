@@ -141,7 +141,6 @@ public class RDFreader {
     public static void main(String args[]) throws Exception {
     	SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
-        System.out.println(new File("C:/programs/tomcat/webapps/triplifier/WEB-INF/classes/sqlite" + File.separator+"biocode_example.sqlite.sqlite").exists());
 
         RDFreader or = new RDFreader("dwcterms.rdf");
         
