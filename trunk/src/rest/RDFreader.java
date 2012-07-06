@@ -3,6 +3,7 @@ package rest;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileUtils;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -15,7 +16,7 @@ import org.codehaus.jackson.map.ObjectMapper;
  * classes and properties to use in interface.
  * 
  */
-public class RDFReader {	
+public class RDFreader {	
     private Model model = ModelFactory.createDefaultModel();
     private Property propertySubProperty = null; // URI of subProperty Predicate
     private RDFNode propertyName = null; // URI of Property Name
@@ -34,7 +35,7 @@ public class RDFReader {
      * "vocabularies" - specific vocabulary settings are used, 
      * otherwise - "defaultVocabulary" settings are used. 
      */
-    public RDFReader(String fileName) throws Exception {
+    public RDFreader(String fileName) throws Exception {
         SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
         
@@ -104,17 +105,17 @@ public class RDFReader {
      * @param iter Model Statement Iterator to loop through.
      * @return A set of extracted RDF classes.
      */
-    private Set<RDFClass> getSubClasses(StmtIterator iter) {
-    	Set<RDFClass> subItems = new TreeSet<RDFClass>();
+    private Set<RDFclass> getSubClasses(StmtIterator iter) {
+    	Set<RDFclass> subItems = new TreeSet<RDFclass>();
     	while (iter.hasNext()) {
             Resource subject = iter.nextStatement().getSubject();
             
-        	Set<RDFClass> subSubItems = null;
+        	Set<RDFclass> subSubItems = null;
             if (classSubClass != null) 
 	            subSubItems = getSubClasses(subject.getModel().listStatements(null, classSubClass, subject));
 
 
-            subItems.add(new RDFClass(subject.getLocalName(), subject.toString(), subSubItems));
+            subItems.add(new RDFclass(subject.getLocalName(), subject.toString(), subSubItems));
         }
     	return subItems;
     }
@@ -140,9 +141,9 @@ public class RDFReader {
     public static void main(String args[]) throws Exception {
     	SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
-//        System.out.println("Available RDF Files: " + RDFReader.RDFFilesAsJSON(sm) );
+        System.out.println(new File("C:/programs/tomcat/webapps/triplifier/WEB-INF/classes/sqlite" + File.separator+"biocode_example.sqlite.sqlite").exists());
 
-        RDFReader or = new RDFReader("dwcterms.rdf");
+        RDFreader or = new RDFreader("dwcterms.rdf");
         
 //        System.out.println(or.getProperties());
 //        System.out.println(or.getClasses());

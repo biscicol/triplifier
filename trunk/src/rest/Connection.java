@@ -85,4 +85,14 @@ public class Connection {
 		pw.println("\t.");
 	}
 	
+    /**
+     * For SQLite DBsystems verify if the file exists 
+     * in local filesystem, throw exception if not.
+     *
+     */
+	void verifyFile() throws Exception {
+		if (system.equals(DBsystem.sqlite) && !new File(host + File.separator + database).exists())
+			throw new Exception("Data Source file not available.");
+	}
+	
 }

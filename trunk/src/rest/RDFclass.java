@@ -5,11 +5,11 @@ import java.util.Set;
 /**
  * Represents RDF class in a vocabulary, can have sub-classes.
  */
-public class RDFClass extends VocabularyItem {
+public class RDFclass extends VocabularyItem {
 
-	public Set<RDFClass> subClasses;
+	public Set<RDFclass> subClasses;
 	
-	public RDFClass(String name, String uri, Set<RDFClass> subClasses) {
+	public RDFclass(String name, String uri, Set<RDFclass> subClasses) {
 		super(name, uri);
 		this.subClasses = subClasses;
 	}
