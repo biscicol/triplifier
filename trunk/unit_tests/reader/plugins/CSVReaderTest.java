@@ -67,13 +67,22 @@ public class CSVReaderTest {
      */
     @Test
     public void testReadData() {
-        String[][] expvals = {
-            {"header1","header2","header3","header4"},
-            {"data1","quoted string","d1"},
-            {"data2","another \"quoted\" string","something_else"},
-            {"data3","quoted string with a comma (\",\")","last value"},
-            {"data4","row with a blank","","not blank"}
+        // specifies the expected data for each table in the test data source
+        String[][][] exp_data = {
+            {
+                {"header1","header2","header3","header4"},
+                {"data1","quoted string","d1"},
+                {"data2","another \"quoted\" string","something_else"},
+                {"data3","quoted string with a comma (\",\")","last value"},
+                {"data4","row with a blank","","not blank"}
+            }
         };
+        
+        // the expected table names
+        String[] exp_tnames = {"table1"};
+        
+        // the number of expected tables
+        int exp_numtables = exp_data.length;
         
         // make sure these all fail before an input file is opened
         assertFalse(reader.hasNextTable());
@@ -90,31 +99,45 @@ public class CSVReaderTest {
         // open a test data file
         assertTrue(reader.openFile("testdata/test.csv"));
         
-        // verify that a table with data is available to read
-        assertTrue(reader.hasNextTable());
-        reader.moveToNextTable();
-        assertTrue(reader.tableHasNextRow());
-        
-        // check the table name
-        assertEquals("table1", reader.getCurrentTableName());
+        // variables for the expected and retrieved data
+        String[] row, exp_row;
+        int exp_numrows;
         
         // now verify that we get the expected data from the file
-        String[] row;
-        for (int cnt = 0; cnt < expvals.length; cnt++) {
+        // loop through each expected table
+        for (int tablecnt = 0; tablecnt < exp_numtables; tablecnt++) {
+            // verify that a table with data is available to read
+            assertTrue(reader.hasNextTable());
+            reader.moveToNextTable();
             assertTrue(reader.tableHasNextRow());
-            row = reader.tableGetNextRow();
+        
+            // check the table name
+            assertEquals(exp_tnames[tablecnt], reader.getCurrentTableName());
+
+            // get the number of rows we expect in the current table
+            exp_numrows = exp_data[tablecnt].length;
             
-            // verify that the expected number of row elements were returned
-            assertEquals(expvals[cnt].length, row.length);
+            // now check each row in the current table
+            for (int rowcnt = 0; rowcnt < exp_numrows; rowcnt++) {
+                assertTrue(reader.tableHasNextRow());
+                row = reader.tableGetNextRow();
+                
+                exp_row = exp_data[tablecnt][rowcnt];
             
-            // check each row element
-            for (int col = 0; col < row.length; col++) {
-                assertEquals(expvals[cnt][col], row[col]);
+                // verify that the expected number of row elements were returned
+                assertEquals(exp_row.length, row.length);
+            
+                // check each row element
+                for (int col = 0; col < row.length; col++) {
+                    assertEquals(exp_row[col], row[col]);
+                }
             }
+            
+            // make sure there are no data left to read in the current table
+            assertFalse(reader.tableHasNextRow());
         }
         
-        // make sure there is no data left to read
-        assertFalse(reader.tableHasNextRow());
+        // make sure there are no tables left to read
         assertFalse(reader.hasNextTable());
     }
 }
