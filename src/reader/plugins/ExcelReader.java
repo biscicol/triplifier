@@ -113,7 +113,10 @@ public class ExcelReader implements TabularDataReader
 
     @Override
     public boolean hasNextTable() {
-        return (currsheet < excelwb.getNumberOfSheets());
+        if (excelwb == null)
+            return false;
+        else
+            return (currsheet < excelwb.getNumberOfSheets());
     }
     
     @Override
@@ -149,7 +152,7 @@ public class ExcelReader implements TabularDataReader
 
         String[] ret = new String[row.getLastCellNum()];
         
-        // Unfortuantely, we can't use a cell iterator here because, as
+        // Unfortunately, we can't use a cell iterator here because, as
         // currently implemented in POI, iterating over cells in a row will
         // silently skip blank cells.
         for (int cnt = 0; cnt < row.getLastCellNum(); cnt++) {

@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class CSVReaderTest {
+public class CSVReaderTest extends ReaderTest {
     private CSVReader reader;
     
     @Before
@@ -81,63 +81,6 @@ public class CSVReaderTest {
         // the expected table names
         String[] exp_tnames = {"table1"};
         
-        // the number of expected tables
-        int exp_numtables = exp_data.length;
-        
-        // make sure these all fail before an input file is opened
-        assertFalse(reader.hasNextTable());
-        assertFalse(reader.tableHasNextRow());
-        try {
-            reader.moveToNextTable();
-            fail("Expected NoSuchElementException.");
-        } catch (NoSuchElementException e) { }
-        try {
-            reader.tableGetNextRow();
-            fail("Expected NoSuchElementException.");
-        } catch (NoSuchElementException e) { }
-        
-        // open a test data file
-        assertTrue(reader.openFile("testdata/test.csv"));
-        
-        // variables for the expected and retrieved data
-        String[] row, exp_row;
-        int exp_numrows;
-        
-        // now verify that we get the expected data from the file
-        // loop through each expected table
-        for (int tablecnt = 0; tablecnt < exp_numtables; tablecnt++) {
-            // verify that a table with data is available to read
-            assertTrue(reader.hasNextTable());
-            reader.moveToNextTable();
-            assertTrue(reader.tableHasNextRow());
-        
-            // check the table name
-            assertEquals(exp_tnames[tablecnt], reader.getCurrentTableName());
-
-            // get the number of rows we expect in the current table
-            exp_numrows = exp_data[tablecnt].length;
-            
-            // now check each row in the current table
-            for (int rowcnt = 0; rowcnt < exp_numrows; rowcnt++) {
-                assertTrue(reader.tableHasNextRow());
-                row = reader.tableGetNextRow();
-                
-                exp_row = exp_data[tablecnt][rowcnt];
-            
-                // verify that the expected number of row elements were returned
-                assertEquals(exp_row.length, row.length);
-            
-                // check each row element
-                for (int col = 0; col < row.length; col++) {
-                    assertEquals(exp_row[col], row[col]);
-                }
-            }
-            
-            // make sure there are no data left to read in the current table
-            assertFalse(reader.tableHasNextRow());
-        }
-        
-        // make sure there are no tables left to read
-        assertFalse(reader.hasNextTable());
-    }
+        testReadData(reader, "testdata/test.csv", exp_data, exp_tnames);
+    }    
 }
