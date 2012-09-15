@@ -9,7 +9,7 @@
 
 map:database a d2rq:Database;
 	d2rq:jdbcDriver "org.sqlite.JDBC";
-	d2rq:jdbcDSN "jdbc:sqlite:biocode_example.sqlite";
+	d2rq:jdbcDSN "jdbc:sqlite:/tmp/ms_tmp/triples.sqlite";
 	.
 
 # Table collecting_events
@@ -73,18 +73,7 @@ map:specimens_Specimen_Num_Collector a d2rq:PropertyBridge;
 	d2rq:propertyDefinitionLabel "specimens Specimen_Num_Collector";
 	d2rq:column "specimens.Specimen_Num_Collector";
 	.
-map:specimens_Family a d2rq:PropertyBridge;
-	d2rq:belongsToClassMap map:specimens;
-	d2rq:property vocab:specimens_Family;
-	d2rq:propertyDefinitionLabel "specimens Family";
-	d2rq:column "specimens.Family";
-	.
-map:specimens_Genus a d2rq:PropertyBridge;
-	d2rq:belongsToClassMap map:specimens;
-	d2rq:property vocab:specimens_Genus;
-	d2rq:propertyDefinitionLabel "specimens Genus";
-	d2rq:column "specimens.Genus";
-	.
+
 map:specimens_SpecificEpithet a d2rq:PropertyBridge;
 	d2rq:belongsToClassMap map:specimens;
 	d2rq:property vocab:specimens_SpecificEpithet;

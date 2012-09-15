@@ -1,12 +1,21 @@
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileManager;
-import de.fuberlin.wiwiss.d2rq.ModelD2RQ;
+import com.hp.hpl.jena.util.FileUtils;
 import de.fuberlin.wiwiss.d2rq.algebra.TripleRelation;
+import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
 import de.fuberlin.wiwiss.d2rq.map.ClassMap;
 import de.fuberlin.wiwiss.d2rq.map.Mapping;
 import de.fuberlin.wiwiss.d2rq.map.PropertyBridge;
 import de.fuberlin.wiwiss.d2rq.parser.MapParser;
 import de.fuberlin.wiwiss.d2rq.pp.PrettyPrinter;
+import reader.ReaderManager;
+import reader.TabularDataConverter;
+import reader.plugins.TabularDataReader;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,15 +27,50 @@ public class d2rqtest {
     static String gPrefix = "";
 
     public static void main(String args[]) {
-        johnTest();
+        //johnTest();
+        johnTestMapping();
         //ukiTest();
     }
 
+    private static void johnTestMapping() {
+        String format = "DWCA";
+        String inputfile = "sampledata/CanadensysTest.zip";
+        String sqliteLocation = "jdbc:sqlite:/tmp/ms_tmp/CanadensysTest.sqlite";
+        String D2RQmappingfile = "file:sampledata/CanadensysTest.n3";
+        String outputfile = "/tmp/ms_tmp/Canadensys.nt";
+
+        ReaderManager readerManager = new ReaderManager();
+        try {
+            readerManager.loadReaders();
+
+            TabularDataReader tdr = readerManager.openFile(inputfile,format);
+            TabularDataConverter tdc = new TabularDataConverter(tdr, sqliteLocation);
+
+            tdc.convert();
+            tdr.closeFile();
+
+            Model model = new ModelD2RQ(FileUtils.toURL(D2RQmappingfile));
+            FileOutputStream fileOutputStream = new FileOutputStream(outputfile);
+
+            System.out.println("Writing output to " + outputfile);
+            model.write(fileOutputStream, FileUtils.langN3);
+            fileOutputStream.close();
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 
 
     static void johnTest() {
         // Set up the ModelD2RQ using a mapping file
-        Model m = new ModelD2RQ("file:biocode_example_mapping.n3");
+        Model m = new ModelD2RQ("file:sampledata/biocode_example_mapping.n3");
 
         // list the statements in the Model
         StmtIterator iter = m.listStatements();
