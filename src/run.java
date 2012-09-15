@@ -88,56 +88,12 @@ public class run {
         //System.out.println(rm.getReader("DWCA").testFile("test.xls"));
         //System.out.println(Thread.currentThread().getContextClassLoader().getResource("sqlite").getFile());
         //runReader(rm.openFile("sampledata/test.xlsx"));
-
-        TabularDataReader tdr = rm.openFile("sampledata/biocode_template.xls");
-         TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:/tmp/triples.sqlite");
-
         //runReader(rm.openFile("sampledata/test.xlsx"));
         //runReader(rm.openFile("test.csv", "CSV"));
         //runReader(rm.openFile("test-archive.zip", "DWCA"));
         //runReader(rm.openFile("dwca-hsu_wildlife_mammals.zip", "DWCA"));
         //runReader(rm.openFile("dwca-nysm_mammals.zip", "DWCA"));
-        //runReader(rm.openFile("test-dwca", "DWCA"));
-
-
-
-        // condensed method to test mapping file logic
-        // John testing some code here to read the biocode_template.xls file and apply some sample mapping
-        // that i'm tweeking on the fly with samplemapping.n3
-        /*rm.LoadReaders();
-        TabularDataReader tdr = rm.openFile("sampledata/biocode_template.xls");
-        TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:/tmp/triples.sqlite");
-        tdc.convert();
-        tdr.closeFile();
-        //
-        Model model = new ModelD2RQ(FileUtils.toURL("sampledata/biocode_example_mapping.n3")
-                );
-        FileOutputStream fos = new FileOutputStream("/tmp/triples.nt");
-        model.write(fos, FileUtils.langN3);
-        fos.close();*/
-
-        /*
- TabularDataReader reader;
- try {
-     reader = rm.openFile("sampledata/test.xlsx");
-     //reader = rm.openFile("test.ods");
-     //reader = rm.openFile("test-archive.zip");
-     //reader = rm.openFile("dwca-nysm_mammals.zip");
-     //reader = rm.openFile("test-dwca");
-     //rm.openFile("357800_biocode.xls"), "jdbc:sqlite:tempdb.sqlite");
-     //rm.openFile("357800_biocode-tmp.xls"), "jdbc:sqlite:tempdb.sqlite");
-
-     TabularDataConverter tdc = new TabularDataConverter(
-             reader, "jdbc:sqlite:tempdb.sqlite");
-
-     //tdc.setTableName("collecting_events");
-     tdc.convert();
-
-     reader.closeFile();
-
- } catch (Exception e) {
-     throw e;
-     //System.out.println(e);
- }       */
+        //runReader(rm.openFile("testdata/test-dwca", "DWCA"));
+        //runReader(rm.openFile("testdata/CanadensysTest.zip", "DWCA"));
     }
 }

@@ -12,18 +12,21 @@ var project = {project:"",dateTime:"",connection:{},schema:[],joins:[],entities:
 	vocabularyManager,
 	dbSourceTrTemplate,
 	relationPredicates = ["ma:isSourceOf", "ma:isRelatedTo"],
-	biscicolUrl = "http://biscicol.org/",
-	triplifierUrl = "http://biscicol.org:8080/triplifier/"; // [hack] when file on triplifier is accessed from biscicol on the same server then port forwarding won't work so the port is set here
+//  biscicolUrl = "/biscicol/";
+//  triplifierUrl = "/triplifier/";
+
+//	biscicolUrl = "http://biscicol.org/",
+//	triplifierUrl = "http://biscicol.org:8080/triplifier/"; // [hack] when file on triplifier is accessed from biscicol on the same server then port forwarding won't work so the port is set here
 
 //	biscicolUrl = "http://geomuseblade.colorado.edu/biscicol/",
 //	triplifierUrl = "http://geomuseblade.colorado.edu/triplifier/";
-//	biscicolUrl = "http://johns-macbook-air-2.local:8080/biscicol/",
-//	triplifierUrl = "http://johns-macbook-air-2.local:8080/triplifier/";
+
+	biscicolUrl = "http://johns-macbook-air-2.local:8080/biscicol/",
+	triplifierUrl = "http://johns-macbook-air-2.local:8080/triplifier/";
 
 // execute once the DOM has loaded
 $(function() {
 	dbSourceTrTemplate = $("#schemaTable > tbody").children(":last").remove();
-   	
 	// VocabularyManager must be created before FlexTables
 	vocabularyManager = new VocabularyManager($("#vocabularies"), $("#vocabularyUpload"), getStorageKey("vocabularies"), alertError);
 
@@ -49,7 +52,23 @@ $(function() {
 	// ProjectManager must be created after FlexTables and hide() as it displays the first project, so everything must be already in place
 	new ProjectManager($("#projects"), getStorageKey("projects"), project, "project", getStorageKey, displayMapping);
 });
-	
+
+// Toggle simple/advanced interface
+function advancedToggle() {
+    // Revert to Simple
+    if ($("#advanced").html() == "Advanced") {
+        $("#advanced").html("Simple");
+        $("#simpleDiv").fadeToggle(false);
+        $("#advancedDiv").fadeToggle(true);
+        // Revert to Advanced
+    } else {
+        $("#advanced").html("Advanced");
+        $("#simpleDiv").fadeToggle(true);
+        $("#advancedDiv").fadeToggle(false);
+    }
+    return false;
+}
+
 function alertError(xhr, status, error) {
 	setStatus("");
 	alert(status + (xhr.status==500 ? ":\n\n"+xhr.responseText : (error ? ": "+error : "")));
@@ -258,34 +277,48 @@ function displayMapping() {
 	entityFT.activate(!project.entities.length || project.relations.length);
 	relationFT.activate(!project.relations.length);
 	triplifyFT.activate(true);
+	//if (advancedMode) {
+	//     $(".back, .next").fadeToggle(true);
+   // } else {
+//	    $("#triplifyDiv, #sendToBiSciColForm, #dsDescription").fadeToggle(true);
+ //       activateTriplify();
+//	    $(".back, .next").fadeToggle(false);
+ //   }
 }
 
 function activateDS(deactivate) {
-	$("#dsDiv").toggleClass("active", !deactivate);
-	$("#dbForm, #uploadForm").fadeToggle(!deactivate);
-	$("#dsDescription, #schemaTable").fadeToggle(!!project.schema.length);	
-	$("#dsDiv > input.next").fadeToggle(!deactivate && !!project.schema.length);	
+	//if (advancedMode) {
+	    $("#dsDiv").toggleClass("active", !deactivate);
+	    $("#dbForm, #uploadForm").fadeToggle(!deactivate);
+	    $("#dsDescription, #schemaTable").fadeToggle(!!project.schema.length);
+	    $("#dsDiv > input.next").fadeToggle(!deactivate && !!project.schema.length);
+	//}
 	return true;
 }
 
 function activateJoins() {
-	$("#vocabularies").fadeOut();
-	joinFT.activate();
+   // if (advancedMode) {
+	    $("#vocabularies").fadeOut();
+	    joinFT.activate();
+	//}
 	return true;
 }
 
 function activateEntities() {
-	$("#vocabularies").fadeIn();//.prependTo($("#entityDiv")).show();
-	entityFT.activate();
+//    if (advancedMode) {
+	    $("#vocabularies").fadeIn();//.prependTo($("#entityDiv")).show();
+	    entityFT.activate();
+//	}
 	return true;
 }
 
 function activateRelations() {
-	setAllRelations();
-	$("#relationDiv > input.add").prop("disabled", addRelationButton());
-	$("#vocabularies").fadeOut();
-//	$("#vocabularies").prependTo($("#relationDiv")).show();
-	relationFT.activate();
+  //  if (advancedMode) {
+	    setAllRelations();
+	    $("#relationDiv > input.add").prop("disabled", addRelationButton());
+	    $("#vocabularies").fadeOut();
+	    relationFT.activate();
+//	}
 	return true;
 }
 

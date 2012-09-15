@@ -33,6 +33,7 @@ table {
 /* Help link */
 #header a {
 	float: right;
+	margin-left: 10px;
 }
 
 #projects {
@@ -113,7 +114,7 @@ table {
 	margin-right: 16px;
 }
 
-.flexTable, #dsDiv  {
+.flexTable, #dsDiv, #systemProjects  {
 	padding: 10px;
 }
 
@@ -184,7 +185,12 @@ table {
     z-index: 1;
     position: relative;
 }
-
+#simpleDiv {
+    float:center;
+   padding:20px;
+   margin-top:40px;
+   margin-bottom:40px;
+}
 #vocabularies {
 	float: right;
 	padding: 8px;
@@ -248,4 +254,9 @@ table {
 
 #uploadTarget {
 	display: none;
+}
+
+
+#advancedDiv {
+    display:none;
 }
