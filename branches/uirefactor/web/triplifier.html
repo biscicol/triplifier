@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Triplifier</title>
+
+
+    <!-- <link rel="stylesheet" type="text/css" href="combined.min.css" />-->
+
+    <!--<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>-->
+    <script type="text/javascript" src="jquery.js"></script>
+
+    <!--<script type="text/javascript" src="combined.min.js"></script>-->
+
+    <link rel="stylesheet" type="text/css" href="triplifier.css"/>
+
+    <script type="text/javascript" src="jquery.dom.form_params.js"></script>
+    <script type="text/javascript" src="flexTable.js"></script>
+    <script type="text/javascript" src="triplifier.js"></script>
+    <script type="text/javascript" src="projectManager.js"></script>
+    <script type="text/javascript" src="vocabularyManager.js"></script>
+</head>
+
+<body>
+
+<div id="header">
+    <a id="advanced" href="#" onclick="advancedToggle();">Advanced</a>
+    <a href="http://code.google.com/p/triplifier/wiki/UserDocumentation">Help</a>
+
+    <h1>Triplifier by BiSciCol Prototype</h1>
+</div>
+
+<div id="simpleDiv">
+    <center>
+        <table>
+            <tr>
+                <td><b>Project:</b></td>
+                <td>
+                    <select name="projectChoice">
+                        <option value="">--Choose Project--</option>
+                        <option value="biocode.n3">Moorea Biocode Spreadsheet</option>
+                        <option value="oceansamplingday.n3">Ocean Sampling Day</option>
+                        <option value="bold.n3">BOLD</option>
+                        <option value="dwcarchive.n3">Darwin Core Archive</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <b>File upload: (NOTE: URL link)</b>
+                </td>
+                <td>
+                    <form id="simpleUploadForm" enctype="multipart/form-data" method="post"
+                          action="rest/uploadDataSource"
+                          target="uploadTarget">
+                        <input type="file" name="file" size="44"/><br/>
+                        <input type="submit" value="Upload file" class="external"/>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <td><b>Triplify Options:</b></td>
+                <td>
+                    <input type=button name=simpleGetTriplify value="Get Triples">
+                    &nbsp;
+                    <input type=button name=simpleTriplify value="Send to BiSciCol">
+                    &nbsp;
+                    <input type=button name=simpleGuloTriplify value="Shredder (Gulo)">
+
+                </td>
+            </tr>
+        </table>
+    </center>
+</div>
+
+<div id="advancedDiv">
+<div id="projects">
+    <div class="functions">
+        <form class="new" action="">
+            New Project:
+            <input type="text" name="project" size="20"/>
+            <input type="submit" value="Create"/>
+        </form>
+        <form class="export" method="post" action="rest/download">
+            <input type="hidden" name="filename"/>
+            <input type="hidden" name="content"/>
+            <input type="submit" value="Export" class="external"/>
+        </form>
+        <input type="file" class="importFile"/>
+        <input type="button" class="import" value="Import"/>
+        <input type="button" class="delete" value="Delete"/>
+        <input type="button" class="deleteAll" value="Delete ALL" class="external"/>
+    </div>
+    <h3>Projects:</h3>
+
+    <div class="project"><input type='radio' name='projectChoice'/><label/></div>
+</div>
+
+
+<div id="dsDiv">
+    <h2>Data Source</h2>
+
+    <form id="dbForm" action="">
+        <table>
+            <tr>
+                <td colspan="2">Database connection:</td>
+            </tr>
+            <tr>
+                <td>DB System</td>
+                <td>
+                    <select name="system">
+                        <option value="mysql">MySQL</option>
+                        <option value="postgresql">PostgreSQL</option>
+                        <option value="oracle">Oracle</option>
+                        <option value="sqlserver">Microsoft SQL Server</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Host</td>
+                <td><input type="text" name="host" size="34"/> *</td>
+            </tr>
+            <tr>
+                <td>Database</td>
+                <td><input type="text" name="database" size="34"/> *</td>
+            </tr>
+            <tr>
+                <td>Username</td>
+                <td><input type="text" name="username" size="34"/></td>
+            </tr>
+            <tr>
+                <td>Password</td>
+                <td><input type="password" name="password" size="34"/></td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="submit" value="Connect to database" class="external"/></td>
+            </tr>
+        </table>
+    </form>
+    <form id="uploadForm" enctype="multipart/form-data" method="post" action="rest/uploadDataSource"
+          target="uploadTarget">
+        <span>File upload:</span><br/>
+        <input type="file" name="file" size="44"/><br/>
+        <input type="submit" value="Upload file" class="external"/>
+    </form>
+    <div id="dsDescription"></div>
+    <table id="schemaTable">
+        <thead>
+        <tr>
+            <th>Table</th>
+            <th>Columns</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td/>
+            <td/>
+        </tr>
+        </tbody>
+    </table>
+    <input type="button" class="next" value="Next  (Joins)  >"/>
+</div>
+
+<hr class="hrClass"/>
+
+<div id="joinDiv">
+    <h2>Joins</h2>
+    <input type="button" class="add" value="Add Join"/>
+    <input type="button" class="edit" value="Edit"/>
+    <input type="button" class="delete" value="Delete"/>
+    <br/>
+
+    <table>
+        <thead>
+        <tr>
+            <th/>
+            <th colspan="2">Foreign Key</th>
+            <th colspan="2">Primary Key</th>
+            <th/>
+        </tr>
+        <tr>
+            <th/>
+            <th>Table</th>
+            <th>Column</th>
+            <th>Table</th>
+            <th>Column</th>
+            <th/>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><input type="radio" name="joinChoice"/></td>
+            <td/>
+            <td/>
+            <td/>
+            <td/>
+            <td/>
+        </tr>
+
+        <tr class="edit">
+            <td/>
+            <td><select name="foreignTable"/></td>
+            <td><select name="foreignColumn"/></td>
+            <td><select name="primaryTable"/></td>
+            <td><select name="primaryColumn"/></td>
+            <td>
+                <input type="button" value="Save" class="save"/>
+                <input type="button" value="Cancel" class="cancel"/>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+    <input type="button" class="back" value="&lt;  Back  (Data Source)"/>
+    <input type="button" class="next" value="Next  (Entities)  >"/>
+</div>
+
+<hr class="hrClass"/>
+
+<div id="entityDiv">
+    <div id="vocabularies">
+        <h4>Vocabularies:</h4>
+
+        <div class="vocabulary"><input type='radio' name='vocabularyChoice'/><label class="external"/></div>
+        <hr/>
+        <input type="button" class="showUpload" value="Upload custom..."/>
+    </div>
+
+    <h2>Entities</h2>
+    <input type="button" class="add" value="Add Entity"/>
+    <input type="button" class="add2" value="Add Attribute"/>
+    <input type="button" class="edit" value="Edit"/>
+    <input type="button" class="delete" value="Delete"/>
+    <br/>
+
+    <table>
+        <thead>
+        <tr>
+            <th/>
+            <th>Table</th>
+            <th>ID Column</th>
+            <th><a href="http://code.google.com/p/triplifier/wiki/Identifiers" target="_blank">ID Prefix</a></th>
+            <th>Class</th>
+            <th/>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><input type="radio" name="entityChoice"/></td>
+            <td/>
+            <td/>
+            <td/>
+            <td/>
+            <td/>
+        </tr>
+
+        <tr class="edit">
+            <td/>
+            <td><select name="table"/></td>
+            <td><select name="idColumn"/></td>
+            <td><input type=text name="idPrefixColumn"/></td>
+            <td>
+                <input type="hidden" name="rdfClass[name]"/>
+                <select name="rdfClass[uri]"/>
+            </td>
+            <td>
+                <input type="button" value="Save" class="save"/>
+                <input type="button" value="Cancel" class="cancel"/>
+            </td>
+        </tr>
+
+        <tr class="level2">
+            <td/>
+            <td colspan='5'>
+                <table>
+                    <thead>
+                    <tr>
+                        <th/>
+                        <th>Column</th>
+                        <th>Predicate</th>
+                        <th/>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><input type="radio" name="entityChoice"/></td>
+                        <td/>
+                        <td/>
+                        <td/>
+                    </tr>
+
+                    <tr class="edit">
+                        <td/>
+                        <td><select name="column"/></td>
+                        <td>
+                            <input type="hidden" name="rdfProperty[name]"/>
+                            <select name="rdfProperty[uri]"/>
+                        </td>
+                        <td>
+                            <input type="button" value="Save" class="save"/>
+                            <input type="button" value="Cancel" class="cancel"/>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <input type="button" class="back" value="&lt;  Back  (Joins)"/>
+    <input type="button" class="next" value="Next  (Relations)  >"/>
+</div>
+
+<hr class="hrClass"/>
+
+<div id="relationDiv">
+    <h2>Entity Relations</h2>
+    <input type="button" class="add" value="Add Relation"/>
+    <input type="button" class="edit" value="Edit"/>
+    <input type="button" class="delete" value="Delete"/>
+    <br/>
+
+    <table>
+        <thead>
+        <tr>
+            <th/>
+            <th>Subject Entity</th>
+            <th>Predicate</th>
+            <th>Object Entity</th>
+            <th/>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><input type="radio" name="relationChoice"/></td>
+            <td/>
+            <td/>
+            <td/>
+            <td/>
+        </tr>
+
+        <tr class="edit">
+            <td/>
+            <td><select name="subject"/></td>
+            <td><select name="predicate"/></td>
+            <td><select name="object"/></td>
+            <td>
+                <input type="button" value="Save" class="save"/>
+                <input type="button" value="Cancel" class="cancel"/>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+    <input type="button" class="back" value="&lt;  Back  (Entities)"/>
+    <input type="button" class="next" value="Next  (Triplify)  >"/>
+</div>
+
+<hr class="hrClass"/>
+
+<div id="triplifyDiv">
+    <h2>Triplify!</h2>
+    <input type="button" id="getMapping" value="Get Mapping" class="external"/>
+    <input type="button" id="getTriples" value="Get Triples" class="external"/>
+    <input type="button" id="sendToBiSciCol" value="Send To BiSciCol" class="external"/>
+
+    <form id="sendToBiSciColForm" method="post" action="" target="uploadTarget">
+        <input type="hidden" name="url"/>
+    </form>
+    <input type="button" class="back" value="&lt;  Back  (Relations)"/>
+</div>
+</div>
+
+<div id="footer">
+    <a href="http://biscicol.org/">BiSciCol</a> is funded from a grant from the National Science Foundation. News and
+    updates via our <a href="http://biscicol.blogspot.com/">blog</a>
+</div>
+
+<div id="vocabularyUpload">
+    <h3>Custom vocabulary:</h3>
+    Upload vocabulary from local file:<br/>
+
+    <form class="uploadLocal" enctype="multipart/form-data" method="post" action="rest/uploadVocabulary"
+          target="uploadTarget">
+        <input type="file" name="file" size="44"/><br/>
+        <input type="submit" name="submitBtn" value="Upload" class="external"/>
+    </form>
+    <hr/>
+    Load vocabulary from URL:<br/>
+
+    <form class="loadUrl" method="post" action="rest/uploadVocabulary" target="uploadTarget">
+        <input type="text" name="url" size="56"/><br/>
+        <input type="submit" name="submitBtn" value="Load" class="external"/>
+    </form>
+    <hr/>
+    <input type="button" class="hideUpload" value="Cancel"/>
+</div>
+
+<div id="status"></div>
+<div id="overlay"></div>
+
+<iframe id="uploadTarget" name="uploadTarget"></iframe>
+
+</body>
+</html>

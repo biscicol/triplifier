@@ -1,0 +1,262 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body > hr {
+	margin: 0 8px;
+	clear: both;
+}
+
+h1, h2, h3, h4 {
+	margin: 0;
+}
+
+table {
+	border-collapse: collapse; 
+}
+
+/* Buttons that require network connection */
+.external {
+    color: blue;
+}
+
+#header, #footer {
+	margin: 0;
+    padding: 8px;
+    color: #333;
+    background-color: #ddd;
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+}
+
+/* Help link */
+#header a {
+	float: right;
+	margin-left: 10px;
+}
+
+#projects {
+	margin: 0;
+	padding: 8px;
+    background-color: #eee;
+    border-bottom: 1px solid gray;
+}
+
+#projects h3 {
+	margin-bottom: 10px;
+}
+
+#projects div.project {
+	display: inline;
+	margin: 0 8px 0 0;
+}
+
+#projects div.project input:checked + label {
+	color: crimson;
+	font-weight: bold;
+}
+
+#projects div.functions {
+	float: right;
+	margin: 0 0 8px 16px;
+}
+
+#projects div.functions form {
+	display: inline;
+}
+
+#projects form.new, #projects input.import {
+	margin-right: 24px;
+}
+
+#projects input.importFile {
+	display: none;
+}
+
+#dbForm {
+	float: left;
+	margin: 0 50px 8px 0;
+}
+
+#dbForm td{
+	padding: 4px;
+}
+
+#uploadForm input, #uploadForm span{
+	margin: 5px;
+}
+
+#dsDescription {
+	margin-top: 8px;
+	clear: both;
+}
+
+#schemaTable {
+	margin: 8px 0;
+}
+
+#schemaTable th, #schemaTable td {
+	padding: 4px;
+	border: 2px solid #bbb; 	
+}
+
+#joinDiv td:first-child+td+td, #joinDiv tr:first-child > th:first-child+th , #joinDiv tr+tr > th:first-child+th+th {
+	border-right: 1px solid #bbb; 	
+}
+
+.active h2 {
+	color: crimson;
+}
+
+.flexTable h2 {
+	display: inline;
+	margin-right: 16px;
+}
+
+.flexTable, #dsDiv, #systemProjects  {
+	padding: 10px;
+}
+
+.flexTable > table {
+	margin: 4px 0;
+	border: 2px solid #bbb;
+    background-color: #eee;
+/*	color: #555; */
+}
+
+.flexTable.active > table {
+	border-color: crimson;
+/*	color: black; */
+}
+
+.flexTable > input {
+	margin: 8px 4px;
+}
+
+.flexTable > table th {
+	text-align: left;
+	padding: 4px 8px;
+}
+
+.flexTable > table td {
+	padding: 4px 8px;
+	border-top: 2px solid #bbb; 	
+}
+
+.flexTable > table td:first-child {
+	padding: 2px;
+	border-right: 2px solid #bbb; 	
+}
+
+.flexTable > table > tbody > tr > td + td{
+}
+
+.flexTable > table tr.level2 > td {
+	border-top: none;
+	padding: 0;
+}
+
+.flexTable > table tr.level2 table {
+    background-color: white;
+	margin: 8px;
+}
+
+.flexTable > table tr.level2 table td {
+	border-top: 1px solid #bbb; 	
+	border-right: none !important; 	
+}
+
+.flexTable > table tr.level2 table th {
+	border-right: none !important; 	
+}
+
+.flexTable > table .edit td {
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+.flexTable > table .editData+.edit td {
+	padding-top: 0;
+	border-top: none;
+}
+
+.editData td, .editData th, .edit td {
+    z-index: 1;
+    position: relative;
+}
+#simpleDiv {
+    float:center;
+   padding:20px;
+   margin-top:40px;
+   margin-bottom:40px;
+}
+#vocabularies {
+	float: right;
+	padding: 8px;
+	margin: 0 0 10px 0;
+    background-color: #eee;
+    border: 2px solid blue;
+    z-index: 1;
+	position: relative;
+}
+
+#vocabularies div.vocabulary {
+	margin-top: 4px;
+}
+
+#vocabularyUpload {
+    position: fixed;
+	width: 364px;
+	margin-left: -182px;
+    top: 30%;
+	left: 50%;
+    padding: 10px;
+    z-index: 3;
+	border: 2px solid blue; 	
+    background-color: white;
+}
+
+#vocabularyUpload h3 {
+	margin-bottom: 8px;
+}
+
+#vocabularyUpload hr {
+	margin: 14px 0 10px 0;
+}
+
+#vocabularyUpload input {
+	margin-top: 4px;
+}
+
+#status {
+    position: fixed;
+	width: 300px;
+	margin-left: -150px;
+    top: 48%;
+	left: 50%;
+    padding: 10px;
+    z-index: 4;
+	border: 2px solid crimson; 	
+    background-color: white;
+	font-size: 120%;
+}
+
+#overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #ddd;
+    opacity: 0.75;
+}
+
+#uploadTarget {
+	display: none;
+}
+
+
+#advancedDiv {
+    display:none;
+}
