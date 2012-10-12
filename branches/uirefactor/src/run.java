@@ -4,7 +4,7 @@ import java.io.FileOutputStream;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileUtils;
-import de.fuberlin.wiwiss.d2rq.ModelD2RQ;
+import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
 import reader.ReaderManager;
 import reader.TabularDataConverter;
 import reader.plugins.*;
