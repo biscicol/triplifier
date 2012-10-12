@@ -1,166 +1,317 @@
+function Project(name) {
+	this.name = name;
+	this.dateTime = "";
+	this.connection = {};
+	this.schema = [];
+	this.joins = [];
+	this.entities = [];
+	this.relations = [];
+
+	// An array for keeping track of observers of this project.
+	this.observers = [];
+}
+
+// Project property names.
+Project.PROPNAMES = ['name', 'dateTime', 'connection', 'schema', 'joins', 'entities', 'relations'];
+
+// Notification events.
+/*Project.prototype.NAME_CHANGED = 0;
+Project.prototype.DATETIME_CHANGED = 0;
+Project.prototype.CONN_CHANGED = 0;
+Project.prototype.SCHEMA_CHANGED = 0;
+Project.prototype.JOINS_CHANGED = 0;
+Project.prototype.ENT_CHANGED = 0;
+Project.prototype.REL_CHANGED = 0;*/
+
+Project.prototype.registerObserver = function(observer) {
+	this.observers.push(observer);
+}
+
+Project.prototype.notifyPropertyChange = function(propname) {
+	for (var cnt = 0; cnt < this.observers.length; cnt++) {
+		this.observers[cnt].projectPropertyChanged(this, propname);
+	}
+}
+
+Project.prototype.getProperty = function(propname) {
+	return this[propname];
+}
+
+Project.prototype.setProperty = function(propname, newval) {
+	this[propname] = newval;
+	this.notifyPropertyChange(propname);
+}
+
+Project.prototype.setName = function(newname) {
+	this.name = newname;
+	this.notifyObservers(Project.NAME_CHANGED);
+}
+
+Project.prototype.getName = function() {
+	return this.name;
+}
+
 /**
- * Provides functionality related to projects, such as:
- * open, create, export, import, delete, delete all. 
- * When instantiated, binds functions to relevant forms 
- * and inputs, populates projects stored in localStorage,
- * loads first project (or creates default project).
- * 
- * @param element {jQuery} DOM element containing all 
- * 		project controls. Example html:
- * @codestart html
- * <div id="projects">
- *	<div class="functions">
- *		<form class="new" action="">
- *			New Project:
- *			<input type="text" name="project" size="20" />
- *			<input type="submit" value="Create" />
- *		</form>
- *		<form class="export" method="post" action="rest/download">
- *			<input type="hidden" name="filename" />
- *			<input type="hidden" name="content" />
- *			<input type="submit" value="Export" class="external" />
- *		</form>
- *		<input type="file" class="importFile" />
- *		<input type="button" class="import" value="Import" />
- *		<input type="button" class="delete" value="Delete" />
- *		<input type="button" class="deleteAll" value="Delete ALL" class="external" />
- *	</div>
- *	<h3>Projects:</h3>
- *	<div class="project"><input type='radio' name='projectChoice' /><label /></div>
- * </div>
- * @codeend
- * @param projectsStorage {String} localStorage key whose value is 
- * 		an array of names of all projects stored in localStorage.
- * @param project {Object} Object with all project parts that 
- * 		are stored as separate localStorage entries.
- * @param projectKey {String} Key in 'project' whose value is project name.
- * @param getStorageKeyFn {Function(part, project)} Function that 
- * 		returns {String} localStorage key whose value is project 
- * 		part for given {String} part and {String} project.
- * @param onOpenProjectFn {Function()} Function {void} called 
- * 		when a project is opened.
- */
-function ProjectManager(element, projectsStorage, project, projectKey, getStorageKeyFn, onOpenProjectFn) {
+ * Get the total number of columns in this project's source data schema.
+ **/
+Project.prototype.getColumnCount = function() {
+	var totalcols = 0;
 
-	var lastProject = 0, // used to assign ids to project DOM elements (needed for labels to work)
-		projectTemplate = element.find("div.project").remove(); // used to create project DOM elements
-
-	// assign event handlers
-	element.find("form.new").submit(newProject);	
-	element.find("form.export").submit(exportProject);	
-	element.find("input.importFile").change(importProject);	
-	element.find("input.import").click(function() {element.find("input.importFile").val("").click();});	
-	element.find("input.delete").click(deleteProject);	
-	element.find("input.deleteAll").click(deleteAll);
-
-	// populate projects section, load first (or default) project
-	var projects = [];
-	$.each(localStorage.getObject(projectsStorage) || [], function(i, prj) { 
-		projects.push(projectElement(prj).get(0));
+	$.each(this.schema, function(i, table) {
+		totalcols += table.columns.length;
 	});
-	if (projects.length) 
-		$(projects).appendTo(element).first()
-			.children("input").prop("checked", true).change(); // load first project
-	else
-		newDefaultProject(); // load default project
 
-	function newProject() {
-		var newProject = this.project.value;
-		if (!newProject) {
-			alert("Please enter a project name.");
-			this.project.focus();
-			return false;
-		}
-		var projects = localStorage.getObject(projectsStorage) || [];
-		if ($.inArray(newProject, projects) >= 0) {
-			alert("Project '" + newProject + "' already exists. Please use a different name.");
-			this.project.focus();
-			return false;
-		}
-		addProject(newProject, projects);
+	return totalcols;
+}
+
+/**
+ * Find a specific table in this project's source data schema.
+ **/
+Project.prototype.findTable = function(tablename) {
+	table = this.schema[indexOf(this.schema, "name", tablename)];
+	
+	return table;	
+}
+
+/*Project.prototype.setDateTime = function(newdatetime) {
+	this.datetime = newdatetime;
+	this.notifyObservers(Project.DATETIME_CHANGED);
+}
+
+Project.prototype.getDateTime = function() {
+	return this.datetime;
+}
+
+Project.prototype.setConnection = function(newconn) {
+	this.connection = $.extend(true, {}, newconn);
+	this.notifyObservers(Project.CONN_CHANGED);
+}
+
+Project.prototype.getConnection = function() {
+	return $.extend(true, {}, this.connection);
+}
+
+Project.prototype.setSchema = function(newschema) {
+	this.schema = newschema;
+	this.notifyObservers(Project.SCHEMA_CHANGED);
+}
+
+Project.prototype.getSchema = function() {
+	return this.schema;
+}
+
+Project.prototype.setJoins = function(newjoins) {
+	this.joins = newjoins;
+	this.notifyObservers(Project.JOINS_CHANGED);
+}
+
+Project.prototype.getJoins = function() {
+	return this.joins;
+}
+
+Project.prototype.setEntities = function(newents) {
+	this.entities = newents;
+	this.notifyObservers(Project.ENT_CHANGED);
+}
+
+Project.prototype.getEntities = function() {
+	return this.entities;
+}
+
+Project.prototype.setRelations = function(newrels) {
+	this.relations = newrels;
+	this.notifyObservers(Project.REL_CHANGED);
+}
+
+Project.prototype.getRelations = function() {
+	return this.relations;
+}*/
+
+
+
+/**
+ * ProjectManager takes care of saving, retrieving, and deleting projects in local
+ * storage, as well as creating new projects.  It also implements exporting and
+ * importing projects to and from files.
+ */
+function ProjectManager() {
+	this.projectskey = "triplifier.projects";
+	this.projects = localStorage.getObject(this.projectskey) || [];
+}
+
+/**
+ * Handle update notifications from projects that we're following.
+ **/
+ProjectManager.prototype.projectPropertyChanged = function(project, propname) {
+	//alert('property: ' + propname + '\nchanged to: ' + project.getProperty(propname));
+	localStorage.setObject(this.getStorageKey(propname, project.getName()), project.getProperty(propname));
+}
+
+/**
+ * Get the total number of projects in this ProjectManager.
+ **/
+ProjectManager.prototype.getProjectCnt = function() {
+	return this.projects.length;
+}
+
+/**
+ * Return an array of all project names.
+ **/
+ProjectManager.prototype.getProjectNames = function() {
+	return this.projects.slice()
+}
+
+/**
+ * See if a project with a given name already exists in local storage.
+ **/
+ProjectManager.prototype.projectExists = function(projectname) {
+	return $.inArray(projectname, this.projects) >= 0
+}
+
+/**
+ * Create a new project with the given name.  The project will only be created if
+ * there is no existing project with the same name.
+ **/
+ProjectManager.prototype.newProject = function(projectname) {
+	if (!this.projectExists(projectname)) {
+		var project = new Project(projectname);
+		project.registerObserver(this);
+
+		this.addProject(project);
+		return project;
+	} else {
 		return false;
 	}
-	
-	function addProject(newProject, projects) {
-		projects.push(newProject);
-		localStorage.setObject(projectsStorage, projects);
-		projectElement(newProject).appendTo(element)
-			.children("input").prop("checked", true).change();
-	}
-	
-	function projectElement(prj) {
-		lastProject++;
-		return projectTemplate.clone().children("input").val(prj)
-			.attr("id", "p" + lastProject).change(openProject).end()
-			.children("label").attr("for", "p" + lastProject).html(prj).end();
-	}
-	
-	function openProject() {
-		var prj = this.value;
-		$.each(project, function(key, value) { 
-			project[key] = localStorage.getObject(getStorageKeyFn(key, prj));
-		});
-		project[projectKey] = prj; // this is just in case someone has old projects that don't have 'project' property in localStorage
-		onOpenProjectFn();
-	}
-	
-	function deleteProject() {
-		if (!confirm("Are you sure you want to DELETE project '" + project[projectKey] + "'?")) 
-			return;
-		var projects = localStorage.getObject(projectsStorage) || [],
-			idx = $.inArray(project[projectKey], projects);
-		if (idx >= 0) {
-			projects.splice(idx, 1);
-			localStorage.setObject(projectsStorage, projects);
-		}
-		$.each(project, function(key, value) { 
-			localStorage.removeItem(getStorageKeyFn(key, project[projectKey]));
-		});
-		element.find("div.project").children("input[value='" + project[projectKey] + "']").parent().remove()
-			.end().end().first().children("input").prop("checked", true).change();
-		if (!projects.length) 
-			newDefaultProject();
-	}
-	
-	function deleteAll() {
-		if (confirm("Are you sure you want to DELETE ALL PROJECTS?")) {
-			localStorage.clear();
-			location.reload();
-		}
-	}
-	
-	function newDefaultProject() {
-		element.find("form.new input[name='project']").val("Default Project")
-			.parent("form").submit().end().val("");
-	}
-	
-	function exportProject() {
-		this.filename.value = project[projectKey].replace(/\s+/g, "_") + ".trp";
-		this.content.value = JSON.stringify(project); 
-	}
-	
-	function importProject() {
-	    var reader = new FileReader();
-	    reader.onload = readProject;
-	    reader.readAsText(this.files[0]);
-	}
-	
-	function readProject() {
-		try {
-			var newProject = JSON.parse(this.result),
-				projects = localStorage.getObject(projectsStorage) || [],
-				originalName = newProject[projectKey],
-				i = 1;
-			while ($.inArray(newProject[projectKey], projects) >= 0)
-				newProject[projectKey] = originalName + "." + i++;
-			$.each(project, function(key, value) { 
-				localStorage.setObject(getStorageKeyFn(key, newProject[projectKey]), newProject[key]);
-			});
-			addProject(newProject[projectKey], projects);
-		}
-		catch(err) {
-			alert("Error reading file.");
-		}	
-	}
-	
 }
+
+/**
+ * Adds a project to the projects list and to local storage.
+ **/
+ProjectManager.prototype.addProject = function(project) {
+	// add the project name to the projects list
+	this.projects.push(project.getName());
+
+	// update the project names in local storage
+	localStorage.setObject(this.projectskey, this.projects);
+
+	// save the project properties to local storage
+	for (var cnt = 0; cnt < Project.PROPNAMES.length; cnt++) {
+		var propname = Project.PROPNAMES[cnt];
+		localStorage.setObject(this.getStorageKey(propname, project.getName()), project.getProperty(propname));
+	}
+}
+
+/**
+ * Create a new, empty project.  Note that even the "name" property is left empty.
+ **/
+ProjectManager.prototype.createEmptyProject = function() {
+	return {
+		name:"",
+		dateTime:"",
+		connection:{},
+		schema:[],
+		joins:[],
+		entities:[],
+		relations:[]
+	};
+}
+
+/**
+ * Open a project that was saved in local storage.
+ **/
+ProjectManager.prototype.openProject = function(projectname) {
+	var project = new Project(projectname);
+
+	/*$.each(project, function(key, value) { 
+		project[key] = localStorage.getObject(getStorageKeyFn(key, prj));
+	});*/
+	// Load the project properties
+	for (var cnt = 0; cnt < Project.PROPNAMES.length; cnt++) {
+		var propname = Project.PROPNAMES[cnt];
+		project.setProperty(propname, localStorage.getObject(this.getStorageKey(propname, projectname)));
+	}
+
+	project.registerObserver(this);
+
+	return project;
+}
+
+/**
+ * Delete a project from both the ProjectManager and local storage.
+ **/
+ProjectManager.prototype.deleteProject = function(project) {
+	// get the index of the project in the projects array
+	var index = $.inArray(project.getName(), this.projects);
+
+	// remove the project from the projects array
+	if (index >= 0) {
+		this.projects.splice(index, 1);
+		localStorage.setObject(this.projectskey, this.projects);
+	}
+
+	// remove the project items from local storage
+	/*$.each(project, function(key, value) { 
+		localStorage.removeItem(this.getStorageKey(key, project['name']));
+	});*/
+	for (var cnt = 0; cnt < Project.PROPNAMES.length; cnt++) {
+		var propname = Project.PROPNAMES[cnt];
+		localStorage.removeItem(this.getStorageKey(propname, project.getName()));
+	}
+}
+
+/**
+ * Delete all projects from local storage.
+ **/
+ProjectManager.prototype.deleteAll = function() {
+	localStorage.clear();
+}
+	
+/**
+ * Attempt to read a project definition from the specified file.  The file must contain
+ * a JSON-encoded project object.
+ **/
+ProjectManager.prototype.importProject = function(file) {
+    var reader = new FileReader();
+
+    // Save a local reference to this ProjectManager object.
+    var self = this;
+
+    // Define a function for handling the file contents.
+    reader.onload = function() {
+	    self.loadProjectJSON(this.result);
+	}
+
+    // Read the file.
+    reader.readAsText(file);
+}
+
+/**
+ * Attempt to load a project from a JSON-formatted string representation of a project object.
+ **/
+ProjectManager.prototype.loadProjectJSON = function(jsonstring) {
+	try {
+		var newProject = JSON.parse(jsonstring);
+		var originalName = newProject['name'];
+		var i = 1;
+
+		// Generate a unique name for the project if a project with the same name
+		// already exists.
+		while (this.projectExists(newProject['name']))
+			newProject['name'] = originalName + "." + i++;
+
+		// Save the contents of the project to local storage.
+		$.each(newProject, function(key, value) { 
+			localStorage.setObject(this.getStorageKey(key, newProject['name']), newProject[key]);
+		});
+
+		this.addProject(newProject['name']);
+	}
+	catch(err) {
+		alert("Error reading file.");
+	}
+}
+
+ProjectManager.prototype.getStorageKey = function(key, prj) {
+	return "triplifier." + key + (prj ? "." + prj : "");
+}
+
