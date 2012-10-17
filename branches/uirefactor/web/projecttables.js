@@ -99,9 +99,7 @@ function onJoinModify(oldJoin, newJoin) {
 
 /**
  * EntitiesTable is a subclass of EditableTable that allows the user to add and modify entities in
- * the triplifier interface.  This is the most complicated of the project tables, because we need to
- * handle both "entities" and their attributes.  Thus, many of the methods in EditableTable need to
- * be extended to provide the additional functionality.
+ * the triplifier interface.
  **/
 function EntitiesTable(element) {
 	// call the parent's constructor
@@ -197,28 +195,83 @@ EntitiesTable.prototype.TableChanged = function(eventsrc, entity) {
 	ob.addOptionsTo("idColumn").val(pk);
 }
 
-/**
- * Use the VocabularyManager (initialized in triplifier.js) to populate the "Class" drop-down list.
- * This is still mostly a relic from the old system and should be refactored at some point -- it still
- * relies on a global variable called vocabularyManager.  Not very pretty.
- **/
-EntitiesTable.prototype.authorRdfControls =  function(tr, ob, element, items, entityClass) {
-	vocabularyManager.onChangeFn(function() {
-		var vocabulary = vocabularyManager.getSelectedVocabulary();
-		var hasItems = vocabulary && vocabulary[items] && vocabulary[items].length;
 
-		if (hasItems) {
-			$.each(vocabulary[items], function(i, item) {
-				if (!entityClass || !item.domain || $.inArray(entityClass, item.domain) >= 0)
-					ob.addOption(item.uri, "title='" + item.uri + "'", item.name);
-			});
-			ob.addOptionsTo(element + "[uri]").change(function() {
-				tr.find("input[name='" + element + "[name]']").val(this.options[this.selectedIndex].innerHTML);
-			})
-			.change();
-		}
-		tr.find("input.save, select[name='" + element + "[uri]']").prop("disabled", !hasItems);
+
+/**
+ * AttributesTable is a subclass of EditableTable that allows the user to add and modify the attributes
+ * of entities in the triplifier interface.
+ **/
+function AttributesTable(element) {
+	// call the parent's constructor
+	this.superclass(element);
+}
+
+// AttributesTable inherits from EditableTable
+AttributesTable.prototype = new EditableTable();
+AttributesTable.prototype.superclass = EditableTable;
+
+/**
+ * Adds the entity names from the project to the table row.
+ *
+ * @param tr The table row with the input elements to populate.
+ * @param isedit Specifies whether this is an "add" or "edit" request.
+ **/
+AttributesTable.prototype.populateTableRowOptions = function(tr, isedit) {
+	var ob = new OptionBuilder(tr);
+	var attribute = {};
+
+	// If this is an edit operation, get the currently-selected attribute from the project.
+	if (isedit)
+		attribute = this.getSelectedItemFromProject();
+
+	var self = this;
+
+	// Determine which entity names should be added to the "Concept" drop-down list.
+	$.each(this.project.entities, function(i, entity) {
+		//if (table.name == entity.table || self.project.getEntityCntByTable(table.name) < table.columns.length)
+		//	ob.addOption(table.name, "data-schemaIdx='" + i + "'");
+		ob.addOption(entity.table + '.' + entity.idColumn, "entity-Idx='" + i + "'");
 	});
-	vocabularyManager.onChangeFn();
+
+	// Add the options to the "Concepts" list.
+	var entitieslist = ob.addOptionsTo("entity");
+	
+	//tablelist.prop("disabled", !!entity.table);
+
+	entitieslist.change(function() { self.EntityChanged(this, attribute); });
+	entitieslist.change();
+}
+
+/**
+ * Updates the "Database columns" options to reflect the currently-selected entity.
+ *
+ * @param eventsrc The drop-down list that triggered the change event.
+ * @param attribute The attribute item being edited.  If this is an "add" operation, this will be {}.
+ **/
+AttributesTable.prototype.EntityChanged = function(eventsrc, attribute) {
+	// get the index of the selected entity in the project
+	var selentindex = eventsrc.options[eventsrc.selectedIndex].getAttribute("entity-Idx");
+	// get the object representing the selected entity
+	var entity = this.project.entities[selentindex];
+
+	var tr = $(eventsrc).parent().parent();
+	var ob = new OptionBuilder(tr);
+
+	// Go through each column in the selected entity's table and add it to the list
+	// if either it is the column of the attribute selected for editing or if it is
+	// not already used in another attribute.
+	var self = this;
+	var attribs = self.project.getAttributesByEntity(entity.table + '.' + entity.idColumn);
+	$.each(this.project.getTableByName(entity.table).columns, function(i, column) { 
+		if (attribute.column == column) {
+			ob.addOption(column);
+		} else if (indexOf(attribs, "column", column) < 0 && entity.idColumn != column) {
+			ob.addOption(column);
+		}
+	});
+
+	ob.addOptionsTo("column");
+
+	this.authorRdfControls(tr, ob, "rdfProperty", "properties", entity.rdfClass.uri);
 }
 

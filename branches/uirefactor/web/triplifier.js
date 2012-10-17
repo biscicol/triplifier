@@ -25,6 +25,7 @@ $(function() {
 	// create the project tables (this also removes blank DOM elements)
 	joinFT = new JoinsTable($("#joinDiv"));
 	entitiesPT = new EntitiesTable($("#entityDiv"));
+	attributesPT = new AttributesTable($("#attributeDiv"));
 
 	// assign event handlers
 	$("#dbForm").submit(inspect);
@@ -122,6 +123,7 @@ function updateFlexTables() {
 	//	return !findInSchema(join.foreignTable, join.foreignColumn) || !findInSchema(join.primaryTable, join.primaryColumn);
 	//});
 	entitiesPT.setProject(mainproject, 'entities');
+	attributesPT.setProject(mainproject, 'attributes');
 
 	// Activate/deactivate each section depending on the project state.  Note the use of "!!" to ensure
 	// we have a true boolean value.
@@ -260,6 +262,27 @@ function activateDS(deactivate) {
 
 function addJoinButton() { 
 	return project.joins.length == project.schema.length - 1;
+}
+
+/**
+ * Searches for a specified table name in a project's schema.  If only the table name
+ * is specified, then either the matching table object or "undefined" is returned.  If
+ * a column name is also provided, then a table object is only returned if it has the
+ * matching table name and contains a matching column name.  Otherwise, "undefined" is
+ * returned.
+ *
+ * @param project The project to search.
+ * @param table The table name to search for.
+ * @param column The column name to search for.
+ **/
+function findInSchema(project, table, column) {
+	// get the table object from the project's schema
+	table = project.schema[indexOf(project.schema, "name", table)];
+
+	// see if the table contains the specified column
+	if (table && column && $.inArray(column, table.columns) < 0)
+		table = undefined;
+	return table;
 }
 
 function searchRelations(entity1, entity2) { 

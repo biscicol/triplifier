@@ -5,6 +5,7 @@ function Project(name) {
 	this.schema = [];
 	this.joins = [];
 	this.entities = [];
+	this.attributes = [];
 	this.relations = [];
 
 	// An array for keeping track of observers of this project.
@@ -12,7 +13,7 @@ function Project(name) {
 }
 
 // Project property names.
-Project.PROPNAMES = ['name', 'dateTime', 'connection', 'schema', 'joins', 'entities', 'relations'];
+Project.PROPNAMES = ['name', 'dateTime', 'connection', 'schema', 'joins', 'entities', 'attributes', 'relations'];
 
 // Notification events.
 /*Project.prototype.NAME_CHANGED = 0;
@@ -65,12 +66,38 @@ Project.prototype.getColumnCount = function() {
 }
 
 /**
- * Find a specific table in this project's source data schema.
+ * Searches for a specified table name in the project's schema.  If only the table name
+ * is specified, then either the matching table object or "undefined" is returned.  If
+ * a column name is also provided, then a table object is only returned if it has the
+ * matching table name and contains a matching column name.  Otherwise, "undefined" is
+ * returned.
+ *
+ * @param project The project to search.
+ * @param table The table name to search for.
+ * @param column The column name to search for.
  **/
-Project.prototype.findTable = function(tablename) {
-	table = this.schema[indexOf(this.schema, "name", tablename)];
-	
-	return table;	
+Project.prototype.getTableByName = function(table, column) {
+	// get the table object from the project's schema
+	table = this.schema[indexOf(this.schema, "name", table)];
+
+	// see if the table contains the specified column
+	if (table && column && $.inArray(column, table.columns) < 0)
+		table = undefined;
+	return table;
+}
+
+/**
+ * Get all of the attributes for a specific entity.
+ **/
+Project.prototype.getAttributesByEntity = function(entityname) {
+	var attribs = [];
+
+	$.each(this.attributes, function(i, attribute) {
+		if (attribute.entity == entityname)
+			attribs.push(attribute);
+	});
+
+	return attribs;
 }
 
 /**

@@ -294,6 +294,34 @@ EditableTable.prototype.getSelectedItemFromProject = function() {
 }
 
 /**
+ * Use the VocabularyManager (initialized in triplifier.js) to populate the RDF element drop-down lists.
+ * This is a relic from the old system and should be refactored at some point -- it still relies on a
+ * global variable called vocabularyManager.  Not very pretty.
+ **/
+EditableTable.prototype.authorRdfControls =  function(tr, ob, element, items, entityClass) {
+	vocabularyManager.onChangeFn(function() {
+		var vocabulary = vocabularyManager.getSelectedVocabulary();
+		var hasItems = vocabulary && vocabulary[items] && vocabulary[items].length;
+
+		if (hasItems) {
+			$.each(vocabulary[items], function(i, item) {
+				if (!entityClass || !item.domain || $.inArray(entityClass, item.domain) >= 0)
+					ob.addOption(item.uri, "title='" + item.uri + "'", item.name);
+			});
+			ob.addOptionsTo(element + "[uri]").change(function() {
+				tr.find("input[name='" + element + "[name]']").val(this.options[this.selectedIndex].innerHTML);
+			})
+			.change();
+		}
+		tr.find("input.save, select[name='" + element + "[uri]']").prop("disabled", !hasItems);
+	});
+	vocabularyManager.onChangeFn();
+}
+
+
+
+
+/**
  * OptionBuilder helps add input option values to a table row.  It is a utility class that can
  * be used by concrete implementations of populateTableRowOptions() in EditableTable.
  **/

@@ -164,7 +164,7 @@
 	</table>
 
 	<input type="button" class="back" value="&lt;  Back  (Data Source)" />
-	<input type="button" class="next" value="Next  (Entities)  >" />
+	<input type="button" class="next" value="Next  (Concepts)  >" />
 </div>
 
 <hr/>
@@ -222,8 +222,58 @@
 	</table>
 	
 	<input type="button" class="back" value="&lt;  Back  (Joins)" />
+	<input type="button" class="next" value="Next  (Attributes)  >" />
+</div>
+
+<hr/>
+
+
+<div id="attributeDiv">
+	<h2>4. Attributes</h2>
+	<input type="button" class="add" value="Add Attribute" />
+	<input type="button" class="edit" value="Edit" />
+	<input type="button" class="delete" value="Delete" />
+	<br/>
+	
+	<table>
+	<thead>
+		<tr>
+			<th/>
+			<th>Concept</th>
+			<th>Predicate</th>
+			<th>Database column</th>
+			<th/>
+		</tr>
+	</thead>
+	<tbody>		
+		<tr>
+			<td><input type="radio" name="entityChoice" /></td>
+			<td/>
+			<td/>
+			<td/>
+			<td/>
+		</tr>
+		<tr class="edit">
+			<td/>
+			<td><select name="entity" /></td>
+			<td>
+				<input type="hidden" name="rdfProperty[name]" />
+				<select name="rdfProperty[uri]" />
+			</td>
+			<td><select name="column" /></td>
+			<td>
+				<input type="button" value="Save" class="save" />
+				<input type="button" value="Cancel" class="cancel" />
+			</td>
+		</tr>
+	</tbody>
+	</table>
+	
+	<input type="button" class="back" value="&lt;  Back  (Concepts)" />
 	<input type="button" class="next" value="Next  (Relations)  >" />
 </div>
+
+<hr/>
 
 
 <div id="footer">
