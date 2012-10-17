@@ -164,7 +164,7 @@ EditableTable.prototype.addButtonClicked = function() {
 	tr.find("input.save").click(function() { self.saveRowInput(this); }).prop("disabled", false); // disabled: firefox bug fix
 	tr.find("input.cancel").click(function() { self.cancelRowInput(this); }).prop("disabled", false); // disabled: firefox bug fix
 
-	this.populateTableRowOptions(tr);
+	this.populateTableRowOptions(tr, false);
 
 	// add the input row to the table and make sure the table is visible
 	tr.appendTo(this.element.children("table").show())
@@ -182,7 +182,7 @@ EditableTable.prototype.editButtonClicked = function() {
 	tr.find("input.save").click(function() { self.saveEditedRowInput(this); }).prop("disabled", false); // disabled: firefox bug fix
 	tr.find("input.cancel").click(function() { self.cancelRowInput(this); }).prop("disabled", false); // disabled: firefox bug fix
 
-	this.populateTableRowOptions(tr);
+	this.populateTableRowOptions(tr, true);
 
 	// set the form values to match those of the targeted row
 	tr.formParams(this.project[this.property][this.selrowindex]);
@@ -256,9 +256,10 @@ EditableTable.prototype.saveEditedRowInput = function(srcelement) {
 
 	// read form values
 	var item = tr.formParams();
-
-	// get the element and old item from the project
+	
+	// get the appropriate project element
 	var projelement = this.project.getProperty(this.property);
+	// get the old item from the project
 	var olditem = projelement[this.selrowindex];
 
 	// update the values for this item
@@ -279,6 +280,17 @@ EditableTable.prototype.saveEditedRowInput = function(srcelement) {
 	newtr.children().first().children("input").change();
 
 	this.styleEdit(newtr, true);
+}
+
+/**
+ * Get the currently-selected item from the project.
+ **/
+EditableTable.prototype.getSelectedItemFromProject = function() {
+	// get the currently-selected item from the project
+	var projelement = this.project.getProperty(this.property);
+	var item = projelement[this.selrowindex];
+
+	return item;
 }
 
 /**

@@ -22,8 +22,11 @@ JoinsTable.prototype.setButtonStates = function() {
 
 /**
  * Adds the foreign table names from the project to the table row.
+ *
+ * @param tr The table row with the input elements to populate.
+ * @param isedit Specifies whether this is an "add" or "edit" request.
  **/
-JoinsTable.prototype.populateTableRowOptions = function(tr) {
+JoinsTable.prototype.populateTableRowOptions = function(tr, isedit) {
 	var ob = new OptionBuilder(tr);
 	$.each(this.project.schema, function(i, table) { 
 		ob.addOption(table.name, "data-schemaIdx='" + i + "'");
@@ -113,12 +116,12 @@ EntitiesTable.prototype.setButtonStates = function() {
 	// call the superclass implementation
 	this.superclass.prototype.setButtonStates.apply(this);
 
-	// See if any more entities can be specified and set the state of the "add" button accordingly.
+	// See if any more entity mappings can be specified and set the state of the "add" button accordingly.
 	var hasmoreents = this.project['entities'].length != this.project.getColumnCount();
 	this.element.children("input.add").prop("disabled", !hasmoreents);
 
 	// See whether any new attributes can be defined.
-	var hasmoreatts = false;
+	/*var hasmoreatts = false;
 	if (this.selrowindex != -1) {
 		var curent = this.project['entities'][this.selrowindex];
 		var table = this.project.findTable(curent.table);
@@ -127,7 +130,95 @@ EntitiesTable.prototype.setButtonStates = function() {
 				hasmoreatts = true;
 		}
 	}
-	this.element.children("input.add2").prop("disabled", !hasmoreatts);
+	this.element.children("input.add2").prop("disabled", !hasmoreatts);*/
 }
 
+/**
+ * Adds the table names from the project to the table row.
+ *
+ * @param tr The table row with the input elements to populate.
+ * @param isedit Specifies whether this is an "add" or "edit" request.
+ **/
+EntitiesTable.prototype.populateTableRowOptions = function(tr, isedit) {
+	var ob = new OptionBuilder(tr);
+	var entity = {};
+
+	// If this is an edit operation, get the currently-selected entity from the project.
+	if (isedit)
+		entity = this.getSelectedItemFromProject();
+
+	var self = this;
+
+	// Determine which table names should be added to the "Table" drop-down list.
+	$.each(this.project.schema, function(i, table) {
+		if (table.name == entity.table || self.project.getEntityCntByTable(table.name) < table.columns.length)
+			ob.addOption(table.name, "data-schemaIdx='" + i + "'");
+	});
+
+	// Add the options to the "Table" list.
+	var tablelist = ob.addOptionsTo("table");
+	
+	tablelist.prop("disabled", !!entity.table);
+
+	tablelist.change(function() { self.TableChanged(this, entity); });
+	tablelist.change();
+
+	this.authorRdfControls(tr, ob, "rdfClass", "classes");
+}
+
+/**
+ * Updates the "ID Column" options to reflect the currently-selected table name.
+ *
+ * @param eventsrc The drop-down list that triggered the change event.
+ * @param entity The entity item being edited.  If this is an "add" operation, this will be {}.
+ **/
+EntitiesTable.prototype.TableChanged = function(eventsrc, entity) {
+	// get the index of the selected table in the schema
+	var seltableindex = eventsrc.options[eventsrc.selectedIndex].getAttribute("data-schemaIdx");
+	// get the object representing the selected entity table
+	var entityTable = this.project.schema[seltableindex];
+
+	var ob = new OptionBuilder($(eventsrc).parent().parent());
+	var pk = "";
+
+	// Determine which column names should be added to the drop-down list.
+	var self = this;
+	$.each(entityTable.columns, function(i, column) {
+		// Only add the column if it is the column of the entity being edited or is not part
+		// of another entity.
+		if (column == entity.idColumn ||
+		    indexOf(self.project.entities, "table", entityTable.name, "idColumn", column) < 0) {
+			if ($.inArray(column, entityTable.pkColumns) >= 0)
+				pk = column;
+			ob.addOption(column, "", column + (column == pk ? "*" : ""));
+		}
+        });
+
+	ob.addOptionsTo("idColumn").val(pk);
+}
+
+/**
+ * Use the VocabularyManager (initialized in triplifier.js) to populate the "Class" drop-down list.
+ * This is still mostly a relic from the old system and should be refactored at some point -- it still
+ * relies on a global variable called vocabularyManager.  Not very pretty.
+ **/
+EntitiesTable.prototype.authorRdfControls =  function(tr, ob, element, items, entityClass) {
+	vocabularyManager.onChangeFn(function() {
+		var vocabulary = vocabularyManager.getSelectedVocabulary();
+		var hasItems = vocabulary && vocabulary[items] && vocabulary[items].length;
+
+		if (hasItems) {
+			$.each(vocabulary[items], function(i, item) {
+				if (!entityClass || !item.domain || $.inArray(entityClass, item.domain) >= 0)
+					ob.addOption(item.uri, "title='" + item.uri + "'", item.name);
+			});
+			ob.addOptionsTo(element + "[uri]").change(function() {
+				tr.find("input[name='" + element + "[name]']").val(this.options[this.selectedIndex].innerHTML);
+			})
+			.change();
+		}
+		tr.find("input.save, select[name='" + element + "[uri]']").prop("disabled", !hasItems);
+	});
+	vocabularyManager.onChangeFn();
+}
 

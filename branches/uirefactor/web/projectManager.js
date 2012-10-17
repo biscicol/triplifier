@@ -73,6 +73,20 @@ Project.prototype.findTable = function(tablename) {
 	return table;	
 }
 
+/**
+ * Get the number of entities associated with a specific database table.
+ **/
+Project.prototype.getEntityCntByTable = function(tablename) {
+	var count = 0;
+
+	$.each(this.entities, function(i, entity) {
+		if (entity['table'] == tablename)
+			count++;
+	});
+
+	return count;	
+}
+
 /*Project.prototype.setDateTime = function(newdatetime) {
 	this.datetime = newdatetime;
 	this.notifyObservers(Project.DATETIME_CHANGED);

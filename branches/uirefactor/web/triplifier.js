@@ -45,6 +45,8 @@ $(function() {
 	$("#dsDiv > input.next").click(dSNextButtonClicked);	
 	$('#joinDiv input.back').click(joinsBackButtonClicked);
 	$('#joinDiv input.next').click(joinsNextButtonClicked);
+	$('#entityDiv input.back').click(entitiesBackButtonClicked);
+	$('#entityDiv input.next').click(entitiesNextButtonClicked);
 });
 
 /**
@@ -66,14 +68,26 @@ function dSNextButtonClicked() {
 }
 
 function joinsNextButtonClicked() {
-	$("#vocabularies").fadeOut();
-	joinFT.setActive(true);
+	//$("#vocabularies").fadeOut();
+	joinFT.setActive(false);
+	entitiesPT.setActive(true);
 	return true;
 }
 
 function joinsBackButtonClicked() {
 	activateDS();
 	joinFT.setActive(false);
+}
+
+function entitiesNextButtonClicked() {
+	//$("#vocabularies").fadeOut();
+	//joinFT.setActive(true);
+	return true;
+}
+
+function entitiesBackButtonClicked() {
+	joinFT.setActive(true);
+	entitiesPT.setActive(false);
 }
 
 function updateSchemaUI() {
@@ -113,6 +127,7 @@ function updateFlexTables() {
 	// we have a true boolean value.
 	activateDS(mainproject.schema.length); 
 	joinFT.setActive(!!mainproject.schema.length && !mainproject.entities.length && !mainproject.relations.length);
+	entitiesPT.setActive(!!mainproject.entities.length && !mainproject.relations.length)
 }
 
 function alertError(xhr, status, error) {
