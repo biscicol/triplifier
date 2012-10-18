@@ -210,6 +210,32 @@ function AttributesTable(element) {
 AttributesTable.prototype = new EditableTable();
 AttributesTable.prototype.superclass = EditableTable;
 
+AttributesTable.prototype.setButtonStates = function() {
+	// call the superclass implementation
+	this.superclass.prototype.setButtonStates.apply(this);
+
+	// See if any more attribute mappings can be specified and set the state of the "add" button accordingly.
+	var hasmoreents = this.project['entities'].length != this.project.getColumnCount();
+
+	// See whether any new attributes can be defined.
+	var hasmoreatts = this.project.entities.length < 1;
+	var self = this;
+	$.each(this.project.entities, function(i, entity) {
+		var entname = entity.table + '.' + entity.idColumn;
+
+		var attribs = self.project.getAttributesByEntity(entname);
+		var table = self.project.getTableByName(entity.table);
+
+		//alert(entname + ': ' + attribs.length + ', ' + table.columns.length);
+		if (attribs.length < (table.columns.length - 1)) {
+			// There are fewer attributes then columns, so we can still define more attributes.
+			hasmoreatts = true;
+		}
+	});
+
+	this.element.children("input.add").prop("disabled", !hasmoreatts);
+}
+
 /**
  * Adds the entity names from the project to the table row.
  *
@@ -226,11 +252,22 @@ AttributesTable.prototype.populateTableRowOptions = function(tr, isedit) {
 
 	var self = this;
 
-	// Determine which entity names should be added to the "Concept" drop-down list.
+	// Determine which entity names should be added to the "Concept" drop-down list.  Only add an
+	// entity if it is either the entity of the attribute currently selected for editing or still
+	// has attributes left to define.
 	$.each(this.project.entities, function(i, entity) {
-		//if (table.name == entity.table || self.project.getEntityCntByTable(table.name) < table.columns.length)
-		//	ob.addOption(table.name, "data-schemaIdx='" + i + "'");
-		ob.addOption(entity.table + '.' + entity.idColumn, "entity-Idx='" + i + "'");
+		var entname = entity.table + '.' + entity.idColumn;
+		if (attribute.entity == entname) {
+			// This the entity of the attribute being edited.
+			ob.addOption(entname, "entity-Idx='" + i + "'");
+		} else {
+			var attribs = self.project.getAttributesByEntity(entname);
+			var table = self.project.getTableByName(entity.table);
+			//alert(entname + ': ' + attribs.length + ', ' + table.columns.length);
+			if (attribs.length < (table.columns.length - 1))
+				// There are fewer attributes then columns, so add this entity to the list.
+				ob.addOption(entname, "entity-Idx='" + i + "'");
+		}
 	});
 
 	// Add the options to the "Concepts" list.

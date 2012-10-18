@@ -48,6 +48,8 @@ $(function() {
 	$('#joinDiv input.next').click(joinsNextButtonClicked);
 	$('#entityDiv input.back').click(entitiesBackButtonClicked);
 	$('#entityDiv input.next').click(entitiesNextButtonClicked);
+	$('#attributeDiv input.back').click(attributesBackButtonClicked);
+	$('#attributeDiv input.next').click(attributesNextButtonClicked);
 });
 
 /**
@@ -81,14 +83,26 @@ function joinsBackButtonClicked() {
 }
 
 function entitiesNextButtonClicked() {
-	//$("#vocabularies").fadeOut();
-	//joinFT.setActive(true);
+	$("#vocabularies").fadeOut();
+	entitiesPT.setActive(false);
+	attributesPT.setActive(true);
 	return true;
 }
 
 function entitiesBackButtonClicked() {
 	joinFT.setActive(true);
 	entitiesPT.setActive(false);
+}
+
+function attributesNextButtonClicked() {
+	//$("#vocabularies").fadeOut();
+	//joinFT.setActive(true);
+	return true;
+}
+
+function attributesBackButtonClicked() {
+	entitiesPT.setActive(true);
+	attributesPT.setActive(false);
 }
 
 function updateSchemaUI() {
@@ -129,7 +143,8 @@ function updateFlexTables() {
 	// we have a true boolean value.
 	activateDS(mainproject.schema.length); 
 	joinFT.setActive(!!mainproject.schema.length && !mainproject.entities.length && !mainproject.relations.length);
-	entitiesPT.setActive(!!mainproject.entities.length && !mainproject.relations.length)
+	entitiesPT.setActive(!!mainproject.entities.length && !mainproject.attributes.length)
+	attributesPT.setActive(!!mainproject.attributes.length && !mainproject.relations.length)
 }
 
 function alertError(xhr, status, error) {
@@ -262,27 +277,6 @@ function activateDS(deactivate) {
 
 function addJoinButton() { 
 	return project.joins.length == project.schema.length - 1;
-}
-
-/**
- * Searches for a specified table name in a project's schema.  If only the table name
- * is specified, then either the matching table object or "undefined" is returned.  If
- * a column name is also provided, then a table object is only returned if it has the
- * matching table name and contains a matching column name.  Otherwise, "undefined" is
- * returned.
- *
- * @param project The project to search.
- * @param table The table name to search for.
- * @param column The column name to search for.
- **/
-function findInSchema(project, table, column) {
-	// get the table object from the project's schema
-	table = project.schema[indexOf(project.schema, "name", table)];
-
-	// see if the table contains the specified column
-	if (table && column && $.inArray(column, table.columns) < 0)
-		table = undefined;
-	return table;
 }
 
 function searchRelations(entity1, entity2) { 
