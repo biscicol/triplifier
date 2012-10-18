@@ -1,8 +1,5 @@
 //var project = {project:"",dateTime:"",connection:{},schema:[],joins:[],entities:[],relations:[]}, // current project object
 var    mainproject,
-	allRelations, // array of all possible relations, each allRelation is a hash with subject and array of all possible objects in current project
-	allRelationsTotal, // .5 count of all possible relations (each relation has inverse relation, only one per pair is allowed) in current project
-	schemaTotal, // total number of columns in schema in current project
 	joinFT, entityFT, relationFT, triplifyFT, // FlexTable objects
 	vocabularyManager,
 	dbSourceTrTemplate,
@@ -26,6 +23,7 @@ $(function() {
 	joinFT = new JoinsTable($("#joinDiv"));
 	entitiesPT = new EntitiesTable($("#entityDiv"));
 	attributesPT = new AttributesTable($("#attributeDiv"));
+	relationsPT = new RelationsTable($("#relationDiv"));
 
 	// assign event handlers
 	$("#dbForm").submit(inspect);
@@ -50,6 +48,8 @@ $(function() {
 	$('#entityDiv input.next').click(entitiesNextButtonClicked);
 	$('#attributeDiv input.back').click(attributesBackButtonClicked);
 	$('#attributeDiv input.next').click(attributesNextButtonClicked);
+	$('#relationDiv input.back').click(relationsBackButtonClicked);
+	$('#relationDiv input.next').click(relationsNextButtonClicked);
 });
 
 /**
@@ -78,8 +78,8 @@ function joinsNextButtonClicked() {
 }
 
 function joinsBackButtonClicked() {
-	activateDS();
 	joinFT.setActive(false);
+	activateDS();
 }
 
 function entitiesNextButtonClicked() {
@@ -90,19 +90,29 @@ function entitiesNextButtonClicked() {
 }
 
 function entitiesBackButtonClicked() {
-	joinFT.setActive(true);
 	entitiesPT.setActive(false);
+	joinFT.setActive(true);
 }
 
 function attributesNextButtonClicked() {
-	//$("#vocabularies").fadeOut();
-	//joinFT.setActive(true);
+	attributesPT.setActive(false);
+	relationsPT.setActive(true);
 	return true;
 }
 
 function attributesBackButtonClicked() {
-	entitiesPT.setActive(true);
 	attributesPT.setActive(false);
+	entitiesPT.setActive(true);
+}
+
+function relationsNextButtonClicked() {
+	//relationsPT.setActive(false);
+	return true;
+}
+
+function relationsBackButtonClicked() {
+	relationsPT.setActive(false);
+	attributesPT.setActive(true);
 }
 
 function updateSchemaUI() {
@@ -138,6 +148,7 @@ function updateFlexTables() {
 	//});
 	entitiesPT.setProject(mainproject, 'entities');
 	attributesPT.setProject(mainproject, 'attributes');
+	relationsPT.setProject(mainproject, 'relations');
 
 	// Activate/deactivate each section depending on the project state.  Note the use of "!!" to ensure
 	// we have a true boolean value.
@@ -145,6 +156,7 @@ function updateFlexTables() {
 	joinFT.setActive(!!mainproject.schema.length && !mainproject.entities.length && !mainproject.relations.length);
 	entitiesPT.setActive(!!mainproject.entities.length && !mainproject.attributes.length)
 	attributesPT.setActive(!!mainproject.attributes.length && !mainproject.relations.length)
+	relationsPT.setActive(!!mainproject.relations.length)
 }
 
 function alertError(xhr, status, error) {

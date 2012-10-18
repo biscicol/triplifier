@@ -117,18 +117,6 @@ EntitiesTable.prototype.setButtonStates = function() {
 	// See if any more entity mappings can be specified and set the state of the "add" button accordingly.
 	var hasmoreents = this.project['entities'].length != this.project.getColumnCount();
 	this.element.children("input.add").prop("disabled", !hasmoreents);
-
-	// See whether any new attributes can be defined.
-	/*var hasmoreatts = false;
-	if (this.selrowindex != -1) {
-		var curent = this.project['entities'][this.selrowindex];
-		var table = this.project.findTable(curent.table);
-		if (table) {
-			if (table.columns.length > curent.attributes.length)
-				hasmoreatts = true;
-		}
-	}
-	this.element.children("input.add2").prop("disabled", !hasmoreatts);*/
 }
 
 /**
@@ -158,7 +146,7 @@ EntitiesTable.prototype.populateTableRowOptions = function(tr, isedit) {
 	
 	tablelist.prop("disabled", !!entity.table);
 
-	tablelist.change(function() { self.TableChanged(this, entity); });
+	tablelist.change(function() { self.tableChanged(this, entity); });
 	tablelist.change();
 
 	this.authorRdfControls(tr, ob, "rdfClass", "classes");
@@ -170,7 +158,7 @@ EntitiesTable.prototype.populateTableRowOptions = function(tr, isedit) {
  * @param eventsrc The drop-down list that triggered the change event.
  * @param entity The entity item being edited.  If this is an "add" operation, this will be {}.
  **/
-EntitiesTable.prototype.TableChanged = function(eventsrc, entity) {
+EntitiesTable.prototype.tableChanged = function(eventsrc, entity) {
 	// get the index of the selected table in the schema
 	var seltableindex = eventsrc.options[eventsrc.selectedIndex].getAttribute("data-schemaIdx");
 	// get the object representing the selected entity table
@@ -213,9 +201,6 @@ AttributesTable.prototype.superclass = EditableTable;
 AttributesTable.prototype.setButtonStates = function() {
 	// call the superclass implementation
 	this.superclass.prototype.setButtonStates.apply(this);
-
-	// See if any more attribute mappings can be specified and set the state of the "add" button accordingly.
-	var hasmoreents = this.project['entities'].length != this.project.getColumnCount();
 
 	// See whether any new attributes can be defined.
 	var hasmoreatts = this.project.entities.length < 1;
@@ -275,7 +260,7 @@ AttributesTable.prototype.populateTableRowOptions = function(tr, isedit) {
 	
 	//tablelist.prop("disabled", !!entity.table);
 
-	entitieslist.change(function() { self.EntityChanged(this, attribute); });
+	entitieslist.change(function() { self.entityChanged(this, attribute); });
 	entitieslist.change();
 }
 
@@ -285,7 +270,7 @@ AttributesTable.prototype.populateTableRowOptions = function(tr, isedit) {
  * @param eventsrc The drop-down list that triggered the change event.
  * @param attribute The attribute item being edited.  If this is an "add" operation, this will be {}.
  **/
-AttributesTable.prototype.EntityChanged = function(eventsrc, attribute) {
+AttributesTable.prototype.entityChanged = function(eventsrc, attribute) {
 	// get the index of the selected entity in the project
 	var selentindex = eventsrc.options[eventsrc.selectedIndex].getAttribute("entity-Idx");
 	// get the object representing the selected entity
@@ -312,3 +297,96 @@ AttributesTable.prototype.EntityChanged = function(eventsrc, attribute) {
 	this.authorRdfControls(tr, ob, "rdfProperty", "properties", entity.rdfClass.uri);
 }
 
+
+
+/**
+ * RelationsTable is a subclass of EditableTable that allows the user to add and modify the relations
+ * between concepts in the triplifier interface.
+ **/
+function RelationsTable(element) {
+	// call the parent's constructor
+	this.superclass(element);
+}
+
+// RelationsTable inherits from EditableTable
+RelationsTable.prototype = new EditableTable();
+RelationsTable.prototype.superclass = EditableTable;
+
+RelationsTable.prototype.setButtonStates = function() {
+	// call the superclass implementation
+	this.superclass.prototype.setButtonStates.apply(this);
+
+	// See if any more relations can be specified and set the state of the "add" button accordingly.
+	var hasmorerels = this.project['relations'].length != this.project.getAllPossibleRelations().count;
+	//alert(this.project.getAllPossibleRelations().count);
+	this.element.children("input.add").prop("disabled", !hasmorerels);
+}
+
+/**
+ * Adds the entity names from the project to the table row.
+ *
+ * @param tr The table row with the input elements to populate.
+ * @param isedit Specifies whether this is an "add" or "edit" request.
+ **/
+RelationsTable.prototype.populateTableRowOptions = function(tr, isedit) {
+	var ob = new OptionBuilder(tr);
+	var relation = {};
+
+	// If this is an edit operation, get the currently-selected relation from the project.
+	if (isedit)
+		relation = this.getSelectedItemFromProject();
+
+	var self = this;
+	var allrelations = this.project.getAllPossibleRelations();
+
+	// Determine which entity names should be added to the "Subject" drop-down list.  Only add an
+	// entity if it is either part of the relation currently selected for editing or there are relations
+	// remaining that include it.
+	$.each(allrelations.relations, function(i, relobj) {
+		if (relobj.subject == relation.subject 
+				|| relobj.subject == relation.object
+				|| self.project.getRelationCountByEntity(relobj.subject) < relobj.objects.length)
+			ob.addOption(relobj.subject, "data-allRelationIdx='" + i + "'");
+	});
+
+	// Add the options to the "Concepts" list.
+	var subjectslist = ob.addOptionsTo("subject");
+	
+	subjectslist.change(function() { self.subjectChanged(this, relation); });
+	subjectslist.change();
+
+	// relationPredicates is a global defined in triplifier.js.  This is from the old system, and
+	// for now it is staying the same.
+	$.each(relationPredicates, function(i, predicate) {
+		ob.addOption(predicate);
+	});
+	ob.addOptionsTo("predicate");
+}
+
+/**
+ * Updates the "Object" options to reflect the currently-selected subject entity.
+ *
+ * @param eventsrc The drop-down list that triggered the change event.
+ * @param attribute The relation item being edited.  If this is an "add" operation, this will be {}.
+ **/
+RelationsTable.prototype.subjectChanged = function(eventsrc, relation) {
+	// get the index of the selected entity in the project's "all relations" object
+	var relindex = eventsrc.options[eventsrc.selectedIndex].getAttribute("data-allRelationIdx");
+	// get the object representing all relations for the selected entity
+	var relobj = this.project.getAllPossibleRelations().relations[relindex];
+
+	var tr = $(eventsrc).parent().parent();
+	var ob = new OptionBuilder(tr);
+
+	// Decide which entities to add to the "Objects" drop-down list.  Entities are only added if
+	// they are part of the relation currently selected for editing or if they are not already part
+	// of a relation with the selected subject entity.
+	var self = this;
+	$.each(relobj.objects, function(i, object) {
+		if (object == relation.object || object == relation.subject
+				|| !self.project.getRelationByEntities(relobj.subject, object))
+			ob.addOption(object);
+	});
+
+	ob.addOptionsTo("object");
+}

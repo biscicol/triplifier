@@ -10,6 +10,9 @@ function Project(name) {
 
 	// An array for keeping track of observers of this project.
 	this.observers = [];
+
+	// Keeps track of all possible relations for this project.
+	this.allrels = { count: 0, relations: [] };
 }
 
 // Project property names.
@@ -40,6 +43,10 @@ Project.prototype.getProperty = function(propname) {
 
 Project.prototype.setProperty = function(propname, newval) {
 	this[propname] = newval;
+
+	// update all possible relations
+	this.allrels = this.findAllPossibleRelations();
+
 	this.notifyPropertyChange(propname);
 }
 
@@ -112,6 +119,92 @@ Project.prototype.getEntityCntByTable = function(tablename) {
 	});
 
 	return count;	
+}
+
+/**
+ * Get an object that specifies all possible relations that could be defined for this
+ * project.  The returned object has two properties.  The first, "count", indicates how
+ * many total relations are possible (each pair is only counted once, even though it
+ * could also be specified with the subject/object swapped).  The second, "relations",
+ * is a list, where each element of the list is an object with two properties: "subject",
+ * which specifies the subject of the relation, and "objects", which is a list of all
+ * possible objects that could be related to that subject.  A relation is only possible if
+ * the subject and object are in the same database table or in separate tables that are
+ * part of a join.  The structure of the returned object is as follows.
+ *
+ * {
+ * 	count: relations_cnt,
+ * 	relations: [ { subject: entity_name, objects: [entity_name, ...] }, ...]
+ * }
+ **/
+Project.prototype.getAllPossibleRelations = function() {
+	return this.allrels;
+}
+
+/**
+ * Calculates all possible relations for this project.  This is meant to be a private
+ * method used by the project to keep its list of all relations updated.  Use the public
+ * method getAllPossibleRelations() to see the results of this method.
+ **/
+Project.prototype.findAllPossibleRelations = function() {
+	var allRelations = [];
+	var allRelationsTotal = 0;
+	var self = this;
+
+	$.each(this.entities, function(i, subMp) {
+		var objects = [];
+		$.each(self.entities, function(j, objMp) {
+			// see if these two entities are in the same table or in joined tables
+			if (i != j && (subMp.table == objMp.table 
+				|| indexOf(self.joins, "foreignTable", subMp.table, "primaryTable", objMp.table) >= 0 
+				|| indexOf(self.joins, "foreignTable", objMp.table, "primaryTable", subMp.table) >= 0)) {
+				objects.push(objMp.table + "." + objMp.idColumn);
+				allRelationsTotal += .5; // each relation has inverse relation, but we'll allow only one per pair
+			}
+		});
+
+		if (objects.length)
+			allRelations.push({subject:subMp.table + "." + subMp.idColumn, objects:objects});
+
+	});
+
+	var retval = {};
+	retval.relations = allRelations;
+	retval.count = allRelationsTotal;
+	//alert(retval.count);
+	//alert(allRelations[0].subject + ' -> ' + allRelations[0].objects[0]);
+
+	return retval;
+}
+
+/**
+ * Searches for a relation that has the specified entities.  If a match is found, the
+ * relation object is returned.  Otherwise, "undefined" is returned.
+ **/
+Project.prototype.getRelationByEntities = function(entity1, entity2) {
+	var rel = undefined;
+
+	$.each(this.relations, function(i, relation) {
+		if (relation.subject == entity1 && relation.object == entity2 || relation.subject == entity2 && relation.object == entity1) {
+			rel = relation;
+			return false;
+		}
+	});
+
+	return rel;
+}
+
+/**
+ * Get the total number of relations in this project that include the specified entity.
+ **/
+Project.prototype.getRelationCountByEntity = function(entity) {
+	var count = 0;
+	$.each(this.relations, function(i, relation) {
+		if (relation.subject == entity || relation.object == entity)
+			count++;
+	});
+
+	return count;
 }
 
 /*Project.prototype.setDateTime = function(newdatetime) {
