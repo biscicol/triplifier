@@ -41,6 +41,12 @@ Project.prototype.getProperty = function(propname) {
 	return this[propname];
 }
 
+/**
+ * Update the value of one of this project's properties.  It is important to use this method
+ * to update the project data rather than directly setting the project's member object values.
+ * Using this method ensures that the project's internal state is consistent and allows the
+ * project to notify any observers of the change.
+ **/
 Project.prototype.setProperty = function(propname, newval) {
 	this[propname] = newval;
 
@@ -119,6 +125,41 @@ Project.prototype.getEntityCntByTable = function(tablename) {
 	});
 
 	return count;	
+}
+
+/**
+ * Returns an object that combines the entities and attributes by assigning a list of
+ * attributes to each entity.  This format is required by the java REST methods for
+ * producing triples and D2RQ mappings.  This method emulates the format of the old
+ * project object when entities and attributes were combined in the user interface.
+ **/
+Project.prototype.getCombinedEntitiesAndAttributes = function() {
+	// Make a deep copy of the project's entities so we don't modify the entities
+	// in the project.
+	var entcopy = $.extend(true, {}, this.entities);
+
+	// An array for the combined entities and attributes.  This is necessary because
+	// the result of the extend() operation produces an object, not an array, which
+	// will not work with the REST methods.
+	var combined = [];
+
+	var self = this;
+	$.each(entcopy, function(i, entity) {
+		var entityname = entity.table + '.' + entity.idColumn;
+		entity.attributes = [];
+
+		// Find all of the attributes for the current entity.
+		$.each(self.attributes, function(i, attribute) {
+			if (attribute.entity == entityname) {
+				entity.attributes.push({ column: attribute.column, rdfProperty: attribute.rdfProperty });
+				//alert(attribute.rdfProperty.name);
+			}
+		});
+
+		combined.push(entity);
+	});
+
+	return combined;
 }
 
 /**

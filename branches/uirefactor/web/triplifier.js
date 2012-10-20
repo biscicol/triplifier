@@ -11,6 +11,8 @@ var    mainproject,
 //	triplifierUrl = "http://geomuseblade.colorado.edu/triplifier/";
 //	biscicolUrl = "http://johns-macbook-air-2.local:8080/biscicol/",
 //	triplifierUrl = "http://johns-macbook-air-2.local:8080/triplifier/";
+//	Unfortunately, "localhost" doesn't appear to work with the "same origin" script policy (in Firefox, anyway).
+//	triplifierUrl = "http://localhost:8080/triplifier/";
 
 // execute once the DOM has loaded
 $(function() {
@@ -24,23 +26,28 @@ $(function() {
 	entitiesPT = new EntitiesTable($("#entityDiv"));
 	attributesPT = new AttributesTable($("#attributeDiv"));
 	relationsPT = new RelationsTable($("#relationDiv"));
+	// Use an EditableTable for the triplifiver <div>, too, although this is merely to get styles
+	// and activate/deactivate capabilities.  There is no table inside the div, so the authoring
+	// functionality of EditableTable is unavailable.
+	triplifyPT = new EditableTable($("#triplifyDiv"));
 
 	// assign event handlers
 	$("#dbForm").submit(inspect);
 	$("#uploadForm").submit(uploadData);
-	$("#getMapping").click(function() {triplify("rest/getMapping", downloadFile);});
-	$("#getTriples").click(function() {triplify("rest/getTriples", downloadFile);});
-	$("#sendToBiSciCol").click(function() {triplify("rest/getTriples", sendToBiSciCol);});
+
+	// Assign event handlers for the "triplify" section.
+	$("#getMapping").click(function() { triplify("rest/getMapping", downloadFile); });
+	$("#getTriples").click(function() { triplify("rest/getTriples", downloadFile); });
+	$("#sendToBiSciCol").click(function() { triplify("rest/getTriples", sendToBiSciCol); });
 
 	$("#dbForm, #uploadForm, #dsDiv > input.next, #vocabularies, #status, #overlay, #vocabularyUpload").hide();
 	$("#uploadTarget").appendTo($("body")); // prevent re-posting on reload
 	$("#sendToBiSciColForm").attr("action", biscicolUrl + "rest/search");
 	
-	// ProjectManager must be created after FlexTables and hide() as it displays the first project, so everything must be already in place
 	var projman = new ProjectManager();
 	var projUI = new ProjectUI($("#projects"), projman);
 
-	// Set handlers for the navigation buttons
+	// Set event handlers for the navigation buttons.
 	$("#dsDiv > input.next").click(dSNextButtonClicked);	
 	$('#joinDiv input.back').click(joinsBackButtonClicked);
 	$('#joinDiv input.next').click(joinsNextButtonClicked);
@@ -50,6 +57,7 @@ $(function() {
 	$('#attributeDiv input.next').click(attributesNextButtonClicked);
 	$('#relationDiv input.back').click(relationsBackButtonClicked);
 	$('#relationDiv input.next').click(relationsNextButtonClicked);
+	$('#triplifyDiv input.back').click(triplifyBackButtonClicked);
 });
 
 /**
@@ -80,6 +88,7 @@ function joinsNextButtonClicked() {
 function joinsBackButtonClicked() {
 	joinFT.setActive(false);
 	activateDS();
+	return true;
 }
 
 function entitiesNextButtonClicked() {
@@ -92,6 +101,7 @@ function entitiesNextButtonClicked() {
 function entitiesBackButtonClicked() {
 	entitiesPT.setActive(false);
 	joinFT.setActive(true);
+	return true;
 }
 
 function attributesNextButtonClicked() {
@@ -103,16 +113,25 @@ function attributesNextButtonClicked() {
 function attributesBackButtonClicked() {
 	attributesPT.setActive(false);
 	entitiesPT.setActive(true);
+	return true;
 }
 
 function relationsNextButtonClicked() {
-	//relationsPT.setActive(false);
+	relationsPT.setActive(false);
+	triplifyPT.setActive(true);
 	return true;
 }
 
 function relationsBackButtonClicked() {
 	relationsPT.setActive(false);
 	attributesPT.setActive(true);
+	return true;
+}
+
+function triplifyBackButtonClicked() {
+	triplifyPT.setActive(false);
+	relationsPT.setActive(true);
+	return true;
 }
 
 function updateSchemaUI() {
@@ -157,6 +176,7 @@ function updateFlexTables() {
 	entitiesPT.setActive(!!mainproject.entities.length && !mainproject.attributes.length)
 	attributesPT.setActive(!!mainproject.attributes.length && !mainproject.relations.length)
 	relationsPT.setActive(!!mainproject.relations.length)
+	triplifyPT.setActive(false);
 }
 
 function alertError(xhr, status, error) {
@@ -165,18 +185,77 @@ function alertError(xhr, status, error) {
 	//alert(status + (xhr.status==500 ? ":\n\n"+xhr.responseText : (error ? ": "+error : "")));
 }
 
+/**
+ * Opens a new window displaying the results of a successful REST call.
+ **/
 function downloadFile(url) {
 	setStatus("");
 	window.open(url);
 }
 
+/**
+ * Sends the current project's data to the REST method at the specified URL.
+ *
+ * @param url The REST method to call.
+ * @param successFn Function to call after receiving a success response from the server.
+ **/
 function triplify(url, successFn) {
+	setStatus("Triplifying Data Source...");
+
+	// Set the dataseturi to link to top level object on the server
+	var dataseturi = {};
+	dataseturi.name = getDataSourceName();
+
+	$.ajax({
+		url: url,
+		type: "POST",
+		data: JSON.stringify({
+		    connection: mainproject.connection,
+		    joins: mainproject.joins,
+		    entities: mainproject.getCombinedEntitiesAndAttributes(),
+		    relations: mainproject.relations,
+		    dataseturi:dataseturi
+		}),
+		contentType: "application/json; charset=utf-8",
+		dataType: "text",
+		success: successFn,
+		error: alertError
+	});
 }
 
+/**
+ * After a successful call to the getTriples REST method, this function will attempt to
+ * send the resulting triples URL to the BiSciCol system for display.  This function should
+ * by called as a result of a call to the triplify() method.
+ **/
 function sendToBiSciCol(url) {
+	var sendToBiSciColForm = document.getElementById("sendToBiSciColForm");
+	// sendToBiSciColForm.url.value = "http://" + location.host + location.pathname.substr(0, location.pathname.lastIndexOf("/")) + "/" + url;
+
+	// [hack] When file on triplifier is accessed from biscicol on the same server then port
+	// forwarding won't work so the port is set here.
+	sendToBiSciColForm.url.value = triplifierUrl + url;
+	$("#uploadTarget").one("load", afterBiSciCol);
+	sendToBiSciColForm.submit();
 }
 
+/**
+ * Determines if an attempt to upload triples to the BiSciCol system was successful and
+ * displays an appropriate status message.  Note that this function will fail if the location
+ * of the triplifier (as specified by the global triplifierUrl) and the UI page are on
+ * different domains.  In that case, because of the "same origin" policy (to prevent cross-site
+ * scripting attacks), the browser will throw an error when attempting to access the
+ * uploadTarget frame's DOM.
+ **/
 function afterBiSciCol() {
+	setStatus("");
+
+	var data = frames.uploadTarget.document.body.textContent;
+	// distinguish response OK status by JSON format
+	if (isJson(data))
+		window.open(biscicolUrl + "?model=" + data.substr(1, data.length-2) + "&id="+dataSourceName());
+	else
+		alert("Error" + (data ? ":\n\n"+data : "."));	
 }
 
 function uploadData() {
