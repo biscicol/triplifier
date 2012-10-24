@@ -27,8 +27,29 @@ Project.prototype.JOINS_CHANGED = 0;
 Project.prototype.ENT_CHANGED = 0;
 Project.prototype.REL_CHANGED = 0;*/
 
+/**
+ * Register an observer of this project.  Observers are notified whenever a project property
+ * changes.  To be a project observer, an object must provide the following method:
+ *
+ * projectPropertyChanged(project, property_name) { ... }.
+ *
+ * The argument "project" references the Project object that triggered the event, and 
+ * "property_name" is a string indicating which property changed.
+ **/
 Project.prototype.registerObserver = function(observer) {
 	this.observers.push(observer);
+}
+
+/**
+ * Remove an object from this Project's list of observers.
+ **/
+Project.prototype.unregisterObserver = function(observer) {
+	for (var cnt = 0; cnt < this.observers.length; cnt++) {
+		if (this.observers[cnt] === observer) {
+			// Remove the observer from the list.
+			this.observers.splice(cnt, 1);
+		}
+	}
 }
 
 Project.prototype.notifyPropertyChange = function(propname) {
@@ -46,14 +67,34 @@ Project.prototype.getProperty = function(propname) {
  * to update the project data rather than directly setting the project's member object values.
  * Using this method ensures that the project's internal state is consistent and allows the
  * project to notify any observers of the change.
+ *
+ * Often, the object that requests a property change does not need to be subsequently notified
+ * of the change.  Any object specified in the optional third argument will not be notified
+ * of this event.
+ *
+ * @param propname  The property to update.
+ * @param newval  The new value of the property.
+ * @param dontnotify  An object not to notify of this change.
  **/
-Project.prototype.setProperty = function(propname, newval) {
+Project.prototype.setProperty = function(propname, newval, dontnotify=null) {
 	this[propname] = newval;
 
 	// update all possible relations
 	this.allrels = this.findAllPossibleRelations();
 
-	this.notifyPropertyChange(propname);
+	if (dontnotify != null) {
+		this.unregisterObserver(dontnotify);
+		this.notifyPropertyChange(propname);
+		this.registerObserver(dontnotify);
+	} else {
+		this.notifyPropertyChange(propname);
+	}
+
+	// TODO:  Add code here to make sure that the internal state of the project is
+	// consistent.  For example, if concepts are modified, we need to make sure that
+	// all of the defined relations are still possible.  Each check will trigger a (tail)
+	// recursive call to setProperty() so that observers can be notified of the new
+	// changes and any further consistency checks can be performed.
 }
 
 Project.prototype.setName = function(newname) {

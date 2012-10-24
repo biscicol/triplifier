@@ -1,7 +1,9 @@
-//var project = {project:"",dateTime:"",connection:{},schema:[],joins:[],entities:[],relations:[]}, // current project object
-var    mainproject,
-	joinFT, entityFT, relationFT, triplifyFT, // FlexTable objects
-	vocabularyManager,
+
+var mainproject;	// The currently-open project.
+
+var joinsPT, entitiesPT, attributesPT, relationsPT, triplifyPT;	// EditableTable objects.
+
+var	vocabularyManager,
 	dbSourceTrTemplate,
 	relationPredicates = ["ma:isSourceOf", "ma:isRelatedTo"],
 	biscicolUrl = "http://biscicol.org/",
@@ -21,12 +23,12 @@ $(function() {
 	// VocabularyManager must be created before FlexTables
 	vocabularyManager = new VocabularyManager($("#vocabularies"), $("#vocabularyUpload"), getStorageKey("vocabularies"), alertError);
 
-	// create the project tables (this also removes blank DOM elements)
-	joinFT = new JoinsTable($("#joinDiv"));
+	// Create the project tables (this also removes blank DOM elements).
+	joinsPT = new JoinsTable($("#joinDiv"));
 	entitiesPT = new EntitiesTable($("#entityDiv"));
 	attributesPT = new AttributesTable($("#attributeDiv"));
 	relationsPT = new RelationsTable($("#relationDiv"));
-	// Use an EditableTable for the triplifiver <div>, too, although this is merely to get styles
+	// Use an EditableTable for the triplifier <div>, too, although this is merely to get styles
 	// and activate/deactivate capabilities.  There is no table inside the div, so the authoring
 	// functionality of EditableTable is unavailable.
 	triplifyPT = new EditableTable($("#triplifyDiv"));
@@ -44,20 +46,24 @@ $(function() {
 	$("#uploadTarget").appendTo($("body")); // prevent re-posting on reload
 	$("#sendToBiSciColForm").attr("action", biscicolUrl + "rest/search");
 	
+	// Set event handlers for the navigation buttons.
+	// Notice that we also explicitly set the buttons not to be disabled.  This shouldn't be necessary, but it
+	// seems that Firefox will occasionally disable some of these buttons for no apparent reason.  Setting the
+	// disabled property here seems to fix the problem.
+	$("#dsDiv > input.next").click(dSNextButtonClicked).prop("disabled", false);
+	$('#joinDiv input.back').click(joinsBackButtonClicked).prop("disabled", false);
+	$('#joinDiv input.next').click(function() { navButtonClicked(entitiesPT, joinsPT); }).prop("disabled", false);
+	$('#entityDiv input.back').click(function() { navButtonClicked(joinsPT, entitiesPT); }).prop("disabled", false);
+	$('#entityDiv input.next').click(function() { navButtonClicked(attributesPT, entitiesPT); }).prop("disabled", false);
+	$('#attributeDiv input.back').click(function() { navButtonClicked(entitiesPT, attributesPT); }).prop("disabled", false);
+	$('#attributeDiv input.next').click(function() { navButtonClicked(relationsPT, attributesPT); }).prop("disabled", false);
+	$('#relationDiv input.back').click(function() { navButtonClicked(attributesPT, relationsPT); }).prop("disabled", false);
+	$('#relationDiv input.next').click(function() { navButtonClicked(triplifyPT, relationsPT); }).prop("disabled", false);
+	$('#triplifyDiv input.back').click(function() { navButtonClicked(relationsPT, triplifyPT); }).prop("disabled", false);
+
+	// Create a ProjectManager and associate it with a ProjectUI.
 	var projman = new ProjectManager();
 	var projUI = new ProjectUI($("#projects"), projman);
-
-	// Set event handlers for the navigation buttons.
-	$("#dsDiv > input.next").click(dSNextButtonClicked);	
-	$('#joinDiv input.back').click(joinsBackButtonClicked);
-	$('#joinDiv input.next').click(joinsNextButtonClicked);
-	$('#entityDiv input.back').click(entitiesBackButtonClicked);
-	$('#entityDiv input.next').click(entitiesNextButtonClicked);
-	$('#attributeDiv input.back').click(attributesBackButtonClicked);
-	$('#attributeDiv input.next').click(attributesNextButtonClicked);
-	$('#relationDiv input.back').click(relationsBackButtonClicked);
-	$('#relationDiv input.next').click(relationsNextButtonClicked);
-	$('#triplifyDiv input.back').click(triplifyBackButtonClicked);
 });
 
 /**
@@ -67,70 +73,57 @@ function setMainProject(project) {
 	//alert('main project set');
 	mainproject = project;
 
+	// Very few of the sections are strictly required in order to triplify input data, but at the very
+	// least, the user needs to define one concept.  So, we need to check if any concepts have been
+	// defined, and if not, disable the "Next" button for the concepts.
+	if (!mainproject.entities.length)
+		$('#entityDiv input.next').prop('disabled', true);
+
+	// We want to be notified of project changes so we can update the state of the concepts "Next"
+	// button as needed.  We need to create an object to act as a project observer.
+	obsobj = { projectPropertyChanged: projectPropertyChanged };
+	mainproject.registerObserver(obsobj);
+
 	updateSchemaUI();
 
 	updateFlexTables();
 }
 
-function dSNextButtonClicked() {
-	activateDS(true);
-	joinFT.setActive(true);
+/**
+ * Respond to property changes in the currently-open project.
+ **/
+function projectPropertyChanged(project, propname) {
+	//alert("changed: " + propname);
+	
+	// If concepts (entities) were changed, update the "Next" button state accordingly.
+	if (propname == 'entities') {
+		if (!mainproject.entities.length)
+			$('#entityDiv input.next').prop('disabled', true);
+		else
+			$('#entityDiv input.next').prop('disabled', false);
+	}
+}
+
+/**
+ * A generic function for handling when one of the "Back" or "Next" navigation
+ * buttons is clicked.  Activates one ProjectTable (activatePT) and
+ * deactivates another (deactivatePT).
+ **/
+function navButtonClicked(activatePT, deactivatePT) {
+	deactivatePT.setActive(false);
+	activatePT.setActive(true);
 	return true;
 }
 
-function joinsNextButtonClicked() {
-	//$("#vocabularies").fadeOut();
-	joinFT.setActive(false);
-	entitiesPT.setActive(true);
+function dSNextButtonClicked() {
+	activateDS(true);
+	joinsPT.setActive(true);
 	return true;
 }
 
 function joinsBackButtonClicked() {
-	joinFT.setActive(false);
+	joinsPT.setActive(false);
 	activateDS();
-	return true;
-}
-
-function entitiesNextButtonClicked() {
-	$("#vocabularies").fadeOut();
-	entitiesPT.setActive(false);
-	attributesPT.setActive(true);
-	return true;
-}
-
-function entitiesBackButtonClicked() {
-	entitiesPT.setActive(false);
-	joinFT.setActive(true);
-	return true;
-}
-
-function attributesNextButtonClicked() {
-	attributesPT.setActive(false);
-	relationsPT.setActive(true);
-	return true;
-}
-
-function attributesBackButtonClicked() {
-	attributesPT.setActive(false);
-	entitiesPT.setActive(true);
-	return true;
-}
-
-function relationsNextButtonClicked() {
-	relationsPT.setActive(false);
-	triplifyPT.setActive(true);
-	return true;
-}
-
-function relationsBackButtonClicked() {
-	relationsPT.setActive(false);
-	attributesPT.setActive(true);
-	return true;
-}
-
-function triplifyBackButtonClicked() {
-	triplifyPT.setActive(false);
-	relationsPT.setActive(true);
 	return true;
 }
 
@@ -161,8 +154,8 @@ function updateFlexTables() {
 	});
 
 	// update joins, delete invalid (not in schema)
-	joinFT.setProject(mainproject, 'joins');
-	//joinFT.removeMatching(function(join) {
+	joinsPT.setProject(mainproject, 'joins');
+	//joinsPT.removeMatching(function(join) {
 	//	return !findInSchema(join.foreignTable, join.foreignColumn) || !findInSchema(join.primaryTable, join.primaryColumn);
 	//});
 	entitiesPT.setProject(mainproject, 'entities');
@@ -172,8 +165,8 @@ function updateFlexTables() {
 	// Activate/deactivate each section depending on the project state.  Note the use of "!!" to ensure
 	// we have a true boolean value.
 	activateDS(mainproject.schema.length); 
-	joinFT.setActive(!!mainproject.schema.length && !mainproject.entities.length && !mainproject.relations.length);
-	entitiesPT.setActive(!!mainproject.entities.length && !mainproject.attributes.length)
+	joinsPT.setActive(!!mainproject.schema.length && !mainproject.entities.length && !mainproject.relations.length);
+	entitiesPT.setActive(!!mainproject.entities.length && !mainproject.attributes.length && !mainproject.relations.length)
 	attributesPT.setActive(!!mainproject.attributes.length && !mainproject.relations.length)
 	relationsPT.setActive(!!mainproject.relations.length)
 	triplifyPT.setActive(false);
@@ -253,7 +246,7 @@ function afterBiSciCol() {
 	var data = frames.uploadTarget.document.body.textContent;
 	// distinguish response OK status by JSON format
 	if (isJson(data))
-		window.open(biscicolUrl + "?model=" + data.substr(1, data.length-2) + "&id="+dataSourceName());
+		window.open(biscicolUrl + "?model=" + data.substr(1, data.length-2) + "&id=" + getDataSourceName());
 	else
 		alert("Error" + (data ? ":\n\n"+data : "."));	
 }

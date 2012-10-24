@@ -47,7 +47,23 @@ function EditableTable(element) {
 EditableTable.prototype.setProject = function(project, projectproperty) {
 	this.project = project;
 	this.property = projectproperty;
+
+	// Register this EditableTable as an observer of the project.
+	this.project.registerObserver(this);
+
 	this.resetRowsData();
+}
+
+/**
+ * Respond to changes in this EditableTable's project that were not directly requested by
+ * this EditableTable itself.
+ **/
+EditableTable.prototype.projectPropertyChanged = function(project, propname) {
+	//alert('EditableTable (' + this.property + '): property changed (' + propname + ')');
+	// We are only concerned about changes to this EditableTable's property.
+	if (propname == this.property) {
+		//alert('EditableTable (' + this.property + '): property changed (' + propname + ')');
+	}
 }
 
 /**
@@ -63,6 +79,9 @@ EditableTable.prototype.setActive = function(isactive) {
 		inputs.toggle(isactive);
 	else
 		inputs.fadeToggle(isactive);
+
+	if (isactive)
+		this.setButtonStates();
 }
 
 /**
@@ -105,7 +124,8 @@ EditableTable.prototype.resetRowsData = function() {
 EditableTable.prototype.setButtonStates = function() {
 	// See if the "edit" and "delete" buttons should be enabled or disabled, depending on
 	// the state of the project.
-	this.element.children("input.edit, input.delete").prop("disabled", !this.project[this.property].length);
+	if (this.property != null)
+		this.element.children("input.edit, input.delete").prop("disabled", !this.project[this.property].length);
 }
 
 /**
@@ -144,11 +164,13 @@ EditableTable.prototype.selectionChanged = function(srcelement) {
  **/
 EditableTable.prototype.deleteButtonClicked = function() {
 	if (confirm("Are you sure you want to delete the currently selected row?")) {
-		var joins = this.project.getProperty(this.property);
-		joins.splice(this.selrowindex, 1); // remove mapping
-		this.project.setProperty(this.property, joins);
+		var projelement = this.project.getProperty(this.property);
+		// Remove the item.
+		projelement.splice(this.selrowindex, 1);
 
-		// trigger the edited method for observers here
+		// Save the new version of the project element.  Tell the project that we don't
+		// need to be notified of this change.
+		this.project.setProperty(this.property, projelement, this);
 
 		this.resetRowsData();
 	}
@@ -231,13 +253,16 @@ EditableTable.prototype.cancelRowInput = function(srcelement) {
 EditableTable.prototype.saveRowInput = function(srcelement) {
 	var tr = $(srcelement).parent().parent();
 
-	// read form values
+	// Read form values.
 	var item = tr.formParams();
 
-	// get the element from the project, update it, and save it
+	// Get the element from the project and update it.
 	var projelement = this.project.getProperty(this.property);
 	projelement.push(item);
-	this.project.setProperty(this.property, projelement);
+
+	// Save the new version of the project element.  Tell the project that we don't
+	// need to be notified of this change.
+	this.project.setProperty(this.property, projelement, this);
 
 	this.setButtonStates();
 		
@@ -267,8 +292,9 @@ EditableTable.prototype.saveEditedRowInput = function(srcelement) {
 		olditem[name] = value;
 	});
 
-	// save the new version of the project element
-	this.project.setProperty(this.property, projelement);
+	// Save the new version of the project element.  Tell the project that we don't
+	// need to be notified of this change.
+	this.project.setProperty(this.property, projelement, this);
 
 	// trigger the edited method for observers here
 
