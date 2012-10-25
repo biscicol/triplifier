@@ -44,7 +44,7 @@ Project.prototype.registerObserver = function(observer) {
  * Remove an object from this Project's list of observers.
  **/
 Project.prototype.unregisterObserver = function(observer) {
-	for (var cnt = 0; cnt < this.observers.length; cnt++) {
+	for (var cnt = this.observers.length - 1; cnt >= 0; cnt--) {
 		if (this.observers[cnt] === observer) {
 			// Remove the observer from the list.
 			this.observers.splice(cnt, 1);
@@ -90,11 +90,35 @@ Project.prototype.setProperty = function(propname, newval, dontnotify=null) {
 		this.notifyPropertyChange(propname);
 	}
 
-	// TODO:  Add code here to make sure that the internal state of the project is
-	// consistent.  For example, if concepts are modified, we need to make sure that
-	// all of the defined relations are still possible.  Each check will trigger a (tail)
-	// recursive call to setProperty() so that observers can be notified of the new
-	// changes and any further consistency checks can be performed.
+	// After a project property is changed, we need to make sure that the internal state of
+	// the project remains consistent.  For example, if concepts (entities) are modified, we
+	// need to make sure that all of the defined attributes and relations are still valid.
+	// Each check can trigger a recursive call to setProperty() so that observers can be
+	// notified of the new changes and any further consistency checks can be performed.
+	if (propname == 'entities') {
+		// Remove any attributes that are no longer valid.
+		for (var i = this.attributes.length - 1; i >= 0; i--) {
+			if (!this.isAttributeValid(this.attributes[i])) {
+				//alert('Invalid attribute found.');
+				// Delete the invalid attribute.
+				this.attributes.splice(i, 1);
+				// Update the project.
+				this.setProperty('attributes', this.attributes);
+			}
+		}
+
+		// Remove any relations that are no longer valid (i.e., an entity (concept) they
+		// use is no longer valid).
+		for (var i = this.relations.length - 1; i >= 0; i--) {
+			if (!this.isRelationValid(this.relations[i])) {
+				//alert('Invalid relation found.');
+				// Delete the invalid relation.
+				this.relations.splice(i, 1);
+				// Update the project.
+				this.setProperty('relations', this.relations);
+			}
+		}
+	}
 }
 
 Project.prototype.setName = function(newname) {
@@ -152,6 +176,24 @@ Project.prototype.getAttributesByEntity = function(entityname) {
 	});
 
 	return attribs;
+}
+
+/**
+ * Determine whether a given attribute is still valid.  If the entity it references still
+ * exist in the project, true is returned.  False otherwise.
+ **/
+Project.prototype.isAttributeValid = function(attribute) {
+	var entname;
+
+	for (var i = 0; i < this.entities.length; i++) {
+		entname = this.entities[i].table + '.' + this.entities[i].idColumn;
+		if (attribute.entity == entname)
+			// The entity in the attribute is valid, so return true.
+			return true;
+	}
+
+	// No matching entity could be found, so return false.
+	return false;
 }
 
 /**
@@ -287,6 +329,26 @@ Project.prototype.getRelationCountByEntity = function(entity) {
 	});
 
 	return count;
+}
+
+/**
+ * Determine whether a given relation still valid.  If both of the entities in the relation
+ * exist in the project, true is returned.  False otherwise.
+ **/
+Project.prototype.isRelationValid = function(relation) {
+	rellist = this.getAllPossibleRelations().relations;
+
+	for (var i = 0; i < rellist.length; i++) {
+		for (var j = 0; j < rellist[i].objects.length; j++) {
+			//alert(rellist[i].subject + ' ---> predicate ---> ' + rellist[i].objects[j]);
+			// If we find a matching relation in the set of all possible relations, return true.
+			if (rellist[i].subject == relation.subject && rellist[i].objects[j] == relation.object)
+				return true;
+		}
+	}
+
+	// No match found, so return false.
+	return false;
 }
 
 /*Project.prototype.setDateTime = function(newdatetime) {

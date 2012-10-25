@@ -25,16 +25,19 @@ function EditableTable(element) {
 	this.selectedtr = null;
 	// keep track of the index (in both the table and the project object) of the selected table row
 	this.selrowindex = -1;
+
+	// Set the message to display when the user clicks the "Delete" button.
+	this.delete_msg = "Are you sure you want to delete the selected row?";
 	
 	element.addClass("flexTable");
 	element.children("table").hide();
 
-	// get the DOM for the rows of the table that we want to use as templates for creating new rows
+	// Get the DOM for the rows of the table that we want to use as templates for creating new rows.
 	this.templates = {};
 	this.templates.edit = element.children("table").children("tbody").children("tr.edit").remove();
 	this.templates.display = element.children("table").children("tbody").children(":last").remove();
 
-	// set event handlers
+	// Set event handlers.
 	var self = this;
 	element.children("input.add").click(function() { self.addButtonClicked(); });
 	element.children("input.delete").click(function() { self.deleteButtonClicked(); });
@@ -63,6 +66,7 @@ EditableTable.prototype.projectPropertyChanged = function(project, propname) {
 	// We are only concerned about changes to this EditableTable's property.
 	if (propname == this.property) {
 		//alert('EditableTable (' + this.property + '): property changed (' + propname + ')');
+		this.resetRowsData();
 	}
 }
 
@@ -163,7 +167,7 @@ EditableTable.prototype.selectionChanged = function(srcelement) {
  * Deletes the selected row from the table and the project.
  **/
 EditableTable.prototype.deleteButtonClicked = function() {
-	if (confirm("Are you sure you want to delete the currently selected row?")) {
+	if (confirm(this.delete_msg)) {
 		var projelement = this.project.getProperty(this.property);
 		// Remove the item.
 		projelement.splice(this.selrowindex, 1);

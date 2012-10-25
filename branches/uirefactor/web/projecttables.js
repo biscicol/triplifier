@@ -114,6 +114,9 @@ EntitiesTable.prototype.setButtonStates = function() {
 	// call the superclass implementation
 	this.superclass.prototype.setButtonStates.apply(this);
 
+	// Set a custom message to display when the user clicks the "Delete" button.
+	this.delete_msg = "Are you sure you want to delete the selected concept?  This will also delete any associated attributes and relations.";
+
 	// See if any more entity mappings can be specified and set the state of the "add" button accordingly.
 	var hasmoreents = this.project['entities'].length != this.project.getColumnCount();
 	this.element.children("input.add").prop("disabled", !hasmoreents);
