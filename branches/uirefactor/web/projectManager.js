@@ -95,7 +95,19 @@ Project.prototype.setProperty = function(propname, newval, dontnotify=null) {
 	// need to make sure that all of the defined attributes and relations are still valid.
 	// Each check can trigger a recursive call to setProperty() so that observers can be
 	// notified of the new changes and any further consistency checks can be performed.
-	if (propname == 'entities') {
+	if (propname == 'joins') {
+		// Remove any relations that are no longer valid (i.e., a join they
+		// used is no longer valid).
+		for (var i = this.relations.length - 1; i >= 0; i--) {
+			if (!this.isRelationValid(this.relations[i])) {
+				//alert('Invalid relation found.');
+				// Delete the invalid relation.
+				this.relations.splice(i, 1);
+				// Update the project.
+				this.setProperty('relations', this.relations);
+			}
+		}
+	} else if (propname == 'entities') {
 		// Remove any attributes that are no longer valid.
 		for (var i = this.attributes.length - 1; i >= 0; i--) {
 			if (!this.isAttributeValid(this.attributes[i])) {

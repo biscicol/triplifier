@@ -15,6 +15,9 @@ JoinsTable.prototype.setButtonStates = function() {
 	// call the superclass implementation
 	this.superclass.prototype.setButtonStates.apply(this);
 
+	// Set a custom message to display when the user clicks the "Delete" button.
+	this.delete_msg = "Are you sure you want to delete the selected join?  This will also delete any relations that require this join.";
+
 	// See if more joins are possible and set the state of the "add" button accordingly.
 	var hasmorejoins = this.project.joins.length != this.project.schema.length - 1;
 	this.element.children("input.add").prop("disabled", !hasmorejoins);
@@ -81,19 +84,6 @@ JoinsTable.prototype.primaryTableChange = function(eventsrc) {
 	ob.addOptionsTo("primaryColumn").val(pk);
 }
 
-/**
- * This function removes any relations that have been invalidated by an edited join.  I'll deal with this later.
- * I will implement this by having one FlexTable act as the observer of another and updating itself whenever edits
- * are made to the observed table.
- **/
-function onJoinModify(oldJoin, newJoin) {
-	if (!newJoin || oldJoin.foreignTable != newJoin.foreignTable || oldJoin.primaryTable != newJoin.primaryTable) {
-		relationFT.removeMatching(function(relation) {
-			return relation.subject.indexOf(oldJoin.foreignTable + ".") == 0 && relation.object.indexOf(oldJoin.primaryTable + ".") == 0
-				|| relation.subject.indexOf(oldJoin.primaryTable + ".") == 0 && relation.object.indexOf(oldJoin.foreignTable + ".") == 0;
-		});
-	}
-}
 
 
 
@@ -185,6 +175,7 @@ EntitiesTable.prototype.tableChanged = function(eventsrc, entity) {
 
 	ob.addOptionsTo("idColumn").val(pk);
 }
+
 
 
 
@@ -299,6 +290,7 @@ AttributesTable.prototype.entityChanged = function(eventsrc, attribute) {
 
 	this.authorRdfControls(tr, ob, "rdfProperty", "properties", entity.rdfClass.uri);
 }
+
 
 
 
