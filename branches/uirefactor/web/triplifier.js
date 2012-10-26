@@ -1,7 +1,9 @@
 
-var mainproject;	// The currently-open project.
+// The currently-open project.
+var mainproject;
 
-var joinsPT, entitiesPT, attributesPT, relationsPT, triplifyPT;	// EditableTable objects.
+// EditableTable objects.
+var joinsPT, entitiesPT, attributesPT, relationsPT, triplifyPT;
 
 var	vocabularyManager,
 	dbSourceTrTemplate,
@@ -359,30 +361,6 @@ function activateDS(deactivate) {
 	return true;
 }
 
-function addJoinButton() { 
-	return project.joins.length == project.schema.length - 1;
-}
-
-function searchRelations(entity1, entity2) { 
-	var found = false;
-	$.each(project.relations, function(i, relation) {
-		if (relation.subject == entity1 && relation.object == entity2 || relation.subject == entity2 && relation.object == entity1) {
-			found = true;
-			return false;
-		}
-	});
-	return found;
-}
-
-function countRelations(entity) { 
-	var count = 0;
-	$.each(project.relations, function(i, relation) {
-		if (relation.subject == entity || relation.object == entity)
-			count++;
-	});
-	return count;
-}
-
 function indexOf(array, property, value, property2, value2) { 
 	var result = -1;
 	$.each(array, function(i, element) {
@@ -392,15 +370,6 @@ function indexOf(array, property, value, property2, value2) {
 		}
 	});
 	return result;
-}
-
-function countOf(array, property, value) { 
-	var count = 0;
-	$.each(array, function(i, element) {
-		if (element[property] == value)
-			count++;
-	});
-	return count;
 }
 
 function isJson(data) {

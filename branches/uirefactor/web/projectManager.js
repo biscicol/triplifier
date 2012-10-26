@@ -1,3 +1,7 @@
+
+/**
+ * Project defines the project object and the methods for manipulating and querying projects.
+ **/
 function Project(name) {
 	this.name = name;
 	this.dateTime = "";
@@ -416,6 +420,7 @@ Project.prototype.setRelations = function(newrels) {
 Project.prototype.getRelations = function() {
 	return this.relations;
 }*/
+
 
 
 
