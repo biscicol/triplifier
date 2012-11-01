@@ -25,8 +25,8 @@
 <body>
 
 <div id="header">
-	<a href="http://code.google.com/p/triplifier/wiki/UserDocumentation">Help</a>
-	<h1>Triplifier by BiSciCol Prototype</h1>
+	<a class="help" href="http://code.google.com/p/triplifier/wiki/UserDocumentation">Help</a>
+	<h1>Triplifier <span style="font-size: 50%;">by <a href="http://biscicol.blogspot.com/">BiSciCol</a></span></h1>
 </div>
 
 <div id="projects">
@@ -46,12 +46,13 @@
 		<input type="button" class="delete" value="Delete" />
 		<input type="button" class="deleteAll" value="Delete ALL" class="external" />
 	</div>
-	<h3>Projects:</h3>
+	<h3>Manage Projects</h3>
 	<div class="project"><input type='radio' name='projectChoice' /><label /></div>
 </div>
 
-<div id="dsDiv">
+<div id="dsDiv" class="section">
 	<h2>1. Data Source</h2>
+<div class="sectioncontent">
 	<form id="dbForm" action="">
 		<table>
 			<tr>
@@ -87,13 +88,14 @@
 			<tr>
 				<td colspan="2"><input type="submit" value="Connect to database" class="external" /></td>
 			</tr>
-		</table>
+	</table>
 	</form>
 	<form id="uploadForm" enctype="multipart/form-data" method="post" action="rest/uploadDataSource" target="uploadTarget">
 		<span>File upload:</span><br/>
 		<input type="file" name="file" size="44" /><br/>
 		<input type="submit" value="Upload file" class="external" />
 	</form>
+	<div style="clear: both;"></div>
 	<div id="dsDescription"></div>
 	<table id="schemaTable">
 	<thead>
@@ -111,15 +113,14 @@
 	</table>
 	<input type="button" class="next" value="Next  (Joins)  >" />
 </div>
+</div>
 
-<hr/>
-
-<div id="joinDiv">
+<div id="joinDiv" class="section">
 	<h2>2. Joins</h2>
+<div class="sectioncontent">
 	<input type="button" class="add" value="Add Join" />
 	<input type="button" class="edit" value="Edit" />
 	<input type="button" class="delete" value="Delete" />
-	<br/>
 	
 	<table>
 	<thead>
@@ -166,10 +167,9 @@
 	<input type="button" class="back" value="&lt;  Back  (Data Source)" />
 	<input type="button" class="next" value="Next  (Concepts)  >" />
 </div>
+</div>
 
-<hr/>
-
-<div id="entityDiv">
+<div id="entityDiv" class="section">
 	<div id="vocabularies">
 		<h4>Vocabularies:</h4>
 		<div class="vocabulary"><input type='radio' name='vocabularyChoice' /><label class="external" /></div>
@@ -178,10 +178,10 @@
 	</div>
 	
 	<h2>3. Concepts</h2>
+<div class="sectioncontent">
 	<input type="button" class="add" value="Add Concept" />
 	<input type="button" class="edit" value="Edit" />
 	<input type="button" class="delete" value="Delete" />
-	<br/>
 	
 	<table>
 	<thead>
@@ -224,16 +224,14 @@
 	<input type="button" class="back" value="&lt;  Back  (Joins)" />
 	<input type="button" class="next" value="Next  (Attributes)  >" />
 </div>
+</div>
 
-<hr/>
-
-
-<div id="attributeDiv">
+<div id="attributeDiv" class="section">
 	<h2>4. Attributes</h2>
+<div class="sectioncontent">
 	<input type="button" class="add" value="Add Attribute" />
 	<input type="button" class="edit" value="Edit" />
 	<input type="button" class="delete" value="Delete" />
-	<br/>
 	
 	<table>
 	<thead>
@@ -272,15 +270,14 @@
 	<input type="button" class="back" value="&lt;  Back  (Concepts)" />
 	<input type="button" class="next" value="Next  (Relations)  >" />
 </div>
+</div>
 
-<hr/>
-
-<div id="relationDiv">
+<div id="relationDiv" class="section">
 	<h2>5. Concept Relations</h2>
+<div class="sectioncontent">
 	<input type="button" class="add" value="Add Relation" />
 	<input type="button" class="edit" value="Edit" />
 	<input type="button" class="delete" value="Delete" />
-	<br/>
 	
 	<table>
 	<thead>
@@ -318,11 +315,11 @@
 	<input type="button" class="back" value="&lt;  Back  (Entities)" />
 	<input type="button" class="next" value="Next  (Triplify)  >" />
 </div>
+</div>
 
-<hr/>
-
-<div id="triplifyDiv">
+<div id="triplifyDiv" class="section">
 	<h2>6. Triplify!</h2>
+<div class="sectioncontent">
 	<input type="button" id="getMapping" value="Get Mapping" class="external" />
 	<input type="button" id="getTriples" value="Get Triples" class="external" />
 	<input type="button" id="sendToBiSciCol" value="Send To BiSciCol" class="external" />
@@ -330,6 +327,7 @@
 		<input type="hidden" name="url" />
 	</form>
 	<input type="button" class="back" value="&lt;  Back  (Relations)" />
+</div>
 </div>
 
 

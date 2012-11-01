@@ -44,7 +44,7 @@ $(function() {
 	$("#getTriples").click(function() { triplify("rest/getTriples", downloadFile); });
 	$("#sendToBiSciCol").click(function() { triplify("rest/getTriples", sendToBiSciCol); });
 
-	$("#dbForm, #uploadForm, #dsDiv > input.next, #vocabularies, #status, #overlay, #vocabularyUpload").hide();
+	$("#dbForm, #uploadForm, #dsDiv > div.sectioncontent > input.next, #vocabularies, #status, #overlay, #vocabularyUpload").hide();
 	$("#uploadTarget").appendTo($("body")); // prevent re-posting on reload
 	$("#sendToBiSciColForm").attr("action", biscicolUrl + "rest/search");
 	
@@ -52,7 +52,7 @@ $(function() {
 	// Notice that we also explicitly set the buttons not to be disabled.  This shouldn't be necessary, but it
 	// seems that Firefox will occasionally disable some of these buttons for no apparent reason.  Setting the
 	// disabled property here seems to fix the problem.
-	$("#dsDiv > input.next").click(dSNextButtonClicked).prop("disabled", false);
+	$("#dsDiv input.next").click(dSNextButtonClicked).prop("disabled", false);
 	$('#joinDiv input.back').click(joinsBackButtonClicked).prop("disabled", false);
 	$('#joinDiv input.next').click(function() { navButtonClicked(entitiesPT, joinsPT); }).prop("disabled", false);
 	$('#entityDiv input.back').click(function() { navButtonClicked(joinsPT, entitiesPT); }).prop("disabled", false);
@@ -357,7 +357,7 @@ function activateDS(deactivate) {
 	$("#dsDiv").toggleClass("active", !deactivate);
 	$("#dbForm, #uploadForm").fadeToggle(!deactivate);
 	$("#dsDescription, #schemaTable").fadeToggle(!!mainproject.schema.length);	
-	$("#dsDiv > input.next").fadeToggle(!deactivate && mainproject.schema.length);
+	$("#dsDiv input.next").fadeToggle(!deactivate && mainproject.schema.length);
 	return true;
 }
 

@@ -19,8 +19,11 @@ function EditableTable(element) {
 		return;
 
 	this.element = element;
+	this.contentelem = element.children("div.sectioncontent");
 	this.property = null;
 	this.project = null;
+	// track whether this table is active
+	this.isactive = false;
 	// keep track of the selected table row
 	this.selectedtr = null;
 	// keep track of the index (in both the table and the project object) of the selected table row
@@ -29,19 +32,19 @@ function EditableTable(element) {
 	// Set the message to display when the user clicks the "Delete" button.
 	this.delete_msg = "Are you sure you want to delete the selected row?";
 	
-	element.addClass("flexTable");
-	element.children("table").hide();
+	this.contentelem.addClass("flexTable");
+	//this.contentelem.children("table").hide();
 
 	// Get the DOM for the rows of the table that we want to use as templates for creating new rows.
 	this.templates = {};
-	this.templates.edit = element.children("table").children("tbody").children("tr.edit").remove();
-	this.templates.display = element.children("table").children("tbody").children(":last").remove();
+	this.templates.edit = this.contentelem.children("table").children("tbody").children("tr.edit").remove();
+	this.templates.display = this.contentelem.children("table").children("tbody").children(":last").remove();
 
 	// Set event handlers.
 	var self = this;
-	element.children("input.add").click(function() { self.addButtonClicked(); });
-	element.children("input.delete").click(function() { self.deleteButtonClicked(); });
-	element.children("input.edit").click(function() { self.editButtonClicked(); });
+	this.contentelem.children("input.add").click(function() { self.addButtonClicked(); });
+	this.contentelem.children("input.delete").click(function() { self.deleteButtonClicked(); });
+	this.contentelem.children("input.edit").click(function() { self.editButtonClicked(); });
 }
 
 /**
@@ -77,7 +80,7 @@ EditableTable.prototype.projectPropertyChanged = function(project, propname) {
 EditableTable.prototype.setActive = function(isactive) {
 	this.element.toggleClass("active", isactive);
 
-	var inputs = this.element.find("input");
+	var inputs = this.contentelem.find("input");
 	var notAnimate = false;
 	if (notAnimate)
 		inputs.toggle(isactive);
@@ -86,6 +89,16 @@ EditableTable.prototype.setActive = function(isactive) {
 
 	if (isactive)
 		this.setButtonStates();
+
+	// Set the table visibility, if necessary.
+	if (this.property && !this.project[this.property].length) {
+	       if (isactive)
+			this.contentelem.children("table").show()
+		else
+			this.contentelem.children("table").hide()
+	}
+
+	this.isactive = isactive;
 }
 
 /**
@@ -93,7 +106,7 @@ EditableTable.prototype.setActive = function(isactive) {
  **/
 EditableTable.prototype.resetRowsData = function() {
 	// get the table element
-	var table = this.element.children("table");
+	var table = this.contentelem.children("table");
 
 	// remove all existing table rows
 	table.children("tbody").children().remove();
@@ -105,15 +118,15 @@ EditableTable.prototype.resetRowsData = function() {
 		self.createTableRow(item).appendTo(table);
 	});
 
-	// set the first row in the table to be selected, if it exists, and make the
-	// table visible
+	// Set the first row in the table to be selected, if it exists, and make the
+	// table visible.  
 	if (this.project[this.property].length) {
-		var selectedinput = this.element.find("table input:radio").first().prop("checked", true);
+		var selectedinput = this.contentelem.find("table input:radio").first().prop("checked", true);
 		this.selectedtr = selectedinput.parent().parent();
 		this.selrowindex = this.selectedtr.index();
 
 		table.show();
-	} else {
+	} else if (!this.isactive) {
 		table.hide();
 	}
 
@@ -129,7 +142,7 @@ EditableTable.prototype.setButtonStates = function() {
 	// See if the "edit" and "delete" buttons should be enabled or disabled, depending on
 	// the state of the project.
 	if (this.property != null)
-		this.element.children("input.edit, input.delete").prop("disabled", !this.project[this.property].length);
+		this.contentelem.children("input.edit, input.delete").prop("disabled", !this.project[this.property].length);
 }
 
 /**
@@ -193,7 +206,7 @@ EditableTable.prototype.addButtonClicked = function() {
 	this.populateTableRowOptions(tr, false);
 
 	// add the input row to the table and make sure the table is visible
-	tr.appendTo(this.element.children("table").show())
+	tr.appendTo(this.contentelem.children("table").show())
 
 	this.styleEdit(tr);	
 }

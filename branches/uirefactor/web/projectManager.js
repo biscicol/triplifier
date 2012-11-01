@@ -80,13 +80,14 @@ Project.prototype.getProperty = function(propname) {
  * @param newval  The new value of the property.
  * @param dontnotify  An object not to notify of this change.
  **/
-Project.prototype.setProperty = function(propname, newval, dontnotify=null) {
+Project.prototype.setProperty = function(propname, newval, dontnotify) {
 	this[propname] = newval;
+	dontnotify = dontnotify || false;
 
 	// update all possible relations
 	this.allrels = this.findAllPossibleRelations();
 
-	if (dontnotify != null) {
+	if (dontnotify) {
 		this.unregisterObserver(dontnotify);
 		this.notifyPropertyChange(propname);
 		this.registerObserver(dontnotify);

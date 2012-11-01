@@ -1,46 +1,88 @@
+
+/**
+ * Document-wide styles.
+ **/
 body {
     margin: 0;
     padding: 0;
+    font-family: sans-serif;
+    background: #f6f7b4;
 }
 
-body > hr {
-	margin: 0 8px;
-	clear: both;
+a {
+	text-decoration: none;
+	color: #00A;
+}
+
+a:hover {
+	text-decoration: underline;
 }
 
 h1, h2, h3, h4 {
 	margin: 0;
 }
 
-table {
-	border-collapse: collapse; 
-}
-
-/* Buttons that require network connection */
-.external {
-    color: blue;
-}
-
-#header, #footer {
+h1 {
+	font-size: 180%;
+	text-align: left;
 	margin: 0;
-    padding: 8px;
-    color: #333;
-    background-color: #ddd;
-    border-top: 1px solid gray;
-    border-bottom: 1px solid gray;
 }
 
-/* Help link */
-#header a {
+h2 {
+	font-size: 130%;
+}
+
+table {
+	border-spacing: 0;
+}
+
+/**
+ * The header and footer.
+ **/
+#header {
+	color: #333;
+	margin: 4px 6px;
+	margin-bottom: 0;
+	padding: 4px 22px;
+	border: solid 1px #888;
+	border-radius: 4px;
+	background: #c8c8c8;
+	background: -webkit-linear-gradient(top, #eee, #bbb);
+	background: -moz-linear-gradient(top, #eee, #bbb);
+	background: linear-gradient(to bottom, #eee, #bbb);
+	box-shadow: 0px 0px 6px rgba(0, 0, 0, .3);
+}
+
+#footer {
+	font-size: 90%;
+	padding: 6px 10px;
+	margin-top: 18px;
+	border-top: solid 1px #888;
+	border-bottom: solid 1px #888;
+	background: #c8c8c8;
+	background: -webkit-linear-gradient(top, #eee, #bbb);
+	background: -moz-linear-gradient(top, #eee, #bbb);
+	background: linear-gradient(to bottom, #eee, #bbb);
+}
+
+#header a.help {
+	font-size: 90%;
 	float: right;
 	margin-left: 10px;
 }
 
+/**
+ * Styles for the project manager UI.
+ **/
 #projects {
-	margin: 0;
+	clear: both;
+	margin: 2px 6px 18px 6px;
 	padding: 8px;
-    background-color: #eee;
+	border: solid 1px #888;
+	border-radius: 4px;
+    background: #eee;
     border-bottom: 1px solid gray;
+	box-shadow: 0px 0px 6px rgba(0, 0, 0, .3);
 }
 
 #projects h3 {
@@ -92,105 +134,140 @@ table {
 	clear: both;
 }
 
-#schemaTable {
-	margin: 8px 0;
+/**
+ * The main project sections.
+ **/
+div.section {
+	margin: 10px 2em;
+	border: solid #555 1px;
+	border-width: 3px 1px 2px 1px;
+	border-radius: 8px;
+	background: #ebebeb;
+	box-shadow: 2px 2px 10px rgba(0, 0, 0, .4);
 }
 
-#schemaTable th, #schemaTable td {
-	padding: 4px;
-	border: 2px solid #bbb; 	
+div.section h2 {
+	border-radius: 8px 8px 0 0;
+	border-bottom: solid 1px #aaa;
+	padding: 6px 14px;
+	font-size: 120%;
+	color: #222;
+	background: #ccc;
+	background: -webkit-linear-gradient(top, #eee, #bbb);
+	background: -moz-linear-gradient(top, #eee, #bbb);
+	background: linear-gradient(to bottom, #eee, #bbb);
+}
+
+div.sectioncontent {
+	padding: 4px 2em;
+	background: #eee;
+	background: -webkit-linear-gradient(top, #fff, #ddd);
+	background: -moz-linear-gradient(top, #fff, #ddd);
+	background: linear-gradient(to bottom, #fff, #ddd);
+	border-radius: 0 0 8px 8px;
+}
+
+.sectioncontent table {
+	margin: 10px 0;
+	border: solid 1px #888;
+	border-width: 2px 1px 2px 1px;
+	border-radius: 6px;
+	background: #eee;
+	font-size: 90%;
+	color: #000;
+}
+
+div.sectioncontent > table th {
+	text-align: center;
+	padding: 4px 8px;
+	background: #ddd;
+	background: -webkit-linear-gradient(top, #fff, #ccc);
+	background: -moz-linear-gradient(top, #fff, #ccc);
+	background: linear-gradient(to bottom, #fff, #ccc);
+}
+
+div.sectioncontent > table th:first-child {
+	border-radius: 6px 0 0 0;
+}
+
+div.sectioncontent > table th:last-child {
+	border-radius: 0 6px 0 0;
+}
+
+/*div.sectioncontent > table tr:last-of-type > th:first-child {
+	color: red;
+	border-radius: 0 6px 0 0;
+}*/
+
+div.sectioncontent > table td {
+	padding: 4px 8px;
+	border-top: 1px solid #aaa;
+	border-left: 1px solid #aaa;
+}
+
+div.sectioncontent > table td:first-child {
+	border-left: none;
+}
+
+div.sectioncontent.flexTable > table td:last-child {
+	border-left: none;
+}
+
+div.sectioncontent.flexTable > table td:nth-child(2) {
+	border-left: none;
+}
+
+div.sectioncontent.flexTable, #systemProjects  {
+	/*padding: 10px;*/
+}
+
+div.section.active > h2 {
+	color: crimson;
+}
+
+div.section.active > div.sectioncontent > table {
+	border: 2px solid crimson;
+}
+
+div.sectioncontent > input {
+	margin: 8px 4px;
+}
+
+div.sectioncontent.flexTable > table .edit td {
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+div.sectioncontentflexTable > table .editData+.edit td {
+	padding-top: 0;
+	border-top: none;
+}
+
+/**
+ * Miscellaneous styles.
+ **/
+
+/* Buttons that require network connection */
+.external {
+    color: blue;
 }
 
 #joinDiv td:first-child+td+td, #joinDiv tr:first-child > th:first-child+th , #joinDiv tr+tr > th:first-child+th+th {
 	border-right: 1px solid #bbb; 	
 }
 
-.active h2 {
-	color: crimson;
-}
-
-.flexTable h2 {
-	display: inline;
-	margin-right: 16px;
-}
-
-.flexTable, #dsDiv, #systemProjects  {
-	padding: 10px;
-}
-
-.flexTable > table {
-	margin: 4px 0;
-	border: 2px solid #bbb;
-    background-color: #eee;
-/*	color: #555; */
-}
-
-.flexTable.active > table {
-	border-color: crimson;
-/*	color: black; */
-}
-
-.flexTable > input {
-	margin: 8px 4px;
-}
-
-.flexTable > table th {
-	text-align: left;
-	padding: 4px 8px;
-}
-
-.flexTable > table td {
-	padding: 4px 8px;
-	border-top: 2px solid #bbb; 	
-}
-
-.flexTable > table td:first-child {
-	padding: 2px;
-	border-right: 2px solid #bbb; 	
-}
-
-.flexTable > table > tbody > tr > td + td{
-}
-
-.flexTable > table tr.level2 > td {
-	border-top: none;
-	padding: 0;
-}
-
-.flexTable > table tr.level2 table {
-    background-color: white;
-	margin: 8px;
-}
-
-.flexTable > table tr.level2 table td {
-	border-top: 1px solid #bbb; 	
-	border-right: none !important; 	
-}
-
-.flexTable > table tr.level2 table th {
-	border-right: none !important; 	
-}
-
-.flexTable > table .edit td {
-	padding-left: 2px;
-	padding-right: 2px;
-}
-
-.flexTable > table .editData+.edit td {
-	padding-top: 0;
-	border-top: none;
-}
-
 .editData td, .editData th, .edit td {
     z-index: 1;
     position: relative;
 }
+
 #simpleDiv {
    /*float:center;*/
    padding:20px;
    margin-top:40px;
    margin-bottom:40px;
 }
+
 #vocabularies {
 	float: right;
 	padding: 8px;
