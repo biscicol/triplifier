@@ -66,7 +66,19 @@ $(function() {
 	// Create a ProjectManager and associate it with a ProjectUI.
 	var projman = new ProjectManager();
 	var projUI = new ProjectUI($("#projects"), projman);
+
+	// Set up the contextual popup help.
+	var helpmgr = new ContextHelpManager('helpmsg');
+	defineHelpMessages(helpmgr);
 });
+
+/**
+ * Define the contextual help messages.
+ **/
+function defineHelpMessages(helpmgr) {
+	helpmgr.setHelpItem('datasource_help', '<p>The data source is where your original data is located.  It can be a database, such as PostgreSQL, or a data file.</p><p>The Triplifier supports a number of popular data file formats, including Excel and OpenOffice spreadsheets, CSV files, and Darwin Core Archives.</p>');
+	helpmgr.setHelpItem('joins_help', '<p>If any of the tables in your source data should be connected through joins, you can define the joins here.  The "foreign key" in one table should match the "primary key" in another table.</p>');
+}
 
 /**
  * Set the currently open project.

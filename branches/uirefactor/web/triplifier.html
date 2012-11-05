@@ -16,14 +16,15 @@
 <script type="text/javascript" src="jquery.dom.form_params.js"></script>
     <script type="text/javascript" src="editabletable.js"></script>
     <script type="text/javascript" src="projecttables.js"></script>
-    <script type="text/javascript" src="triplifier.js"></script>
     <script type="text/javascript" src="projectManager.js"></script>
     <script type="text/javascript" src="projectUI.js"></script>
     <script type="text/javascript" src="vocabularyManager.js"></script>
+    <script type="text/javascript" src="contexthelp.js"></script>
+    <script type="text/javascript" src="triplifier.js"></script>
 </head>
 
 <body>
-
+<div id="helpmsg"><div><p>This is for popup help messages.</p></div><a href="#">close</a></div>
 <div id="header">
 	<a class="help" href="http://code.google.com/p/triplifier/wiki/UserDocumentation">Help</a>
 	<h1>Triplifier <span style="font-size: 50%;">by <a href="http://biscicol.blogspot.com/">BiSciCol</a></span></h1>
@@ -51,7 +52,7 @@
 </div>
 
 <div id="dsDiv" class="section">
-	<h2>1. Data Source</h2>
+	<h2>1. Data Source <span class="contexthelp"><a id="datasource_help" href="#">?</a></span></h2>
 <div class="sectioncontent">
 	<form id="dbForm" action="">
 		<table>
@@ -116,7 +117,7 @@
 </div>
 
 <div id="joinDiv" class="section">
-	<h2>2. Joins</h2>
+	<h2>2. Joins <span class="contexthelp"><a id="joins_help" href="#">?</a></span></h2>
 <div class="sectioncontent">
 	<input type="button" class="add" value="Add Join" />
 	<input type="button" class="edit" value="Edit" />

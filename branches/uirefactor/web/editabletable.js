@@ -40,7 +40,7 @@ function EditableTable(element) {
 	this.templates.edit = this.contentelem.children("table").children("tbody").children("tr.edit").remove();
 	this.templates.display = this.contentelem.children("table").children("tbody").children(":last").remove();
 
-	// Set event handlers.
+	// Set event handlers for the main editing buttons.
 	var self = this;
 	this.contentelem.children("input.add").click(function() { self.addButtonClicked(); });
 	this.contentelem.children("input.delete").click(function() { self.deleteButtonClicked(); });
