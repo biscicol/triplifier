@@ -1,7 +1,7 @@
 /**
  * Implements all UI functionality for managing projects.  Essentially, this provides a user
- * interface for a ProjectManager.  It requires properly-defined HTML UI elements to function
- * properly, as explained below.
+ * interface for a ProjectManager.  It requires properly-defined HTML UI elements to function,
+ * as explained below.
  * 
  * @param UIdiv {jQuery} DOM element containing all project controls. Example html:
  *
@@ -35,6 +35,12 @@ function ProjectUI(UIdiv, projectmanager) {
 	this.lastProject = 0;	// used to assign ids to project DOM elements (needed for labels to work)
 	this.projectTemplate = UIdiv.find("div.project").remove(); // used to create project DOM elements
 
+	// An array for keeping track of observers of this ProjectUI.
+	this.observers = [];
+
+	// Keep track of the currently-selected project.
+	this.selproject = null;
+
 	// Save a local reference to this ProjectUI object.
 	var self = this;
 
@@ -42,27 +48,70 @@ function ProjectUI(UIdiv, projectmanager) {
 	UIdiv.find("form.new").submit(function() { self.createProjectClicked(this); return false; });	
 	UIdiv.find("form.export").submit(function() { self.exportProjectClicked(this); return false; });
 	UIdiv.find("input.importFile").change(function() { self.importProjectClicked(this); });	
-	UIdiv.find("input.import").click(function() {UIdiv.find("input.importFile").val("").click();});	
+	UIdiv.find("input.import").click(function() {UIdiv.find("input.importFile").val("").click();});
 	UIdiv.find("input.delete").click(function() { self.deleteProjectClicked(); });
 	UIdiv.find("input.deleteAll").click(function() { self.deleteAllClicked(); });
 
-	var projHTML = []
+	var projDOM = []
 	var projnames = this.projman.getProjectNames();
 
-	// Generate radio-button HTML for each project name.
+	// Generate radio-button DOM <div> for each project name.
 	$.each(projnames, function(i, projname) { 
-		projHTML.push(self.createProjectElement(projname, self.lastProject++).get(0));
+		projDOM.push(self.createProjectElement(projname, self.lastProject++).get(0));
 	});
 
 	if (this.projman.getProjectCnt() > 0)
-		// Add the radio-button HTML to the project UI and trigger the change() event on the first
+		// Add the radio-button HTML to the project UI. and trigger the change() event on the first
 		// project button in order to load it.
-		$(projHTML).appendTo(UIdiv).first().children("input").prop("checked", true).change();
+		$(projDOM).appendTo(UIdiv);
 	else {
-		// No projects exist yet, so display a new empty project.
-		setMainProject(this.projman.newProject('new project'));
+		// No projects exist yet, so create a new empty project.
+		this.projman.newProject('new project');
 		this.addProjectToUI('new project');
 	}
+}
+
+/**
+ * Register an observer of this ProjectUI.  Observers are notified whenever the currently-
+ * selected project changes.  To be an observer, an object must provide the following method:
+ *
+ * projectSelectionChanged(project) { ... }.
+ *
+ * The argument "project" references the currently-selected project.
+ **/
+ProjectUI.prototype.registerObserver = function(observer) {
+	this.observers.push(observer);
+}
+
+/**
+ * Remove an object from this ProjectUI's list of observers.
+ **/
+ProjectUI.prototype.unregisterObserver = function(observer) {
+	for (var cnt = this.observers.length - 1; cnt >= 0; cnt--) {
+		if (this.observers[cnt] === observer) {
+			// Remove the observer from the list.
+			this.observers.splice(cnt, 1);
+		}
+	}
+}
+
+/**
+ * Notify all observers of a change in the currently-selected project.
+ **/
+ProjectUI.prototype.notifyProjectSelectionChange = function(projname) {
+	for (var cnt = 0; cnt < this.observers.length; cnt++) {
+		this.observers[cnt].projectSelectionChanged(projname);
+	}
+}
+
+/**
+ * Tells this ProjectUI to automatically select a project from the list
+ * of available projects.  The first project in the list of radio
+ * buttons will be selected.
+ **/
+ProjectUI.prototype.selectDefaultProject = function() {
+	// Select the first project radio button and trigger the change() event on it.
+	this.UIdiv.children('div.project').first().children("input").prop("checked", true).change();
 }
 
 ProjectUI.prototype.createProjectClicked = function(element) {
@@ -83,12 +132,18 @@ ProjectUI.prototype.createProjectClicked = function(element) {
 	this.projman.newProject(newProjName);
 	this.addProjectToUI(newProjName);
 }
-	
+
+/**
+ * Adds a radio button for the specified project name to the user interface.
+ **/
 ProjectUI.prototype.addProjectToUI = function(projectname) {
 	// Add the project name to the UI and trigger the change event.
 	this.createProjectElement(projectname).appendTo(this.UIdiv).children("input").prop("checked", true).change();
 }
-	
+
+/**
+ * Creates a new project <div> (including the radio button) from the DOM template.
+ **/
 ProjectUI.prototype.createProjectElement = function(projectname, index) {
 	var self = this;
 
@@ -96,31 +151,33 @@ ProjectUI.prototype.createProjectElement = function(projectname, index) {
 		.attr("id", "p" + index).change(function() { self.projectButtonSelected(this); }).end()
 		.children("label").attr("for", "p" + index).html(projectname).end();
 }
-	
+
+/**
+ * This method is called whenever a project radio button is selected.  It causes all observers
+ * to be notified of the selection change.
+ **/
 ProjectUI.prototype.projectButtonSelected = function(element) {
 	var projname = element.value;
-	setMainProject(this.projman.openProject(projname));
+	this.selproject = this.projman.openProject(projname);
 
-	/*$.each(project, function(key, value) { 
-		project[key] = localStorage.getObject(getStorageKeyFn(key, prj));
-	});
-
-	onOpenProjectFn();*/
+	this.notifyProjectSelectionChange(this.selproject);
 }
 	
 ProjectUI.prototype.deleteProjectClicked = function() {
-	if (!confirm("Are you sure you want to DELETE project '" + mainproject.getName() + "'?")) 
+	if (!confirm("Are you sure you want to DELETE project '" + this.selproject.getName() + "'?")) 
 		return;
 
-	this.projman.deleteProject(mainproject);
+	this.projman.deleteProject(this.selproject);
 
-	this.UIdiv.find("div.project").children("input[value='" + mainproject.getName() + "']").parent().remove()
-		.end().end().first().children("input").prop("checked", true).change();
+	this.UIdiv.find("div.project").children("input[value='" + this.selproject.getName() + "']").parent().remove();
 
 	if (this.projman.getProjectCnt() == 0) {
-		setMainProject(this.projman.newProject('New Project'));
-		this.addProjectToUI('New Project');
+		this.projman.newProject('new project');
+		this.addProjectToUI('new project');
 	}
+
+	// Select the next project in the set of radio buttons.
+	this.selectDefaultProject();
 }
 	
 ProjectUI.prototype.deleteAllClicked = function() {

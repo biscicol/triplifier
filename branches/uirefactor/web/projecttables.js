@@ -4,16 +4,17 @@
  **/
 function JoinsTable(element) {
 	// call the parent's constructor
-	this.superclass(element);
+	JoinsTable.superclass.call(this, element);
 }
 
 // JoinsTable inherits from EditableTable
 JoinsTable.prototype = new EditableTable();
-JoinsTable.prototype.superclass = EditableTable;
+JoinsTable.prototype.constructor = JoinsTable;
+JoinsTable.superclass = EditableTable;
 
 JoinsTable.prototype.setButtonStates = function() {
 	// call the superclass implementation
-	this.superclass.prototype.setButtonStates.apply(this);
+	JoinsTable.superclass.prototype.setButtonStates.apply(this);
 
 	// Set a custom message to display when the user clicks the "Delete" button.
 	this.delete_msg = "Are you sure you want to delete the selected join?  This will also delete any relations that require this join.";
@@ -93,16 +94,17 @@ JoinsTable.prototype.primaryTableChange = function(eventsrc) {
  **/
 function EntitiesTable(element) {
 	// call the parent's constructor
-	this.superclass(element);
+	EntitiesTable.superclass.call(this, element);
 }
 
 // EntitiesTable inherits from EditableTable
 EntitiesTable.prototype = new EditableTable();
-EntitiesTable.prototype.superclass = EditableTable;
+EntitiesTable.prototype.constructor = EntitiesTable;
+EntitiesTable.superclass = EditableTable;
 
 EntitiesTable.prototype.setButtonStates = function() {
 	// call the superclass implementation
-	this.superclass.prototype.setButtonStates.apply(this);
+	EntitiesTable.superclass.prototype.setButtonStates.apply(this);
 
 	// Set a custom message to display when the user clicks the "Delete" button.
 	this.delete_msg = "Are you sure you want to delete the selected concept?  This will also delete any associated attributes and relations.";
@@ -185,16 +187,17 @@ EntitiesTable.prototype.tableChanged = function(eventsrc, entity) {
  **/
 function AttributesTable(element) {
 	// call the parent's constructor
-	this.superclass(element);
+	AttributesTable.superclass.call(this, element);
 }
 
 // AttributesTable inherits from EditableTable
 AttributesTable.prototype = new EditableTable();
-AttributesTable.prototype.superclass = EditableTable;
+AttributesTable.prototype.constructor = AttributesTable
+AttributesTable.superclass = EditableTable;
 
 AttributesTable.prototype.setButtonStates = function() {
 	// call the superclass implementation
-	this.superclass.prototype.setButtonStates.apply(this);
+	AttributesTable.superclass.prototype.setButtonStates.apply(this);
 
 	// See whether any new attributes can be defined.
 	var hasmoreatts = this.project.entities.length < 1;
@@ -300,16 +303,17 @@ AttributesTable.prototype.entityChanged = function(eventsrc, attribute) {
  **/
 function RelationsTable(element) {
 	// call the parent's constructor
-	this.superclass(element);
+	RelationsTable.superclass.call(this, element);
 }
 
 // RelationsTable inherits from EditableTable
 RelationsTable.prototype = new EditableTable();
-RelationsTable.prototype.superclass = EditableTable;
+RelationsTable.prototype.constructor = RelationsTable;
+RelationsTable.superclass = EditableTable;
 
 RelationsTable.prototype.setButtonStates = function() {
 	// call the superclass implementation
-	this.superclass.prototype.setButtonStates.apply(this);
+	RelationsTable.superclass.prototype.setButtonStates.apply(this);
 
 	// See if any more relations can be specified and set the state of the "add" button accordingly.
 	var hasmorerels = this.project['relations'].length != this.project.getAllPossibleRelations().count;

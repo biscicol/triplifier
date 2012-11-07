@@ -508,6 +508,7 @@ ProjectManager.prototype.createEmptyProject = function() {
 		schema:[],
 		joins:[],
 		entities:[],
+		attributes:[],
 		relations:[]
 	};
 }

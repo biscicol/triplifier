@@ -13,17 +13,20 @@
  * handle setting the input option values for add/edit operations.
  **/
 function EditableTable(element) {
+	// call the parent's constructor
+	//alert('blah: EditableTable');
+	//alert(this.superclass);
+	EditableTable.superclass.call(this, element);
+
 	// If element is null, the constructor is being called merely for inheritance purposes,
 	// so exit without creating any "own" properties.
-	if (element == null)
+	if (element == null) {
 		return;
+	}
 
-	this.element = element;
-	this.contentelem = element.children("div.sectioncontent");
 	this.property = null;
 	this.project = null;
-	// track whether this table is active
-	this.isactive = false;
+
 	// keep track of the selected table row
 	this.selectedtr = null;
 	// keep track of the index (in both the table and the project object) of the selected table row
@@ -32,9 +35,6 @@ function EditableTable(element) {
 	// Set the message to display when the user clicks the "Delete" button.
 	this.delete_msg = "Are you sure you want to delete the selected row?";
 	
-	this.contentelem.addClass("flexTable");
-	//this.contentelem.children("table").hide();
-
 	// Get the DOM for the rows of the table that we want to use as templates for creating new rows.
 	this.templates = {};
 	this.templates.edit = this.contentelem.children("table").children("tbody").children("tr.edit").remove();
@@ -46,6 +46,11 @@ function EditableTable(element) {
 	this.contentelem.children("input.delete").click(function() { self.deleteButtonClicked(); });
 	this.contentelem.children("input.edit").click(function() { self.editButtonClicked(); });
 }
+
+// EditableTable inherits from ProjectSection.
+EditableTable.prototype = new ProjectSection();
+EditableTable.prototype.constructor = EditableTable;
+EditableTable.superclass = ProjectSection;
 
 /**
  * Set the project to associate with this EditableTable.
@@ -78,14 +83,8 @@ EditableTable.prototype.projectPropertyChanged = function(project, propname) {
  * are hidden and the table and text are not highlighted.
  **/
 EditableTable.prototype.setActive = function(isactive) {
-	this.element.toggleClass("active", isactive);
-
-	var inputs = this.contentelem.find("input");
-	var notAnimate = false;
-	if (notAnimate)
-		inputs.toggle(isactive);
-	else
-		inputs.fadeToggle(isactive);
+	// call the superclass implementation
+	EditableTable.superclass.prototype.setActive.call(this, isactive);
 
 	if (isactive)
 		this.setButtonStates();
@@ -97,8 +96,6 @@ EditableTable.prototype.setActive = function(isactive) {
 		else
 			this.contentelem.children("table").hide()
 	}
-
-	this.isactive = isactive;
 }
 
 /**

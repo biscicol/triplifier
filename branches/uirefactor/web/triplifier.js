@@ -30,10 +30,7 @@ $(function() {
 	entitiesPT = new EntitiesTable($("#entityDiv"));
 	attributesPT = new AttributesTable($("#attributeDiv"));
 	relationsPT = new RelationsTable($("#relationDiv"));
-	// Use an EditableTable for the triplifier <div>, too, although this is merely to get styles
-	// and activate/deactivate capabilities.  There is no table inside the div, so the authoring
-	// functionality of EditableTable is unavailable.
-	triplifyPT = new EditableTable($("#triplifyDiv"));
+	triplifyPT = new ProjectSection($("#triplifyDiv"));
 
 	// assign event handlers
 	$("#dbForm").submit(inspect);
@@ -67,6 +64,13 @@ $(function() {
 	var projman = new ProjectManager();
 	var projUI = new ProjectUI($("#projects"), projman);
 
+	// Provide an observer for selection changes in the ProjectUI.
+	obsobj = { projectSelectionChanged: projectSelectionChanged };
+	projUI.registerObserver(obsobj);
+
+	// Set the default project selection in the UI.
+	projUI.selectDefaultProject();
+
 	// Set up the contextual popup help.
 	var helpmgr = new ContextHelpManager('helpmsg');
 	defineHelpMessages(helpmgr);
@@ -81,7 +85,31 @@ function defineHelpMessages(helpmgr) {
 }
 
 /**
- * Set the currently open project.
+ * Respond to project selection changes from the ProjectUI.
+ **/
+function projectSelectionChanged(project) {
+	//alert("selection changed: " + project.getName());
+
+	setMainProject(project);
+}
+
+/**
+ * Respond to property changes in the currently-open project.
+ **/
+function projectPropertyChanged(project, propname) {
+	//alert("changed: " + propname);
+	
+	// If concepts (entities) were changed, update the "Next" button state accordingly.
+	if (propname == 'entities') {
+		if (!mainproject.entities.length)
+			$('#entityDiv input.next').prop('disabled', true);
+		else
+			$('#entityDiv input.next').prop('disabled', false);
+	}
+}
+
+/**
+ * Set the currently-open project.
  **/
 function setMainProject(project) {
 	//alert('main project set');
@@ -101,21 +129,6 @@ function setMainProject(project) {
 	updateSchemaUI();
 
 	updateFlexTables();
-}
-
-/**
- * Respond to property changes in the currently-open project.
- **/
-function projectPropertyChanged(project, propname) {
-	//alert("changed: " + propname);
-	
-	// If concepts (entities) were changed, update the "Next" button state accordingly.
-	if (propname == 'entities') {
-		if (!mainproject.entities.length)
-			$('#entityDiv input.next').prop('disabled', true);
-		else
-			$('#entityDiv input.next').prop('disabled', false);
-	}
 }
 
 /**
@@ -141,6 +154,10 @@ function joinsBackButtonClicked() {
 	return true;
 }
 
+/**
+ * Updates the data source description and the schema table in the "Data Source" section so that
+ * they match the contents of mainproject.
+ **/
 function updateSchemaUI() {
 	// update schema
 	$("#dsDescription").html(getDataSourceName() + ", accessed: " + mainproject.dateTime);
@@ -161,8 +178,9 @@ function updateSchemaUI() {
 }
 
 function updateFlexTables() {	
-	// update data source
+	// Fill in the database form.  Leave it blank if the source was a sqlite database.
 	$.each($("#dbForm").get(0), function(i, element) {
+		//alert(mainproject.connection.system);
 		if (element.type != "submit")
 			element.value = (mainproject.connection.system == "sqlite" ? "" : (mainproject.connection[element.name] || ""));
 	});
