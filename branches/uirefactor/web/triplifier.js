@@ -2,11 +2,10 @@
 // The currently-open project.
 var mainproject;
 
-// EditableTable objects.
-var joinsPT, entitiesPT, attributesPT, relationsPT, triplifyPT;
+// ProjectSection objects.
+var dSsection, joinsPT, entitiesPT, attributesPT, relationsPT, triplifyPT;
 
 var	vocabularyManager,
-	dbSourceTrTemplate,
 	relationPredicates = ["ma:isSourceOf", "ma:isRelatedTo"],
 	biscicolUrl = "http://biscicol.org/",
 	triplifierUrl = "http://biscicol.org:8080/triplifier/"; // [hack] when file on triplifier is accessed from biscicol on the same server then port forwarding won't work so the port is set here
@@ -18,30 +17,30 @@ var	vocabularyManager,
 //	Unfortunately, "localhost" doesn't appear to work with the "same origin" script policy (in Firefox, anyway).
 //	triplifierUrl = "http://localhost:8080/triplifier/";
 
-// execute once the DOM has loaded
+
+/**
+ * This is the main function that sets everything up.  It is called once the DOM is loaded.
+ * It creates all of the ProjectSection objects, creates the ProjectManager and ProjectUI,
+ * sets up the main navigation buttons, and initializes the contextual help.
+ **/
 $(function() {
-	dbSourceTrTemplate = $("#schemaTable > tbody").children(":last").remove();
-   	
 	// VocabularyManager must be created before FlexTables
 	vocabularyManager = new VocabularyManager($("#vocabularies"), $("#vocabularyUpload"), getStorageKey("vocabularies"), alertError);
 
-	// Create the project tables (this also removes blank DOM elements).
+	// Create the main project sections.
+	dSsection = new DataSourceSection($('#dsDiv'));
 	joinsPT = new JoinsTable($("#joinDiv"));
 	entitiesPT = new EntitiesTable($("#entityDiv"));
 	attributesPT = new AttributesTable($("#attributeDiv"));
 	relationsPT = new RelationsTable($("#relationDiv"));
 	triplifyPT = new ProjectSection($("#triplifyDiv"));
 
-	// assign event handlers
-	$("#dbForm").submit(inspect);
-	$("#uploadForm").submit(uploadData);
-
 	// Assign event handlers for the "triplify" section.
 	$("#getMapping").click(function() { triplify("rest/getMapping", downloadFile); });
 	$("#getTriples").click(function() { triplify("rest/getTriples", downloadFile); });
 	$("#sendToBiSciCol").click(function() { triplify("rest/getTriples", sendToBiSciCol); });
 
-	$("#dbForm, #uploadForm, #dsDiv > div.sectioncontent > input.next, #vocabularies, #status, #overlay, #vocabularyUpload").hide();
+	$("#vocabularies, #status, #overlay, #vocabularyUpload").hide();
 	$("#uploadTarget").appendTo($("body")); // prevent re-posting on reload
 	$("#sendToBiSciColForm").attr("action", biscicolUrl + "rest/search");
 	
@@ -49,8 +48,8 @@ $(function() {
 	// Notice that we also explicitly set the buttons not to be disabled.  This shouldn't be necessary, but it
 	// seems that Firefox will occasionally disable some of these buttons for no apparent reason.  Setting the
 	// disabled property here seems to fix the problem.
-	$("#dsDiv input.next").click(dSNextButtonClicked).prop("disabled", false);
-	$('#joinDiv input.back').click(joinsBackButtonClicked).prop("disabled", false);
+	$("#dsDiv input.next").click(function() { navButtonClicked(joinsPT, dSsection); }).prop("disabled", false);
+	$('#joinDiv input.back').click(function() { navButtonClicked(dSsection, joinsPT); }).prop("disabled", false);
 	$('#joinDiv input.next').click(function() { navButtonClicked(entitiesPT, joinsPT); }).prop("disabled", false);
 	$('#entityDiv input.back').click(function() { navButtonClicked(joinsPT, entitiesPT); }).prop("disabled", false);
 	$('#entityDiv input.next').click(function() { navButtonClicked(attributesPT, entitiesPT); }).prop("disabled", false);
@@ -85,39 +84,22 @@ function defineHelpMessages(helpmgr) {
 }
 
 /**
- * Respond to project selection changes from the ProjectUI.
+ * Respond to project selection changes from the ProjectUI.  When a new project is selected
+ * in the ProjectUI, this method makes sure that the rest of the UI is updated to work with
+ * the newly-selected project.
  **/
 function projectSelectionChanged(project) {
 	//alert("selection changed: " + project.getName());
 
-	setMainProject(project);
-}
-
-/**
- * Respond to property changes in the currently-open project.
- **/
-function projectPropertyChanged(project, propname) {
-	//alert("changed: " + propname);
-	
-	// If concepts (entities) were changed, update the "Next" button state accordingly.
-	if (propname == 'entities') {
-		if (!mainproject.entities.length)
-			$('#entityDiv input.next').prop('disabled', true);
-		else
-			$('#entityDiv input.next').prop('disabled', false);
-	}
-}
-
-/**
- * Set the currently-open project.
- **/
-function setMainProject(project) {
 	//alert('main project set');
 	mainproject = project;
 
 	// Very few of the sections are strictly required in order to triplify input data, but at the very
-	// least, the user needs to define one concept.  So, we need to check if any concepts have been
-	// defined, and if not, disable the "Next" button for the concepts.
+	// least, the user needs to provide a data source and define one concept.  So, we need to check if
+	// the project has a valid data source and if any concepts have been defined, and disable the "Next"
+	// buttons if necessary.
+	if (!mainproject.schema.length)
+		$("#dsDiv input.next").prop('disabled', true);
 	if (!mainproject.entities.length)
 		$('#entityDiv input.next').prop('disabled', true);
 
@@ -126,9 +108,35 @@ function setMainProject(project) {
 	obsobj = { projectPropertyChanged: projectPropertyChanged };
 	mainproject.registerObserver(obsobj);
 
-	updateSchemaUI();
+	updateProjectSections();
+}
 
-	updateFlexTables();
+/**
+ * Responds to property changes in the currently-open project.  When a property of mainproject is
+ * modified, this method checks which property was modified and then disables or enables user
+ * access to project sections as needed.
+ *
+ * Very few of the sections are strictly required in order to triplify input data, but at the very
+ * least, the user needs to provide a data source and define one concept.  So, if no data source
+ * is specified, then the remaining sections will be inaccessible, and if no concepts are specified,
+ * then sections 4-6 will be inaccessible.
+ **/
+function projectPropertyChanged(project, propname) {
+	//alert("changed: " + propname);
+	
+	if (propname == 'entities') {
+		// If concepts (entities) were changed, update the "Next" button state accordingly.
+		if (!mainproject.entities.length)
+			$('#entityDiv input.next').prop('disabled', true);
+		else
+			$('#entityDiv input.next').prop('disabled', false);
+	} else if (propname == 'schema') {
+		// If the data source was changed, update the "Next" button state accordingly.
+		if (!mainproject.schema.length)
+			$("#dsDiv input.next").prop('disabled', true);
+		else
+			$("#dsDiv input.next").prop('disabled', false);
+	}	
 }
 
 /**
@@ -142,51 +150,10 @@ function navButtonClicked(activatePT, deactivatePT) {
 	return true;
 }
 
-function dSNextButtonClicked() {
-	activateDS(true);
-	joinsPT.setActive(true);
-	return true;
-}
-
-function joinsBackButtonClicked() {
-	joinsPT.setActive(false);
-	activateDS();
-	return true;
-}
-
-/**
- * Updates the data source description and the schema table in the "Data Source" section so that
- * they match the contents of mainproject.
- **/
-function updateSchemaUI() {
-	// update schema
-	$("#dsDescription").html(getDataSourceName() + ", accessed: " + mainproject.dateTime);
-	var schemaTable = $("#schemaTable");
-	var columns;
-	schemaTable.children("tbody").children().remove();
-	$.each(mainproject.schema, function(i, table) {
-		columns = "";
-		$.each(table.columns, function(j, column) { 
-			columns += column + ($.inArray(column, table.pkColumns) >= 0 ? "*" : "") + ", ";
-		});
-		columns = columns.substr(0, columns.length - 2); // remove last comma
-		dbSourceTrTemplate.clone().children()
-			.first().html(table.name) // write table name to first td
-			.next().html(columns) // write columns to second td
-			.end().end().end().appendTo(schemaTable);
-	});
-}
-
-function updateFlexTables() {	
-	// Fill in the database form.  Leave it blank if the source was a sqlite database.
-	$.each($("#dbForm").get(0), function(i, element) {
-		//alert(mainproject.connection.system);
-		if (element.type != "submit")
-			element.value = (mainproject.connection.system == "sqlite" ? "" : (mainproject.connection[element.name] || ""));
-	});
-
-	// update joins, delete invalid (not in schema)
+function updateProjectSections() {	
+	dSsection.setProject(mainproject);
 	joinsPT.setProject(mainproject, 'joins');
+	// update joins, delete invalid (not in schema)
 	//joinsPT.removeMatching(function(join) {
 	//	return !findInSchema(join.foreignTable, join.foreignColumn) || !findInSchema(join.primaryTable, join.primaryColumn);
 	//});
@@ -196,7 +163,7 @@ function updateFlexTables() {
 
 	// Activate/deactivate each section depending on the project state.  Note the use of "!!" to ensure
 	// we have a true boolean value.
-	activateDS(mainproject.schema.length); 
+	dSsection.setActive(!mainproject.schema.length); 
 	joinsPT.setActive(!!mainproject.schema.length && !mainproject.entities.length && !mainproject.relations.length);
 	entitiesPT.setActive(!!mainproject.entities.length && !mainproject.attributes.length && !mainproject.relations.length)
 	attributesPT.setActive(!!mainproject.attributes.length && !mainproject.relations.length)
@@ -283,57 +250,12 @@ function afterBiSciCol() {
 		alert("Error" + (data ? ":\n\n"+data : "."));	
 }
 
-function uploadData() {
-	if (!this.file.value) {
-		alert("Please select a file to upload.");
-		this.file.focus();
-		return false;
-	}
-	setStatus("Uploading file:</br>'" + this.file.value + "'");
-	$("#uploadTarget").one("load", afterUpload);
-	return true;
-}
-
-function afterUpload() {
-	setStatus("");
-	var data = frames.uploadTarget.document.body.textContent;
-	// distinguish response OK status by JSON format
-	if (isJson(data))
-		readMapping(JSON.parse(data));
-	else
-		alert("Error" + (data ? ":\n\nUnable to contact server for data upload\nResponse="+data : "."));
-}
-
-function inspect() {
-	// validate form
-	if (!this.host.value) {
-		alert("Please enter host address.");
-		return false;
-	}
-	if (!this.database.value) {
-		alert("Please enter database.");
-		return false;
-	}
-	
-	setStatus("Connecting to database:</br>'" + this.host.value + "'");
-	  $.ajax({
-		url: "rest/inspect",
-		type: "POST",
-		data: JSON.stringify($("#dbForm").formParams()),//$("#dbForm").serialize(),
-		contentType:"application/json; charset=utf-8",
-		dataType: "json",
-		success: readMapping,
-		error: alertError
-	  });
-	return false;
-}
-
 function setStatus(status) {
 	$("#status").html(status);
 	$("#status, #overlay").fadeToggle(status);
 }
 
-function readMapping(inspection) {
+/*function readMapping(inspection) {
 	setStatus("");
 	mainproject.setProperty('dateTime', inspection["dateTime"]);
 	mainproject.setProperty('connection', inspection["connection"]);
@@ -346,29 +268,9 @@ function readMapping(inspection) {
 		mainproject.setProperty('relations', inspection["relations"]);
 
 	displayMapping();
-}
+}*/
 
-function getDataSourceName() {
-   // NOTE: d2rq was re-writing dataSourceName() beginning with file: This was frustrating, so
-   // i opted instead to use the BiSciCol namespace.  Ultimately, we want users to have some
-   // control over the identity of their published dataset.
-   //var name= project.connection.system == "sqlite"
-	//    ? "file:" + project.connection.database.substr(0, project.connection.database.length-7)
-	//	: "database:" + project.connection.database + "@" + project.connection.host;
-	var name;
-
-	if (mainproject.connection.system == "sqlite")
-		name = "urn:x-biscicol:" + mainproject.connection.database.substr(0, mainproject.connection.database.length-7);
-	else
-		name = "urn:x-biscicol:" + mainproject.connection.database + "@" + mainproject.connection.host;
-	
-	// remove leading and trailing space
-	name = $.trim(name);
-
-	return name.replace(/ /g,'_');
-}
-
-function displayMapping() {
+/*function displayMapping() {
 	if (!mainproject.connection) {
 		mainproject.dateTime = "";
 		mainproject.connection = {};
@@ -380,16 +282,8 @@ function displayMapping() {
 
 	updateSchemaUI();
 
-	updateFlexTables();	
-}
-
-function activateDS(deactivate) {
-	$("#dsDiv").toggleClass("active", !deactivate);
-	$("#dbForm, #uploadForm").fadeToggle(!deactivate);
-	$("#dsDescription, #schemaTable").fadeToggle(!!mainproject.schema.length);	
-	$("#dsDiv input.next").fadeToggle(!deactivate && mainproject.schema.length);
-	return true;
-}
+	updateFlexTables();
+}*/
 
 function indexOf(array, property, value, property2, value2) { 
 	var result = -1;
