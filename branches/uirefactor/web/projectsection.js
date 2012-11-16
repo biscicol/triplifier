@@ -18,15 +18,16 @@ function ProjectSection(element) {
 
 	// track whether this section is active
 	this.isactive = undefined;
+
+	// track whether this section's title link is enabled
+	this.isenabled = undefined;
 	
 	this.contentelem.addClass("flexTable");
 	//this.contentelem.children("table").hide();
 	
 	// Set up the handler for clicks on the section title.
-	var anchor = this.element.children('h2').children('a').first();
-	anchor.attr('href', '#');
-	var self = this;
-	anchor.click(function() { return self.titleClicked(); });
+	this.titleanchor = this.element.children('h2').children('a').first();
+	this.setEnabled(true);
 }
 
 /**
@@ -80,6 +81,27 @@ ProjectSection.prototype.setActive = function(isactive) {
 }
 
 /**
+ * Set whether or not the section title link is this ProjectSection is enabled.
+ **/
+ProjectSection.prototype.setEnabled = function(isenabled) {
+	if (this.isenabled == isenabled)
+		return;
+
+	if (isenabled) {
+		var self = this;
+		this.titleanchor.click(function() { return self.titleClicked(); });
+		this.titleanchor.attr('href', '#');
+		this.titleanchor.toggleClass('disabled', false);
+	} else {
+		this.titleanchor.removeAttr('href');
+		this.titleanchor.off('click');
+		this.titleanchor.toggleClass('disabled', true);
+	}
+
+	this.isenabled = isenabled;
+}
+
+/**
  * Handle clicks on the section title.
  **/
 ProjectSection.prototype.titleClicked = function() {
@@ -127,6 +149,18 @@ SectionManager.prototype.projectSectionActivated = function(projectsection) {
 			this.activesection.setActive(false);
 		}
 		this.activesection = projectsection;
+	}
+}
+
+/**
+ * Enables or disables one or more ProjectSections.
+ *
+ * @param isenabled  Whether the section(s) is/are enabled or disabled.
+ * @param ...  One or more ProjectSections to enable or disable.
+ **/
+SectionManager.prototype.setSectionsEnabled = function(isenabled /*, ...*/) {
+	for (var cnt = 1; cnt < arguments.length; cnt++) {
+		arguments[cnt].setEnabled(isenabled);
 	}
 }
 

@@ -4,6 +4,8 @@ var mainproject;
 
 // ProjectSection objects.
 var dSsection, joinsPT, entitiesPT, attributesPT, relationsPT, triplifyPT;
+// SectionManager object.
+var sectionmgr;
 
 var	vocabularyManager,
 	relationPredicates = ["ma:isSourceOf", "ma:isRelatedTo"],
@@ -36,7 +38,7 @@ $(function() {
 	triplifyPT = new ProjectSection($("#triplifyDiv"));
 
 	// Set up the SectionManager.
-	var sectionmgr = new SectionManager();
+	sectionmgr = new SectionManager();
 	sectionmgr.addSections(dSsection, joinsPT, entitiesPT, attributesPT, relationsPT, triplifyPT);
 
 	// Assign event handlers for the "triplify" section.
@@ -102,10 +104,14 @@ function projectSelectionChanged(project) {
 	// least, the user needs to provide a data source and define one concept.  So, we need to check if
 	// the project has a valid data source and if any concepts have been defined, and disable the "Next"
 	// buttons if necessary.
-	if (!mainproject.schema.length)
+	if (!mainproject.schema.length) {
 		$("#dsDiv input.next").prop('disabled', true);
-	if (!mainproject.entities.length)
+		sectionmgr.setSectionsEnabled(false, joinsPT, entitiesPT, attributesPT, relationsPT, triplifyPT);
+	}
+	if (!mainproject.entities.length) {
 		$('#entityDiv input.next').prop('disabled', true);
+		sectionmgr.setSectionsEnabled(false, attributesPT, relationsPT, triplifyPT);
+	}
 
 	// We want to be notified of project changes so we can update the state of the concepts "Next"
 	// button as needed.  We need to create an object to act as a project observer.
@@ -129,17 +135,29 @@ function projectPropertyChanged(project, propname) {
 	//alert("changed: " + propname);
 	
 	if (propname == 'entities') {
-		// If concepts (entities) were changed, update the "Next" button state accordingly.
-		if (!mainproject.entities.length)
+		// If concepts (entities) were changed, update the "Next" button state accordingly, and
+		// set which sections are enabled.
+		if (!mainproject.entities.length) {
 			$('#entityDiv input.next').prop('disabled', true);
-		else
+			sectionmgr.setSectionsEnabled(false, attributesPT, relationsPT, triplifyPT);
+		}
+		else {
 			$('#entityDiv input.next').prop('disabled', false);
+			sectionmgr.setSectionsEnabled(true, attributesPT, relationsPT, triplifyPT);
+		}
 	} else if (propname == 'schema') {
-		// If the data source was changed, update the "Next" button state accordingly.
-		if (!mainproject.schema.length)
+		// If the data source was changed, update the "Next" button state accordingly, and set
+		// which sections are enabled.
+		if (!mainproject.schema.length) {
 			$("#dsDiv input.next").prop('disabled', true);
-		else
+			sectionmgr.setSectionsEnabled(false, joinsPT, entitiesPT, attributesPT, relationsPT, triplifyPT);
+		}
+		else {
 			$("#dsDiv input.next").prop('disabled', false);
+			sectionmgr.setSectionsEnabled(true, joinsPT, entitiesPT);
+			if (mainproject.entities.length)
+				sectionmgr.setSectionsEnabled(true, attributesPT, relationsPT, triplifyPT);
+		}
 	}	
 }
 

@@ -201,7 +201,15 @@ div.section > h2 > a:hover {
 	text-decoration: none;
 	border-radius: 4px;
 	background: #999;
-	background: linear-gradient(to bottom, #bbb, #999);
+	background: linear-gradient(to bottom, #ccc, #999);
+}
+
+div.section > h2 > a.disabled {
+	color: #888;
+}
+
+div.section > h2 > a.disabled:hover {
+	background: none;
 }
 
 .contexthelp {
