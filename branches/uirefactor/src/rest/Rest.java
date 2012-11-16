@@ -284,7 +284,7 @@ public class Rest {
     }
     
     /**
-     * Return a Map of available RDF files defined in triplifiersettings.props: 
+     * Return a Map of available RDF files defined in triplifiersettings.props:
      * "vocabularies", each with its "displayName" property,
      * plus given user vocabulary files if they exist in vocabularies folder. 
      * 

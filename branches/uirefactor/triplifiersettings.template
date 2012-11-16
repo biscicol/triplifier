@@ -1,3 +1,7 @@
+#
+# Rename to triplifiersettings.props
+#
+
 # specifications for reading various RDF files:
 # cName: URI of how Classes are referred to
 # cProperty: URI of Class designation property (usually just rdf:type)
@@ -22,3 +26,7 @@ txnVocabulary = {"displayName":"Taxon Concept","spec":"OWLspec","subClasses":"fa
 # default settings for reading user vocabularies
 defaultVocabulary = {"spec":"OWLspec","subClasses":"true","subProperties":"false"}
 defaultURI = urn:x-biscicol:
+
+# BCID; EZID creation default account
+eziduser = apitest
+ezidpass = somepasswordhere
