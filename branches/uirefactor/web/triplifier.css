@@ -201,6 +201,8 @@ div.section > h2 > a:hover {
 	text-decoration: none;
 	border-radius: 4px;
 	background: #999;
+	background: -webkit-linear-gradient(top, #ccc, #999);
+	background: -moz-linear-gradient(top, #ccc, #999);
 	background: linear-gradient(to bottom, #ccc, #999);
 }
 
