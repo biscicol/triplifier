@@ -187,6 +187,23 @@ div.section h2 {
 	background: linear-gradient(to bottom, #eee, #bbb);
 }
 
+/* The links for opening a section. */
+div.section > h2 > a {
+	color: #222;
+	padding: 0 1px;
+}
+
+div.section.active > h2 > a {
+	color: crimson;
+}
+
+div.section > h2 > a:hover {
+	text-decoration: none;
+	border-radius: 4px;
+	background: #999;
+	background: linear-gradient(to bottom, #bbb, #999);
+}
+
 .contexthelp {
 	font-size: 70%;
 }

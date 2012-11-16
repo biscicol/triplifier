@@ -10,26 +10,124 @@ function ProjectSection(element) {
 		return;
 	}
 
+	// An array for keeping track of observers of this ProjectSection.
+	this.observers = [];
+
 	this.element = element;
 	this.contentelem = element.children("div.sectioncontent");
 
 	// track whether this section is active
-	this.isactive = false;
+	this.isactive = undefined;
 	
 	this.contentelem.addClass("flexTable");
 	//this.contentelem.children("table").hide();
+	
+	// Set up the handler for clicks on the section title.
+	var anchor = this.element.children('h2').children('a').first();
+	anchor.attr('href', '#');
+	var self = this;
+	anchor.click(function() { return self.titleClicked(); });
+}
+
+/**
+ * Register an observer of this ProjectSection.  Observers are notified when a ProjectSection
+ * is activated.  To be a project observer, an object must provide the following method:
+ *
+ * projectSectionActivated(projectsection) { ... }.
+ *
+ * The argument "projectsection" references the ProjectSeciton object that triggered the event.
+ **/
+ProjectSection.prototype.registerObserver = function(observer) {
+	this.observers.push(observer);
+}
+
+/**
+ * Remove an object from this ProjectSection's list of observers.
+ **/
+ProjectSection.prototype.unregisterObserver = function(observer) {
+	for (var cnt = this.observers.length - 1; cnt >= 0; cnt--) {
+		if (this.observers[cnt] === observer) {
+			// Remove the observer from the list.
+			this.observers.splice(cnt, 1);
+		}
+	}
+}
+
+/**
+ * Notifies observers that this section was activated.
+ **/
+ProjectSection.prototype.notifySectionActivated = function() {
+	for (var cnt = 0; cnt < this.observers.length; cnt++) {
+		this.observers[cnt].projectSectionActivated(this);
+	}
 }
 
 /**
  * Set the activation state of this ProjectSection.
  **/
 ProjectSection.prototype.setActive = function(isactive) {
-	this.element.toggleClass("active", isactive);
+	if (isactive != this.isactive) {
+		this.element.toggleClass("active", isactive);
 
-	var inputs = this.contentelem.find("input");
-	inputs.fadeToggle(isactive);
+		var inputs = this.contentelem.find("input");
+		inputs.fadeToggle(isactive);
 
-	this.isactive = isactive;
+		this.isactive = isactive;
+
+		if (isactive)
+			this.notifySectionActivated();
+	}
+}
+
+/**
+ * Handle clicks on the section title.
+ **/
+ProjectSection.prototype.titleClicked = function() {
+	if (!this.isactive)
+		this.setActive(true);
+
+	return false;
+}
+
+
+
+
+/**
+ * SectionManager keeps track of an arbitrary number of project sections and makes sure that they
+ * work together properly.  Currently, this just means making sure that only one section is open
+ * at a time.
+ **/
+function SectionManager() {
+	// Tracks the section that is currently active.
+	this.activesection = null;
+
+	// Keeps references to all of the sections being managed.
+	this.sections = [];
+}
+
+/**
+ * Adds one or more sections to this SectionManager.
+ *
+ * @param ...  One or more ProjectSections to manage.
+ **/
+SectionManager.prototype.addSections = function(/* ... */) {
+	for (var cnt = 0; cnt < arguments.length; cnt++) {
+		this.sections.push(arguments[cnt]);
+		arguments[cnt].registerObserver(this);
+	}
+}
+
+/**
+ * Handles a section activation event.  Whenever a section is activated, the SectionManager will close
+ * the previously-active section, if there was one.
+ **/
+SectionManager.prototype.projectSectionActivated = function(projectsection) {
+	if (projectsection !== this.activesection) {
+		if (this.activesection != null) {
+			this.activesection.setActive(false);
+		}
+		this.activesection = projectsection;
+	}
 }
 
 

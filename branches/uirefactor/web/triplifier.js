@@ -35,6 +35,10 @@ $(function() {
 	relationsPT = new RelationsTable($("#relationDiv"));
 	triplifyPT = new ProjectSection($("#triplifyDiv"));
 
+	// Set up the SectionManager.
+	var sectionmgr = new SectionManager();
+	sectionmgr.addSections(dSsection, joinsPT, entitiesPT, attributesPT, relationsPT, triplifyPT);
+
 	// Assign event handlers for the "triplify" section.
 	$("#getMapping").click(function() { triplify("rest/getMapping", downloadFile); });
 	$("#getTriples").click(function() { triplify("rest/getTriples", downloadFile); });
@@ -48,16 +52,16 @@ $(function() {
 	// Notice that we also explicitly set the buttons not to be disabled.  This shouldn't be necessary, but it
 	// seems that Firefox will occasionally disable some of these buttons for no apparent reason.  Setting the
 	// disabled property here seems to fix the problem.
-	$("#dsDiv input.next").click(function() { navButtonClicked(joinsPT, dSsection); }).prop("disabled", false);
-	$('#joinDiv input.back').click(function() { navButtonClicked(dSsection, joinsPT); }).prop("disabled", false);
-	$('#joinDiv input.next').click(function() { navButtonClicked(entitiesPT, joinsPT); }).prop("disabled", false);
-	$('#entityDiv input.back').click(function() { navButtonClicked(joinsPT, entitiesPT); }).prop("disabled", false);
-	$('#entityDiv input.next').click(function() { navButtonClicked(attributesPT, entitiesPT); }).prop("disabled", false);
-	$('#attributeDiv input.back').click(function() { navButtonClicked(entitiesPT, attributesPT); }).prop("disabled", false);
-	$('#attributeDiv input.next').click(function() { navButtonClicked(relationsPT, attributesPT); }).prop("disabled", false);
-	$('#relationDiv input.back').click(function() { navButtonClicked(attributesPT, relationsPT); }).prop("disabled", false);
-	$('#relationDiv input.next').click(function() { navButtonClicked(triplifyPT, relationsPT); }).prop("disabled", false);
-	$('#triplifyDiv input.back').click(function() { navButtonClicked(relationsPT, triplifyPT); }).prop("disabled", false);
+	$("#dsDiv input.next").click(function() { joinsPT.setActive(true); }).prop("disabled", false);
+	$('#joinDiv input.back').click(function() { dSsection.setActive(true); }).prop("disabled", false);
+	$('#joinDiv input.next').click(function() { entitiesPT.setActive(true); }).prop("disabled", false);
+	$('#entityDiv input.back').click(function() { joinsPT.setActive(true); }).prop("disabled", false);
+	$('#entityDiv input.next').click(function() { attributesPT.setActive(true); }).prop("disabled", false);
+	$('#attributeDiv input.back').click(function() { entitiesPT.setActive(true); }).prop("disabled", false);
+	$('#attributeDiv input.next').click(function() { relationsPT.setActive(true); }).prop("disabled", false);
+	$('#relationDiv input.back').click(function() { attributesPT.setActive(true); }).prop("disabled", false);
+	$('#relationDiv input.next').click(function() { triplifyPT.setActive(true); }).prop("disabled", false);
+	$('#triplifyDiv input.back').click(function() { relationsPT.setActive(true); }).prop("disabled", false);
 
 	// Create a ProjectManager and associate it with a ProjectUI.
 	var projman = new ProjectManager();
@@ -137,17 +141,6 @@ function projectPropertyChanged(project, propname) {
 		else
 			$("#dsDiv input.next").prop('disabled', false);
 	}	
-}
-
-/**
- * A generic function for handling when one of the "Back" or "Next" navigation
- * buttons is clicked.  Activates one ProjectTable (activatePT) and
- * deactivates another (deactivatePT).
- **/
-function navButtonClicked(activatePT, deactivatePT) {
-	deactivatePT.setActive(false);
-	activatePT.setActive(true);
-	return true;
 }
 
 function updateProjectSections() {	
