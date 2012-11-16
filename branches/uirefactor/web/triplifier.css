@@ -178,7 +178,7 @@ div.section {
 div.section h2 {
 	border-radius: 8px 8px 0 0;
 	border-bottom: solid 1px #aaa;
-	padding: 6px 14px;
+	padding: 6px 10px;
 	font-size: 120%;
 	color: #222;
 	background: #ccc;
@@ -190,7 +190,7 @@ div.section h2 {
 /* The links for opening a section. */
 div.section > h2 > a {
 	color: #222;
-	padding: 0 1px;
+	padding: 0 4px;
 }
 
 div.section.active > h2 > a {
@@ -218,6 +218,7 @@ div.section > h2 > a.disabled:hover {
 
 .contexthelp > a {
 	color: #22c;
+	padding-left: 2px;
 }
 
 div.sectioncontent {
