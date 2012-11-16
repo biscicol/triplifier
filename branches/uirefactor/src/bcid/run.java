@@ -3,6 +3,7 @@ package bcid;
 
 import bcid.testData.*;
 import edu.ucsb.nceas.ezid.EZIDService;
+import rest.SettingsManager;
 
 import java.util.ArrayList;
 
@@ -11,13 +12,7 @@ import java.util.ArrayList;
  */
 public class run {
 
-    /*
-        These variables need to be set at run-time by the user, that is, the User
-        must first know their user/password/shoulder they want to use.  The shoulder is either
-        a DOI or an ARK
-        */
-    private static String user = "apitest";
-    private static String password = "apitest";
+
 
     public static void johnTest(ArrayList<testDataRow> dataSet) throws Exception {
 
@@ -30,8 +25,12 @@ public class run {
         }
 
         // Setup EZID account/login information
+        // Currently the user/pass for EZID account set in a properties file, but this should be changed
+        // when we start getting users with their own EZID accounts
+        SettingsManager sm = SettingsManager.getInstance();
+        sm.loadProperties();
         EZIDService ezidAccount = new EZIDService();
-        ezidAccount.login(user, password);
+        ezidAccount.login(sm.retrieveValue("eziduser"), sm.retrieveValue("ezidpass"));
 
         // EZID DOI creation
         System.out.println("Testing EZID/DOI creation");
