@@ -4,12 +4,14 @@ import java.io.File;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import org.gbif.dwc.record.Record;
 import org.gbif.dwc.terms.ConceptTerm;
 import org.gbif.dwc.text.Archive;
 import org.gbif.dwc.text.ArchiveFactory;
+import org.gbif.dwc.text.ArchiveField;
 import org.gbif.dwc.text.ArchiveFile;
 
 
@@ -19,8 +21,11 @@ import org.gbif.dwc.text.ArchiveFile;
  * and single-file archives.  Each data file in the archive will be processed as
  * long as it is included in the archive's meta.xml.  For column names, the
  * proper Darwin Core terms, as mapped in meta.xml, are used.  If an ID field is
- * indicated in meta.xml, the column name "ID" will be used for the core table,
- * and "CORE_ID" is used for any "extension" tables.
+ * indicated in meta.xml, the plugin checks if a proper term name is also
+ * provided (via the <field> element).  If not, "ID" is used as the column name
+ * for the ID field in the core table, and "CORE_ID" is used for the ID column
+ * of any "extension" tables.  ID fields will always be returned as the first
+ * column in their table.
  */
 public class DWCAReader implements TabularDataReader {
     // iterator for records within a table (ArchiveFile)
@@ -28,7 +33,7 @@ public class DWCAReader implements TabularDataReader {
     // iterator for extension tables in an archive
     private Iterator<ArchiveFile> ext_iter;
     // the field (column) names in a table
-    private Set<ConceptTerm> fields;
+    private List<ArchiveField> fields;
     // the entire archive
     private Archive dwcarchive;
     // the currently active table
@@ -37,6 +42,12 @@ public class DWCAReader implements TabularDataReader {
     private File tmpdir = null;
     // indicates if an id field was specified for the active table
     private boolean has_id;
+    // the index of the ID field
+    private int id_index;
+    // whether or not a <field> definition was provided for the ID field
+    private boolean id_has_field;
+    // the term name for the ID field, if provided
+    private String id_field_term;
     // keep track of how many tables have been processed
     private int tablecnt;
     // keep track of how many records in the active table have been processed
@@ -166,11 +177,27 @@ public class DWCAReader implements TabularDataReader {
                 // get the next extension table
                 currfile = ext_iter.next();
             
-            fields = currfile.getFields().keySet();
+            fields = currfile.getFieldsSorted();
             rec_iter = currfile.iterator();
             has_id = currfile.getId() != null;
+            id_index = -1;
+            id_has_field = false;
+            id_field_term = "";
             reccnt = 0;
             tablecnt++;
+            
+            // If this table has an ID, we need to figure out if the ID field
+            // type was also provided via a <field> definition.
+            if (has_id) {
+                id_index = currfile.getId().getIndex();
+                
+                for (ArchiveField field : fields) {
+                    if (field.getIndex() == id_index) {
+                        id_has_field = true;
+                        id_field_term = field.getTerm().simpleName();
+                    }
+                }
+            }
         }
         else
             throw new NoSuchElementException();
@@ -192,8 +219,10 @@ public class DWCAReader implements TabularDataReader {
     @Override
     public String[] tableGetNextRow() {
         String[] row;
-        
-        if (has_id)
+
+        // If no <field> definition was provided for the ID field, we need to
+        // account for this in the row size.
+        if (has_id && !id_has_field)
             row = new String[fields.size() + 1];
         else
             row = new String[fields.size()];
@@ -207,34 +236,44 @@ public class DWCAReader implements TabularDataReader {
             // This is the first row of the table, so generate a header row
             // with all DwC terms used by this table.
             
-            // add an ID column if the table has one
+            // Add the ID field if there is one.
             if (has_id) {
-                if (tablecnt == 1)
-                    row[fieldcnt++] = "ID";
-                else
-                    row[fieldcnt++] = "CORE_ID";
+                if (id_has_field)
+                    row[fieldcnt++] = id_field_term;
+                else {
+                    if (tablecnt == 1)
+                        row[fieldcnt++] = "ID";
+                    else
+                        row[fieldcnt++] = "CORE_ID";
+                }
             }
             
-            for (ConceptTerm term : fields) {
-                row[fieldcnt] = term.simpleName();
-                fieldcnt++;
+            for (ArchiveField field : fields) {
+                // Ignore the ID field since it was already covered.
+                if (id_index != field.getIndex()) {
+                    row[fieldcnt] = field.getTerm().simpleName();
+                    fieldcnt++;
+                }
             }
         } else {
             // Return the next data row.
             
             Record rec = rec_iter.next();
 
-            // add the ID value if the table has one
+            // Add the ID value if there is one.
             if (has_id)
                 row[fieldcnt++] = rec.id();
             
-            for (ConceptTerm term : fields) {
-                row[fieldcnt] = rec.value(term);
+            for (ArchiveField field : fields) {
+                // Ignore the ID field since it was already covered.
+                if (id_index != field.getIndex()) {
+                    row[fieldcnt] = rec.value(field.getTerm());
                 
-                if (row[fieldcnt] == null)
-                    row[fieldcnt] = "";
+                    if (row[fieldcnt] == null)
+                        row[fieldcnt] = "";
                 
-                fieldcnt++;
+                    fieldcnt++;
+                }
             }
         }
 
