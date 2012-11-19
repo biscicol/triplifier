@@ -118,7 +118,7 @@ public class DWCAReader implements TabularDataReader {
         } catch (Exception e) {
             return false;
         } finally {
-        	closeFile();
+            closeFile();
         }
         
         return true;

@@ -304,7 +304,7 @@ DataSourceSection.prototype.afterUpload = function() {
 	var data = frames.uploadTarget.document.body.textContent;
 	// distinguish response OK status by JSON format
 	if (isJson(data))
-		this.readDatabaseMapping(JSON.parse(data));
+		this.processFileData(JSON.parse(data));
 	else
 		alert("Error" + (data ? ":\n\nUnable to contact server for data upload\nResponse="+data : "."));
 }
@@ -331,7 +331,7 @@ DataSourceSection.prototype.databaseFormSubmitted = function(evtsrc) {
 		data: JSON.stringify($("#dbForm").formParams()),//$("#dbForm").serialize(),
 		contentType:"application/json; charset=utf-8",
 		dataType: "json",
-		success: function(inspection) { self.readMapping(inspection); },
+		success: function(inspection) { self.readDatabaseMapping(inspection); },
 		error: alertError
 	});
 
@@ -339,9 +339,28 @@ DataSourceSection.prototype.databaseFormSubmitted = function(evtsrc) {
 }
 
 /**
- * Called upon successful completion of an AJAX request to get a database mapping object.
+ * Called upon successful completion of a request to get a database mapping object.
  **/
 DataSourceSection.prototype.readDatabaseMapping = function(inspection) {
+	setStatus("");
+
+	this.project.setProperty('dateTime', inspection["dateTime"]);
+	this.project.setProperty('connection', inspection["connection"]);
+	this.project.setProperty('schema', inspection["schema"]);
+	if (!this.project.joins || !this.project.joins.length)
+		this.project.setProperty('joins', inspection["joins"]);
+	if (!this.project.entities || !this.project.entities.length)
+		this.project.setProperty('entities', inspection["entities"]);
+	if (!this.project.relations || !this.project.relations.length)
+		this.project.setProperty('relations', inspection["relations"]);
+
+	this.updateSchemaUI();
+}
+
+/**
+ * Called upon successful completion of a data file upload.
+ **/
+DataSourceSection.prototype.processFileData = function(inspection) {
 	setStatus("");
 
 	this.project.setProperty('dateTime', inspection["dateTime"]);
