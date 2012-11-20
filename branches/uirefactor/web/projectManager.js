@@ -182,6 +182,36 @@ Project.prototype.getTableByName = function(table, column) {
 }
 
 /**
+ * Checks whether a specified column in a table is already used by either an entity
+ * (concept) or an attribute.  Returns true if the column is available (unused);
+ * false otherwise.
+ *
+ * @param table The table name.
+ * @param column The column name to search for.
+ **/
+Project.prototype.isColumnAvailable = function(table, column) {
+	var attribs, j;
+	// Check each entity.
+	for (var i = 0; i < this.entities.length; i++) {
+		if (this.entities[i].table == table) {
+			// First, check this entity's column.
+		       	if (this.entities[i].idColumn == column)
+				return false;
+			else {
+				// Next, check the attributes.
+				attribs = this.getAttributesByEntity(this.entities[i].table + '.' + this.entities[i].idColumn);
+				for (j = 0; j < attribs.length; j++) {
+					if (attribs[j].column == column)
+						return false;
+				}
+			}
+		}
+	}
+
+	return true;
+}
+
+/**
  * Get all of the attributes for a specific entity.
  **/
 Project.prototype.getAttributesByEntity = function(entityname) {

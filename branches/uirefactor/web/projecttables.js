@@ -21,7 +21,7 @@ JoinsTable.prototype.setButtonStates = function() {
 
 	// See if more joins are possible and set the state of the "add" button accordingly.
 	var hasmorejoins = this.project.joins.length != this.project.schema.length - 1;
-	this.element.children("input.add").prop("disabled", !hasmorejoins);
+	this.contentelem.children("input.add").prop("disabled", !hasmorejoins);
 }
 
 /**
@@ -111,7 +111,7 @@ EntitiesTable.prototype.setButtonStates = function() {
 
 	// See if any more entity mappings can be specified and set the state of the "add" button accordingly.
 	var hasmoreents = this.project['entities'].length != this.project.getColumnCount();
-	this.element.children("input.add").prop("disabled", !hasmoreents);
+	this.contentelem.children("input.add").prop("disabled", !hasmoreents);
 }
 
 /**
@@ -215,7 +215,7 @@ AttributesTable.prototype.setButtonStates = function() {
 		}
 	});
 
-	this.element.children("input.add").prop("disabled", !hasmoreatts);
+	this.contentelem.children("input.add").prop("disabled", !hasmoreatts);
 }
 
 /**
@@ -281,6 +281,7 @@ AttributesTable.prototype.entityChanged = function(eventsrc, attribute) {
 	// not already used in another attribute.
 	var self = this;
 	var attribs = self.project.getAttributesByEntity(entity.table + '.' + entity.idColumn);
+	var vocab = vocabularyManager.getSelectedVocabulary();
 	$.each(this.project.getTableByName(entity.table).columns, function(i, column) { 
 		if (attribute.column == column) {
 			ob.addOption(column);
@@ -318,7 +319,7 @@ RelationsTable.prototype.setButtonStates = function() {
 	// See if any more relations can be specified and set the state of the "add" button accordingly.
 	var hasmorerels = this.project['relations'].length != this.project.getAllPossibleRelations().count;
 	//alert(this.project.getAllPossibleRelations().count);
-	this.element.children("input.add").prop("disabled", !hasmorerels);
+	this.contentelem.children("input.add").prop("disabled", !hasmorerels);
 }
 
 /**

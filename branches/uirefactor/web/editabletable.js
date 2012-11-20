@@ -269,6 +269,7 @@ EditableTable.prototype.saveRowInput = function(srcelement) {
 
 	// Read form values.
 	var item = tr.formParams();
+	//console.log(item);
 
 	// Get the element from the project and update it.
 	var projelement = this.project.getProperty(this.property);

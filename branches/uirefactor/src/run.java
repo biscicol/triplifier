@@ -94,7 +94,8 @@ public class run {
         //runReader(rm.openFile("testdata/test-archive.zip", "DWCA"));
         //runReader(rm.openFile("dwca-hsu_wildlife_mammals.zip", "DWCA"));
         //runReader(rm.openFile("dwca-nysm_mammals.zip", "DWCA"));
-        runReader(rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/test-dwca", "DWCA"));
+        //runReader(rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/test-dwca", "DWCA"));
+        runReader(rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/test.zip", "DWCA"));
         //runReader(rm.openFile("testdata/CanadensysTest.zip", "DWCA"));
     }
 }
