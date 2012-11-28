@@ -188,7 +188,7 @@
         <input type="button" class="showUpload" value="Upload custom..."/>
     </div>
 
-    <h2><a>3. Concepts</a></h2>
+    <h2><a>3. Concepts</a><span class="contexthelp"><a id="concepts_help" href="#">?</a></span></h2>
 
     <div class="sectioncontent">
         <input type="button" class="add" value="Add Concept"/>
@@ -201,7 +201,7 @@
                 <th/>
                 <th>Table</th>
                 <th>ID Column</th>
-                <th><a href="http://code.google.com/p/triplifier/wiki/Identifiers" target="_blank">ID Prefix</a></th>
+                <!--<th><a href="http://code.google.com/p/triplifier/wiki/Identifiers" target="_blank">ID Prefix</a></th>-->
                 <th>Class</th>
                 <th/>
             </tr>
@@ -211,7 +211,7 @@
                 <td><input type="radio" name="entityChoice"/></td>
                 <td/>
                 <td/>
-                <td/>
+                <!--<td/>-->
                 <td/>
                 <td/>
             </tr>
@@ -220,7 +220,7 @@
                 <td/>
                 <td><select name="table"/></td>
                 <td><select name="idColumn"/></td>
-                <td><input type=text name="idPrefixColumn"/></td>
+                <!--<td><input type=text name="idPrefixColumn"/></td>-->
                 <td>
                     <input type="hidden" name="rdfClass[name]"/>
                     <select name="rdfClass[uri]"/>
@@ -239,7 +239,7 @@
 </div>
 
 <div id="attributeDiv" class="section">
-    <h2><a>4. Attributes</a></h2>
+    <h2><a>4. Attributes</a><span class="contexthelp"><a id="attributes_help" href="#">?</a></span></h2>
 
     <div class="sectioncontent">
         <input type="button" class="add" value="Add Attribute"/>
@@ -286,7 +286,7 @@
 </div>
 
 <div id="relationDiv" class="section">
-    <h2><a>5. Concept Relations</a></h2>
+    <h2><a>5. Concept Relations</a><span class="contexthelp"><a id="relations_help" href="#">?</a></span></h2>
 
     <div class="sectioncontent">
         <input type="button" class="add" value="Add Relation"/>
@@ -338,6 +338,8 @@
         <input type="button" id="getMapping" value="Show Mapping" class="external"/>
         <input type="button" id="getTriples" value="Show Triples" class="external"/>
         <input type="button" id="sendToBiSciCol" value="Send To BiSciCol" class="external"/>
+        <input type="button" id="publishDataset" value="Publish Dataset (w/ DOI)" class="external"/>
+
 
         <form id="sendToBiSciColForm" method="post" action="" target="uploadTarget">
             <input type="hidden" name="url"/>

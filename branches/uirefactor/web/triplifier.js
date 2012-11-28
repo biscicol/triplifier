@@ -45,6 +45,9 @@ $(function() {
 	$("#getMapping").click(function() { triplify("rest/getMapping", downloadFile); });
 	$("#getTriples").click(function() { triplify("rest/getTriples", downloadFile); });
 	$("#sendToBiSciCol").click(function() { triplify("rest/getTriples", sendToBiSciCol); });
+	// The Publish Component here is meant to assign a DOI to the triplified dataset, and store on server
+	$("#publishDataset").click(function() { triplify("rest/getTriples", sendToBiSciCol); });
+
 
 	$("#vocabularies, #status, #overlay, #vocabularyUpload").hide();
 	$("#uploadTarget").appendTo($("body")); // prevent re-posting on reload
@@ -87,6 +90,9 @@ $(function() {
 function defineHelpMessages(helpmgr) {
 	helpmgr.setHelpItem('datasource_help', '<p>The data source is where your original data is located.  It can be a database, such as PostgreSQL, or a data file.</p><p>The Triplifier supports a number of popular data file formats, including Excel and OpenOffice spreadsheets, CSV files, and Darwin Core Archives.</p>');
 	helpmgr.setHelpItem('joins_help', '<p>If any of the tables in your source data should be connected through joins, you can define the joins here.  The "foreign key" in one table should match the "primary key" in another table.</p>');
+	helpmgr.setHelpItem('concepts_help', '<p>This section links specific Identifiers with a well known representation of reality (“Concept”).  Identifiers are unique and represent physical material, digital surrogates for physical material, processes, or metadata.  Concepts are defined through either a standardized terminology (encoded in RDF) or defined by a structured Ontology. </p>');
+	helpmgr.setHelpItem('attributes_help', '<p>Attributes attach properties, or metadata, to concepts defined in the Concept section (e.g. Specimen has “lifeStage” first instar)</p>');
+	helpmgr.setHelpItem('relations_help', '<p>Concepts can be related to other concepts by one of two relationship types: “isSourceOf” and “isRelatedTo”.  “isSourceOf” is used whenever two concepts refer to physical material that is substantially derived from some other physical material (e.g. Tissue derived from a Specimen).  “isRelatedTo” is used for all other relationships between concepts (e.g. Photograph of a Specimen).</p>');
 }
 
 /**
