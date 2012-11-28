@@ -45,7 +45,7 @@ public class ReaderManager implements Iterable<TabularDataReader>
         if (!pluginsdir.exists() || !pluginsdir.isDirectory())
             throw new FileNotFoundException("Could not locate plugins directory.");
         
-        // create a simple filter to only look at compiled class files
+        // createEZID a simple filter to only look at compiled class files
         FilenameFilter filter = new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -148,7 +148,7 @@ public class ReaderManager implements Iterable<TabularDataReader>
         for (TabularDataReader reader : readers) {
             if (reader.testFile(filepath)) {
                 try {
-                    // A matching reader was found, so create a new instance of
+                    // A matching reader was found, so createEZID a new instance of
                     // the reader, open the file with it, and return it.
                     TabularDataReader newreader = reader.getClass().newInstance();
                     newreader.openFile(filepath);

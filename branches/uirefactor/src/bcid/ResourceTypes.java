@@ -25,12 +25,11 @@ public class ResourceTypes {
     public static int INTERACTIVERESOURCE = 4;
     public static int MOVINGIMAGE = 5;
     public static int PHYSICALOBJECT = 6;
-    /*public static int SERVICE = 7;
+    public static int SERVICE = 7;
     public static int SOFTWARE = 8;
     public static int SOUND = 9;
     public static int STILLIMAGE = 10;
     public static int TEXT = 11;
-    */
 
     public ResourceTypes() {
         ResourceType type = null;
@@ -41,8 +40,20 @@ public class ResourceTypes {
         list.add(new ResourceType("InteractiveResource", "http://purl.org/dc/dcmitype/InteractiveResource", "A resource requiring interaction from the user to be understood, executed, or experienced."));
         list.add(new ResourceType("MovingImage", "http://purl.org/dc/dcmitype/MovingImage", "A series of visual representations imparting an impression of motion when shown in succession."));
         list.add(new ResourceType("PhysicalObject", "http://purl.org/dc/dcmitype/PhysicalObject", "An inanimate, three-dimensional object or substance."));
+        list.add(new ResourceType("Service", "http://purl.org/dc/dcmitype/Service", "A system that provides one or more functions."));
+        list.add(new ResourceType("Software", "http://purl.org/dc/dcmitype/Software", "A computer program in source or compiled form."));
+        list.add(new ResourceType("Sound", "http://purl.org/dc/dcmitype/Sound", "A resource primarily intended to be heard."));
+        list.add(new ResourceType("StillImage", "http://purl.org/dc/dcmitype/StillImage", "A static visual representation."));
+        list.add(new ResourceType("Text", "http://purl.org/dc/dcmitype/Text", "A resource consisting primarily of words for reading."));
+
+
     }
 
+    /**
+     * Return a ResourceType given an Integer
+     * @param typeIncrement
+     * @return
+     */
     public static ResourceType get(int typeIncrement) {
         return (ResourceType) list.get(typeIncrement);
     }

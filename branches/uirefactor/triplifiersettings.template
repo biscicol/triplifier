@@ -29,4 +29,12 @@ defaultURI = urn:x-biscicol:
 
 # BCID; EZID creation default account
 eziduser = apitest
-ezidpass = Putsomepasswordhere
+ezidpass = PutSomePasswordHere
+
+# Mysql username/password
+bcidUser = user
+bcidPassword = password
+bcidUrl = jdbc:mysql://darwin.berkeley.edu:3306/biscicol
+bcidClass = com.mysql.jdbc.Driver
+bcidShoulder = ark:/99999/fk4
+doiShoulder = doi:10.5072/FK2

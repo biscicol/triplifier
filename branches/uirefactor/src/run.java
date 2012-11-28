@@ -68,7 +68,7 @@ public class run {
     public static void main(String[] args) throws Exception {
         //runReaders();
 
-        // create the ReaderManager and load the plugins
+        // createEZID the ReaderManager and load the plugins
         ReaderManager rm = new ReaderManager();
         try {
             rm.loadReaders();

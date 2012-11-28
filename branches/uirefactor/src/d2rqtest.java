@@ -27,7 +27,7 @@ public class d2rqtest {
     static String gPrefix = "";
 
     public static void main(String args[]) {
-        //johnTest();
+        //runServices();
         johnTestMapping();
         //ukiTest();
     }

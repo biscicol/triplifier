@@ -1,61 +1,70 @@
 package bcid;
 
-
 import bcid.testData.*;
+import edu.ucsb.nceas.ezid.EZIDException;
 import edu.ucsb.nceas.ezid.EZIDService;
 import rest.SettingsManager;
 
+import java.io.FileNotFoundException;
+import java.net.URI;
 import java.util.ArrayList;
 
 /**
- * The run class demonstrates how to use BiSciCol identifier services.
+ * This is a class used for running/testing Identifier creation methods.
  */
 public class run {
 
+    /**
+     * The testCycle method demonstrates how to use the suite of identifier services
+     * and goes through the following steps:
+     * 1. Instantiate the Test Dataset used for loading/testing data
+     * 2. Create a DOI for a dataset
+     * 3. Minting BCIDs for individual data elements
+     * 4. Creating EZIDs for individual data elements
+     */
+    public static void runServices(ArrayList<testDataRow> dataSet, EZIDService ezidAccount) throws Exception {
+        // EZID DOI Minting
+        System.out.println("Mint DOI:");
+        DOI doi = new DOI(ezidAccount, new URI("http://biocodecommons.org/"), "Test Creator", "Test Title", "Test Publisher", "2012");
+        System.out.println("  doi = " + doi.getIdentifier());
 
-
-    public static void johnTest(ArrayList<testDataRow> dataSet) throws Exception {
-
-        // UUID creation
-        System.out.println("Testing UUID creation");
+        // BCID Minting Example
+        System.out.println("\nMint a List of BCIDs:");
+        ArrayList<bcid> bcidList = new ArrayList();
         for (testDataRow row : dataSet) {
-            bcidUuid uuid = new bcidUuid(row.webAddress, row.localID, row.type);
-            uuid.mint("http://zoobank.org/specimen/");
-            System.out.println(uuid.row());
+            bcid b = new bcid(doi.getIdentifier(), row.webAddress, row.localID, row.type);
+            bcidList.add(b);
         }
+        bcidMinter minter = new bcidMinter();
+        minter.mintList(bcidList);
+        System.out.println("  Succesfully minted " + bcidList.size() + " identifiers");
 
-        // Setup EZID account/login information
-        // Currently the user/pass for EZID account set in a properties file, but this should be changed
-        // when we start getting users with their own EZID accounts
-        SettingsManager sm = SettingsManager.getInstance();
-        sm.loadProperties();
-        EZIDService ezidAccount = new EZIDService();
-        ezidAccount.login(sm.retrieveValue("eziduser"), sm.retrieveValue("ezidpass"));
+        // Run script to Create EZIDs (from those living in identifiers table)
+        System.out.println("\nCreating EZIDS:");
+        minter.createEZIDs(ezidAccount);
 
-        // EZID DOI creation
-        System.out.println("Testing EZID/DOI creation");
-        for (testDataRow row : dataSet) {
-            bcidEzidDoi bscEZID = new bcidEzidDoi(ezidAccount, row.webAddress, row.localID, row.type, "Test Account");
-            bscEZID.mint("doi:10.5072/FK2");
-            System.out.println(bscEZID.row());
-        }
-
-        // EZID ARK creation
-        System.out.println("Testing EZID/ARK creation");
-        for (testDataRow row : dataSet) {
-            bcidEzidDoi bscEZID = new bcidEzidDoi(ezidAccount, row.webAddress, row.localID, row.type, "Test Account");
-            bscEZID.mint("ark:/99999/fk4");
-            System.out.println(bscEZID.row());
-        }
-
+        minter.close();
     }
 
     public static void main(String[] args) {
+        // Setup EZID account/login information
+        SettingsManager sm = SettingsManager.getInstance();
+        try {
+            sm.loadProperties();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        EZIDService ezidAccount = new EZIDService();
+        try {
+            ezidAccount.login(sm.retrieveValue("eziduser"), sm.retrieveValue("ezidpass"));
+        } catch (EZIDException e) {
+            e.printStackTrace();
+        }
         testDataSet ds = new testDataSet();
         try {
-            johnTest(ds);
+            runServices(ds, ezidAccount);
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 }

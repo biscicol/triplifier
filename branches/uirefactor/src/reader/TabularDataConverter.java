@@ -165,10 +165,10 @@ public final class TabularDataConverter
         query += ")";
         //System.out.println(query);
 
-        // create the table
+        // createEZID the table
         stmt.executeUpdate(query);
 
-        // create a prepared statement for insert queries
+        // createEZID a prepared statement for insert queries
         query = "INSERT INTO [" + tname + "] VALUES (";
         for (cnt = 0; cnt < colcnt; cnt++) {
             if (cnt > 0)

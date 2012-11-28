@@ -1,19 +1,15 @@
 package bcid;
 
-import java.net.URISyntaxException;
+import java.net.URI;
 
 /**
- * Identifier instance defines the methods that all Identifier classes must implement
+ * This interface provides a standardized interface for working with Identifiers.
  */
-interface Identifier {
+public interface Identifier {
 
     /**
-     * mint used to actually create the identifier after we construct the identifier
-     * @param prefix
-     * @throws java.net.URISyntaxException
+     * Return an identifier
+     * @return
      */
-    public void mint(String prefix) throws URISyntaxException;
-
-
-
+    public URI getIdentifier();
 }

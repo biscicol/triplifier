@@ -1,0 +1,19 @@
+/**
+* SQL for BCID mysql tables
+* NOTE: JBD Created these not as the final database, but a place that had some essential information
+* so pressing tasks could be completed and demonstrated.  Tom C: when you get your database up & running this
+* can be phased out.
+*/
+
+DROP TABLE IF EXISTS identifiers;
+CREATE TABLE identifiers (
+    id bigint NOT NULL UNIQUE AUTO_INCREMENT,       # the internal ID, represented in integer form
+    ezid boolean DEFAULT false,                     # indicates whether the EZID has been made (ark://prefix/encode(id))
+    doi text,                                       # the DOI
+    webaddress text,                                # The webaddress target (_target per EZIDs)
+    localid text,                                   # the local identifier
+    what text,                                      # erc.what
+    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP    # erc.when
+);
+CREATE INDEX id_index ON identifiers (id);
+
