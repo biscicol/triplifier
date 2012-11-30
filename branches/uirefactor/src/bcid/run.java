@@ -1,11 +1,17 @@
 package bcid;
 
 import bcid.testData.*;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.util.FileUtils;
+import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
 import edu.ucsb.nceas.ezid.EZIDException;
 import edu.ucsb.nceas.ezid.EZIDService;
+import rest.Mapping;
 import rest.SettingsManager;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.net.URI;
 import java.util.ArrayList;
 

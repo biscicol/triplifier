@@ -18,10 +18,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: jdeck
- * Time: 4:45 PM
- * To change this template use File | Settings | File Templates.
+ * d2rqtesting class
  */
 public class d2rqtest {
     static String gPrefix = "";
@@ -33,11 +30,18 @@ public class d2rqtest {
     }
 
     private static void johnTestMapping() {
-        String format = "DWCA";
-        String inputfile = "sampledata/CanadensysTest.zip";
-        String sqliteLocation = "jdbc:sqlite:/tmp/ms_tmp/CanadensysTest.sqlite";
-        String D2RQmappingfile = "file:sampledata/CanadensysTest.n3";
-        String outputfile = "/tmp/ms_tmp/Canadensys.nt";
+        //String format = "DWCA";
+        //String inputfile = "sampledata/CanadensysTest.zip";
+        //String sqliteLocation = "jdbc:sqlite:/tmp/ms_tmp/CanadensysTest.sqlite";
+        //String D2RQmappingfile = "file:sampledata/CanadensysTest.n3";
+        //String outputfile = "/tmp/ms_tmp/Canadensys.nt";
+
+        String format = "EXCEL";
+        String inputfile = "sampledata/biocode_template_short.xls";
+        String sqliteLocation = "jdbc:sqlite:/tmp/ms_tmp/biocode_template.sqlite";
+        String D2RQmappingfile = "file:sampledata/biocode_template_mapping.n3";
+        String outputfile = "/tmp/ms_tmp/biocode_template.nt";
+
 
         ReaderManager readerManager = new ReaderManager();
         try {
@@ -49,28 +53,30 @@ public class d2rqtest {
             tdc.convert();
             tdr.closeFile();
 
-            Model model = new ModelD2RQ(FileUtils.toURL(D2RQmappingfile));
+            Model model = new ModelD2RQ(FileUtils.toURL(D2RQmappingfile),FileUtils.langN3, "urn:x-biscicol:");
             FileOutputStream fileOutputStream = new FileOutputStream(outputfile);
 
             System.out.println("Writing output to " + outputfile);
             model.write(fileOutputStream, FileUtils.langN3);
             fileOutputStream.close();
 
+            printN3(model);
+
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 
 
-    static void johnTest() {
+    static void printN3(Model m) {
         // Set up the ModelD2RQ using a mapping file
-        Model m = new ModelD2RQ("file:sampledata/biocode_example_mapping.n3");
+        //Model m = new ModelD2RQ("file:sampledata/biocode_example_mapping.n3");
 
         // list the statements in the Model
         StmtIterator iter = m.listStatements();

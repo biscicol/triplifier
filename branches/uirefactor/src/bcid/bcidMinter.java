@@ -1,10 +1,13 @@
 package bcid;
 
+import com.modp.checkdigits.CheckDihedral;
+import com.modp.checkdigits.CheckLuhnMod10;
 import edu.ucsb.nceas.ezid.EZIDException;
 import edu.ucsb.nceas.ezid.EZIDService;
 import org.apache.commons.codec.binary.Base64;
 import rest.SettingsManager;
 
+import java.awt.image.LookupOp;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -32,6 +35,7 @@ public class bcidMinter {
     // This could be 0 in most cases, but for testing and in cases where we already created a test encoded EZID
     // this can be set manually here to bypass existing EZIDS
     Integer startingNumber = 10;
+    LuhnModN luhnModN;
 
     /**
      * Controls minting of identifiers in conjunction with Mysql database.
@@ -60,6 +64,7 @@ public class bcidMinter {
         }
 
         setAutoIncrement();
+        luhnModN = new LuhnModN();
     }
 
     /**
@@ -161,18 +166,16 @@ public class bcidMinter {
     /**
      * Use Base64 encoding to turn BigIntegers numbers into Strings
      * We do this both to obfuscate integers used as identifiers and also to save some space.
-     * Base64 is not necessarily the best for compressing numbers but it is well-known and *i think*
-     * good enough.  We DO need to revisit this before final production.
-     * I was not able to find out why the encoding put CRLF on the end of the encoded strings, but this
-     * is problematic when creating the EZIDs and thus i have removed them.  Testing told me this
-     * had no adverse effects in the encoding/decoding process.
+     * Base64 is not necessarily the best for compressing numbers but it is well-known
+     * The encoding presented here adds a check digit at the end of the string
      *
      * @param big
      * @return
      */
     public String encode(BigInteger big) {
         String strVal = new String(base64.encode(big.toByteArray()));
-        return strVal.replace("\r\n", "");
+        strVal = strVal.replace("\r\n", "");
+        return luhnModN.encode(strVal);
     }
 
     /**
@@ -182,8 +185,16 @@ public class bcidMinter {
      * @param string
      * @return
      */
-    public BigInteger decode(String string) {
-        return new BigInteger(base64.decode(string));
+    public BigInteger decode(String string) throws Exception {
+        // Validate the data
+        if (!luhnModN.verify(string)) {
+            throw new Exception("String you are attempting to decode does not validate against check digit!");
+        }
+        // Now check the Actual String, minus check Character
+        String actualString = luhnModN.getData(string);
+
+        // Now return the integer that was encoded here.
+        return new BigInteger(base64.decode(actualString));
     }
 
     /**
@@ -226,7 +237,7 @@ public class bcidMinter {
                 // when here is very confusing
                 //map.put("erc.when", new dates().now());
                 String idString = rs.getString("id");
-                identifier = new URI(ezid.createIdentifier(getIdentifier(new BigInteger(rs.getString("id"))), map));
+                identifier = new URI(ezid.createIdentifier(getIdentifier(new BigInteger(idString)), map));
 
                 if (identifier != null) {
                     idSuccessList.add(idString);
@@ -308,31 +319,46 @@ public class bcidMinter {
      * @param args
      */
     public static void main(String args[]) {
+        bcidMinter minter = null;
         try {
-            bcidMinter minter = new bcidMinter();
-            System.out.println("begin:" + minter.getIdentifier(new BigInteger("1")) + ":end");
+            minter = new bcidMinter();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            Integer i = 0;
-            while (i < 1000) {
+        // Test check digits directly
+        System.out.println("\nTrying out the LunhModN algorithm");
+        LuhnModN luhnModN = new LuhnModN();
+        String startString = "O5rKAg";
+        String checkedString = luhnModN.encode(startString);
+        System.out.println(" startString: " + startString + " -> withCheckDigit: " + checkedString);
+        if (luhnModN.verify("O5rKAgE")) {
+            System.out.println(" " + startString + " validates!");
+        } else {
+            System.out.println(" " + startString + " does not validate");
+        }
+
+        // A simple check to decode a value -- this one throws an exception
+        System.out.println("\nTesting the check Digit");
+        try {
+            System.out.println(minter.decode("05rKAgE"));
+        } catch (Exception e) {
+            System.out.println(" Exception Thrown!: 05rKAgE not the same as O5rKAgE");
+        }
+
+        // Loop some possible integer values
+        System.out.println("\nLoop some possible integer values");
+        try {
+            Integer i = 1000000000;
+            while (i < 1000000005) {
                 String encodedValue = minter.encode(new BigInteger(i.toString()));
                 String decodedValue = minter.decode(encodedValue).toString();
-                if (!i.toString().equals(decodedValue)) {
-                    System.out.println(i + " fails!");
-                }
+                System.out.println(" start: " + i + " -> encoded: " + encodedValue + " -> decoded/validated: " + decodedValue);
                 i++;
             }
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
 
-        /*try {
-            minter = new bcidMinter();
-            //String encodedId = minter.mintNext();
-            //System.out.println("We just minted a new Identifier!");
-            //System.out.println("Encoded Value: " + encodedId);
-        } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        */
     }
 }
