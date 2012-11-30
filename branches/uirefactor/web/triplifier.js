@@ -213,7 +213,7 @@ function triplify(url, successFn) {
 
 	// Set the dataseturi to link to top level object on the server
 	var dataseturi = {};
-	dataseturi.name = getDataSourceName();
+	dataseturi.name = dSsection.getDataSourceName();
 
 	$.ajax({
 		url: url,
