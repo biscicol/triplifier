@@ -1,7 +1,7 @@
 package bcid;
 
-import com.modp.checkdigits.CheckDihedral;
-import com.modp.checkdigits.CheckLuhnMod10;
+//import com.modp.checkdigits.CheckDihedral;
+//import com.modp.checkdigits.CheckLuhnMod10;
 import edu.ucsb.nceas.ezid.EZIDException;
 import edu.ucsb.nceas.ezid.EZIDService;
 import org.apache.commons.codec.binary.Base64;

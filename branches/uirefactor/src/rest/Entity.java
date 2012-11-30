@@ -10,7 +10,6 @@ import java.util.Set;
 public class Entity {
 	public String table;
 	public String idColumn;
-    public String idPrefixColumn;
 	public VocabularyItem rdfClass;
 	public Set<Attribute> attributes;
 	

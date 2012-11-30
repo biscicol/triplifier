@@ -398,7 +398,6 @@ DataSourceSection.prototype.processFileData = function(inspection) {
 			if (col in cncpttable) {
 				// Found an ID column, so create the concept and add it to the project.
 				var newcncpt = {
-					//table:table.name, idColumn:col, idPrefixColumn:'',
 					table:table.name, idColumn:col,
 					rdfClass:{ name:cncpttable[col].name, uri:cncpttable[col].uri }
 				};

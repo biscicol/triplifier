@@ -1,6 +1,6 @@
 package bcid;
 
-import com.modp.checkdigits.CheckDigit;
+//import com.modp.checkdigits.CheckDigit;
 
 import java.nio.charset.Charset;
 

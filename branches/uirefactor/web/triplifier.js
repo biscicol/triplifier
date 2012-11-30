@@ -46,7 +46,7 @@ $(function() {
 	$("#getTriples").click(function() { triplify("rest/getTriples", downloadFile); });
 	$("#sendToBiSciCol").click(function() { triplify("rest/getTriples", sendToBiSciCol); });
 	// The Publish Component here is meant to assign a DOI to the triplified dataset, and store on server
-	$("#publishDataset").click(function() { triplify("rest/getTriples", sendToBiSciCol); });
+	//$("#publishDataset").click(function() { triplify("rest/getTriples", sendToBiSciCol); });
 
 
 	$("#vocabularies, #status, #overlay, #vocabularyUpload").hide();
