@@ -77,7 +77,7 @@ ContextHelpManager.prototype.showMessage = function(evnt, message) {
 
 	// Make sure the message box won't run off the bottom of the screen.
 	if ((msgY + msgheight) > (winheight + scrollY))
-		msgY -= msgheight;
+		msgY -= (msgY + msgheight) - (winheight + scrollY);
 
 	// Try to ensure it doesn't run off the sides, either.
 	if ((msgX + msgwidth) > (winwidth + scrollX))

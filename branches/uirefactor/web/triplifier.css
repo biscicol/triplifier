@@ -143,7 +143,7 @@ div#helpmsg {
 	left: 0;
 	z-index: 100;
 	display: none;
-	width: 280px;
+	width: 360px;
 	background: #fff;
 	background: rgba(255, 255, 255, .88);
 	border: solid 1px gray;
