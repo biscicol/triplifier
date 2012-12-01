@@ -30,12 +30,12 @@ $(function() {
 	vocabularyManager = new VocabularyManager($("#vocabularies"), $("#vocabularyUpload"), getStorageKey("vocabularies"), alertError);
 
 	// Create the main project sections.
-	dSsection = new DataSourceSection($('#dsDiv'));
 	joinsPT = new JoinsTable($("#joinDiv"));
 	entitiesPT = new EntitiesTable($("#entityDiv"));
 	attributesPT = new AttributesTable($("#attributeDiv"));
 	relationsPT = new RelationsTable($("#relationDiv"));
 	triplifyPT = new ProjectSection($("#triplifyDiv"));
+	dSsection = new DataSourceSection($('#dsDiv'), triplifyPT);
 
 	// Set up the SectionManager.
 	sectionmgr = new SectionManager();

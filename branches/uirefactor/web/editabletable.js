@@ -128,6 +128,10 @@ EditableTable.prototype.resetRowsData = function() {
 	}
 
 	this.setButtonStates();
+
+	// Make sure that UI input are set to the correct visibility.
+	var inputs = this.contentelem.find("input");
+	inputs.fadeToggle(this.isactive);
 }
 
 /**
