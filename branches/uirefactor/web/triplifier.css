@@ -230,6 +230,7 @@ div.sectioncontent {
 	background: -moz-linear-gradient(top, #fff, #ddd);
 	background: linear-gradient(to bottom, #fff, #ddd);
 	border-radius: 0 0 8px 8px;
+	font-size: 90%;
 }
 
 .sectioncontent table {
@@ -238,7 +239,7 @@ div.sectioncontent {
 	border-width: 2px 1px 2px 1px;
 	border-radius: 6px;
 	background: #eee;
-	font-size: 90%;
+	/*font-size: 90%;*/
 	color: #000;
 }
 

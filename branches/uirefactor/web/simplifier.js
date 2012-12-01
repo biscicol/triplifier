@@ -5,11 +5,70 @@
  * after all), but all Simplifiers must adhere to a simple interface.  They need to provide a
  * single method with the following signature.
  *
- * simplify(project) { ... }
+ *   simplify(project) { ... }
  *
  * This allows all Simplifier objects to be used transparently and interchangeably by the
  * rest of the Triplifier UI code.
+ *
+ * They must also provide two static properties, formatdescription and formatcode, that are used by
+ * the SimplifierFactory and for UI construction.
+ *
+ *   formatdescription: A text description of the format.
+ *   formatcode: A simple text code that can be used as a key for the format.
  **/
+
+
+
+
+/**
+ * A class for creating new Simplifier objects to match given input file formats.  This means clients
+ * are not required to have any knowledge of specific concrete Simplifier classes.
+ **/
+function SimplifierFactory() {
+	// A dictionary of all known Simplifiers.
+	this.simplifiers = {};
+
+	// A dictionary mapping format codes to text descriptions.
+	this.formatsmap = {};
+
+	// Load all defined Simplifiers.
+	this.addSimplifier(DwCASimplifier);
+}
+
+/**
+ * Adds a Simplifier class to the factory.
+ *
+ * @param simplifier The class (constructor function) of a concrete Simplifier implementation.
+ **/
+SimplifierFactory.prototype.addSimplifier = function(simplifier) {
+	var formatcode = simplifier.formatcode;
+
+	this.simplifiers[formatcode] = simplifier;
+	this.formatsmap[formatcode] = simplifier.formatdescription;
+}
+
+/**
+ * Gets a dictionary mapping format codes to format descriptions for all Simplifiers.
+ **/
+SimplifierFactory.prototype.getFormatsMap = function() {
+	return this.formatsmap;
+}
+
+/**
+ * Gets an instance of a Simplifier object for the specified input format.
+ *
+ * @param formatcode The input format for which to get a new Simplifier.
+ **/
+SimplifierFactory.prototype.getSimplifier = function(formatcode) {
+	var simplifier;
+
+	// See if the format code corresponds with a known Simplifier, and if so,
+	// construct a new instance of the Simplifier.	
+	if (formatcode in this.simplifiers)
+		simplifier = new this.simplifiers[formatcode]();
+
+	return simplifier;
+}
 
 
 
@@ -19,6 +78,10 @@
  **/
 function DwCASimplifier() {
 }
+
+// Static properties of the Simplifier.
+DwCASimplifier.formatdescription = 'Darwin Core Archive';
+DwCASimplifier.formatcode = 'DwCA';
 
 // A lookup table for matching DwC concept ID field names to DwC concepts.
 DwCASimplifier.prototype.cncpttable = {

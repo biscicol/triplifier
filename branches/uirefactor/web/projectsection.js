@@ -185,10 +185,27 @@ function DataSourceSection(element, triplifyPS) {
 	// Get the DOM for the table row that we want to use as a template for creating new rows.
 	this.dbSourceTrTemplate = $("#schemaTable > tbody").children(":last").remove();
 
+	// Create a SimplifierFactory.
+	this.simpfact = new SimplifierFactory();
+
+	// Add the supported simplifier formats to the UI drop-down list.
+	var formatsel = document.getElementById('uploadForm').inputdataformat;
+	var formatsmap = this.simpfact.getFormatsMap();
+	for (formatcode in formatsmap) {
+		var opt = new Option(formatsmap[formatcode], formatcode);
+		formatsel.add(opt);
+	}
+
+	// Add an event handler to the simplify checkbox so that the format drop-down list is disabled
+	// if the checkbox is unchecked.
+	$('#uploadForm > input[name=simplify]').click(function() {
+		formatsel.disabled = !this.checked
+	});
+
 	// Set event handlers for the data source form submit buttons.
 	var self = this;
-	$("#dbForm").submit(function(){ self.databaseFormSubmitted(this); });
-	$("#uploadForm").submit(function(){ self.uploadFormSubmitted(this); });
+	$("#dbForm").submit(function(){ return self.databaseFormSubmitted(this); });
+	$("#uploadForm").submit(function(){ return self.uploadFormSubmitted(this); });
 }
 
 // DataSourceSection inherits from ProjectSection.
@@ -220,7 +237,7 @@ DataSourceSection.prototype.setProject = function(project) {
  * Set the activation state of this DataSourceSection.
  **/
 DataSourceSection.prototype.setActive = function(isactive) {
-	// call the superclass implementation
+	// Call the superclass implementation.
 	DataSourceSection.superclass.prototype.setActive.call(this, isactive);
 
 	$("#dsDiv").toggleClass("active", isactive);
@@ -287,9 +304,16 @@ DataSourceSection.prototype.getDataSourceName = function() {
  * form data and provides a handler for the finished upload event.
  **/
 DataSourceSection.prototype.uploadFormSubmitted = function(evtsrc) {
+	// Make sure a file name was provided.
 	if (!evtsrc.file.value) {
 		alert("Please select a file to upload.");
 		evtsrc.file.focus();
+		return false;
+	}
+	// If the simplify checkbox is checked, make sure a file format is selected.
+	if (evtsrc.simplify.checked && evtsrc.inputdataformat.selectedIndex < 1) {
+		alert("Please choose an input file format.");
+		evtsrc.inputdataformat.focus();
 		return false;
 	}
 
@@ -374,13 +398,23 @@ DataSourceSection.prototype.processFileData = function(inspection) {
 
 	this.updateSchemaUI();
 
-	simplifier = new DwCASimplifier();
-	if (simplifier.simplify(this.project))
-		// If simplification succeeded, jump straight to the "Triplify" section.
-		this.triplifyPS.setActive(true);
-	else
-		// Otherwise, choose the appropriate section to activate.
-		updateProjectSections();
+	// See if we should try to "simplify" the input data.
+	if (false){//$('#uploadForm > input[name=simplify]').prop('checked')) {
+		// Get the selected format from the UI drop-down list.
+		var formatlist = $('#uploadForm > select[name=inputdataformat]');
+		var formatcode = formatlist.prop('options')[formatlist.prop('selectedIndex')].value;
+
+		// Get an appropriate Simplifier from the SimplifierFactory.
+		simplifier = this.simpfact.getSimplifier(formatcode);
+
+		// "Simplify" the input data schema.
+		if (simplifier.simplify(this.project))
+			// If simplification succeeded, jump straight to the "Triplify" section.
+			this.triplifyPS.setActive(true);
+		else
+			// Otherwise, choose the appropriate section to activate.
+			updateProjectSections();
+	}
 }
 
 

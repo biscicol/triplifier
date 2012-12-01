@@ -103,8 +103,11 @@
               target="uploadTarget">
             <span>File upload:</span><br/>
             <input type="file" name="file" size="44"/><br/>
-            <input type="submit" value="Upload file" class="external"/>
+	    <input name="simplify" type="checkbox" checked="checked" />auto-generate project for
+	    <select name="inputdataformat"><option value="none">-- choose format --</option></select><br />
+	    <input type="submit" value="Upload file" class="external"/><br />
         </form>
+
         <div style="clear: both;"></div>
         <div id="dsDescription"></div>
         <table id="schemaTable">
