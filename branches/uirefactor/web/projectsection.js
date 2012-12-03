@@ -399,7 +399,7 @@ DataSourceSection.prototype.processFileData = function(inspection) {
 	this.updateSchemaUI();
 
 	// See if we should try to "simplify" the input data.
-	if (false){//$('#uploadForm > input[name=simplify]').prop('checked')) {
+	if ($('#uploadForm > input[name=simplify]').prop('checked')) {
 		// Get the selected format from the UI drop-down list.
 		var formatlist = $('#uploadForm > select[name=inputdataformat]');
 		var formatcode = formatlist.prop('options')[formatlist.prop('selectedIndex')].value;
