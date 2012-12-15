@@ -15,37 +15,37 @@ map:database a d2rq:Database;
 	.
 map:pcr_id a d2rq:ClassMap;
 	d2rq:dataStorage map:database;
-	d2rq:uriColumn "pcr.id";
+    d2rq:uriPattern "pcr/@@pcr.id|urlify@@";
 	d2rq:class <http://purl.org/dc/dcmitype/Event>;
 	d2rq:condition "pcr.id <> ''";
 	.
 map:assembly_id a d2rq:ClassMap;
 	d2rq:dataStorage map:database;
-	d2rq:uriColumn "assembly.id";
+    d2rq:uriPattern "assembly/@@assembly.id|urlify@@";
 	d2rq:class <http://purl.org/dc/dcmitype/Event>;
 	d2rq:condition "assembly.id <> ''";
 	.
 map:biocode_tissue_join_tissue_id a d2rq:ClassMap;
 	d2rq:dataStorage map:database;
-	d2rq:uriColumn "biocode_tissue_join.tissue_id";
+    d2rq:uriPattern "tissue/@@biocode_tissue_join.tissue_id|urlify@@";
 	d2rq:class <http://purl.org/dc/dcmitype/PhysicalObject>;
 	d2rq:condition "biocode_tissue_join.tissue_id <> ''";
 	.
 map:biocode_bnhm_id a d2rq:ClassMap;
 	d2rq:dataStorage map:database;
-	d2rq:uriColumn "biocode.bnhm_id";
+    d2rq:uriPattern "specimen/@@biocode.bnhm_id|urlify@@";
 	d2rq:class <http://rs.tdwg.org/dwc/terms/Occurrence>;
 	d2rq:condition "biocode.bnhm_id <> ''";
 	.
 map:biocode_collecting_event_EventID a d2rq:ClassMap;
 	d2rq:dataStorage map:database;
-	d2rq:uriColumn "biocode_collecting_event.EventID";
+    d2rq:uriPattern "event/@@biocode_collecting_event.EventID|urlify@@";
 	d2rq:class <http://purl.org/dc/dcmitype/Event>;
-	d2rq:condition "biocode_collecting_event.TaxTeam like 'TINV'";
+	d2rq:condition "biocode_collecting_event.TaxTeam = 'TINV'";
 	.
 map:extraction_id a d2rq:ClassMap;
 	d2rq:dataStorage map:database;
-	d2rq:uriColumn "extraction.id";
+	d2rq:uriPattern "extraction/@@extraction.extractionId|urlify@@";
 	d2rq:class <http://purl.org/dc/dcmitype/PhysicalObject>;
 	d2rq:condition "extraction.id <> ''";
 	.
