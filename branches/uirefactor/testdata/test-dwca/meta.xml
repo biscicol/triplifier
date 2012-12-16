@@ -6,7 +6,6 @@
       <location>DarwinCore.txt</location>
     </files>
     <id index="0"/>
-    <field index="0" term="http://rs.tdwg.org/dwc/terms/taxonID"/>
     <field index="1" term="http://rs.tdwg.org/dwc/terms/scientificName"/>
     <field index="2" term="http://rs.tdwg.org/dwc/terms/taxonRank"/>
     <field index="3" term="http://rs.tdwg.org/dwc/terms/nomenclaturalCode"/>

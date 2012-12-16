@@ -3,12 +3,11 @@ package reader.plugins;
 import java.io.File;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 import org.gbif.dwc.record.Record;
-import org.gbif.dwc.terms.ConceptTerm;
 import org.gbif.dwc.text.Archive;
 import org.gbif.dwc.text.ArchiveFactory;
 import org.gbif.dwc.text.ArchiveField;
@@ -22,10 +21,11 @@ import org.gbif.dwc.text.ArchiveFile;
  * long as it is included in the archive's meta.xml.  For column names, the
  * proper Darwin Core terms, as mapped in meta.xml, are used.  If an ID field is
  * indicated in meta.xml, the plugin checks if a proper term name is also
- * provided (via the <field> element).  If not, "ID" is used as the column name
- * for the ID field in the core table, and "CORE_ID" is used for the ID column
- * of any "extension" tables.  ID fields will always be returned as the first
- * column in their table.
+ * provided (via the <field> element).  If not, then the plugin attempts to
+ * infer the term name from the rowType attribute of the <core> element.  If
+ * this also fails, then "ID" is used as the column name.  "CORE_ID" is used for
+ * the <corid> column of any "extension" tables.  ID fields will always be
+ * returned as the first column in their table.
  */
 public class DWCAReader implements TabularDataReader {
     // iterator for records within a table (ArchiveFile)
@@ -52,6 +52,22 @@ public class DWCAReader implements TabularDataReader {
     private int tablecnt;
     // keep track of how many records in the active table have been processed
     private int reccnt;
+    // A map of row type URIs to short-form term names.  Used for inferring the
+    // type of a table's ID row based upon the rowType attribute.
+    private HashMap<String, String> rowtypes;
+    
+    public DWCAReader() {
+        // Initialize the map of row types.
+        rowtypes = new HashMap(8);
+        rowtypes.put("http://rs.tdwg.org/dwc/terms/Occurrence", "occurrenceID");
+        rowtypes.put("http://rs.tdwg.org/dwc/terms/Event", "eventID");
+        rowtypes.put("http://purl.org/dc/terms/Location", "locationID");
+        rowtypes.put("http://rs.tdwg.org/dwc/terms/GeologicalContext", "geologicalContextID");
+        rowtypes.put("http://rs.tdwg.org/dwc/terms/Identification", "identificationID");
+        rowtypes.put("http://rs.tdwg.org/dwc/terms/Taxon", "taxonID");
+        rowtypes.put("http://rs.tdwg.org/dwc/terms/ResourceRelationship", "resourceRelationshipID");
+        rowtypes.put("http://rs.tdwg.org/dwc/terms/MeasurementOrFact", "measurementID");
+    }
 
     @Override
     public String getFormatString() {
@@ -179,7 +195,7 @@ public class DWCAReader implements TabularDataReader {
             
             fields = currfile.getFieldsSorted();
             rec_iter = currfile.iterator();
-            has_id = currfile.getId() != null;
+            has_id = currfile.getId() != null && tablecnt == 0;
             id_index = -1;
             id_has_field = false;
             id_field_term = "";
@@ -197,6 +213,16 @@ public class DWCAReader implements TabularDataReader {
                         id_field_term = field.getTerm().simpleName();
                     }
                 }
+            }
+            
+            // If no ID field type was provided, try to infer it from the row
+            // type definition.  The rowType attribute is required, so this
+            // should usually work, unless the row type is not recognized or
+            // invalid.  In that case, fall back to "ID" as the field name.
+            if (has_id && !id_has_field) {
+                String rtype = currfile.getRowType();
+                if (rowtypes.containsKey(rtype))
+                    id_field_term = rowtypes.get(rtype);
             }
         }
         else
@@ -238,7 +264,7 @@ public class DWCAReader implements TabularDataReader {
             
             // Add the ID field if there is one.
             if (has_id) {
-                if (id_has_field)
+                if (id_field_term != "")
                     row[fieldcnt++] = id_field_term;
                 else {
                     if (tablecnt == 1)
