@@ -114,9 +114,12 @@ public class Mapping {
     public String getColumnPrefix(Entity entity) {
         String result = "";
         
-        result += "\td2rq:uriColumn \"" + entity.getColumn() + "\";";
-        // This assigns the default urn:x-biscicol: patter before the identifier, ensuring it is a URI
-        
+        if (entity.idPrefixColumn.equalsIgnoreCase("") || entity.idPrefixColumn == null) {
+            result += "\td2rq:uriColumn \"" + entity.getColumn() + "\";";
+            // This assigns the default urn:x-biscicol: pattern before the identifier, ensuring it is a URI.
+        } else {
+            result += "\td2rq:uriPattern \"" + entity.idPrefixColumn + "@@" + entity.getColumn() + "@@\";";
+        }        
         return result;
     }
 
