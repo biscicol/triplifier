@@ -14,8 +14,6 @@
  **/
 function EditableTable(element) {
 	// call the parent's constructor
-	//alert('blah: EditableTable');
-	//alert(this.superclass);
 	EditableTable.superclass.call(this, element);
 
 	// If element is null, the constructor is being called merely for inheritance purposes,
