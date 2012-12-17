@@ -115,6 +115,34 @@ EntitiesTable.prototype.setButtonStates = function() {
 }
 
 /**
+ * Construct a project item from the values of the form elements in the add/edit table row.
+ * This method inspects the "unique ID" checkbox and defines an appropriate ID prefix for
+ * the entity (concept).
+ *
+ * @param tablerow The table row object containing the form elements.
+ * @returns An object containing the values for the new project item.
+ **/
+EntitiesTable.prototype.getItemFromFormRow = function(tablerow) {
+	params = tablerow.formParams();
+
+	var idprefix;
+	if (params.uniqueID == 'on')
+		// "Unique ID" is checked.
+		idprefix = params.table;
+	else
+		// "Unique ID" is not checked.
+		idprefix = '';
+
+	// Build a new parameters object.  This is necessary to make sure the properties are in
+	// the correct order.
+	var newparams = { table:params.table, idColumn:params.idColumn, idPrefixColumn:idprefix,
+		rdfClass:params.rdfClass };
+
+	console.log(newparams);
+	return newparams;
+}
+
+/**
  * Adds the table names from the project to the table row.
  *
  * @param tr The table row with the input elements to populate.

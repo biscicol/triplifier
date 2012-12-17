@@ -270,7 +270,7 @@ EditableTable.prototype.saveRowInput = function(srcelement) {
 	var tr = $(srcelement).parent().parent();
 
 	// Read form values.
-	var item = tr.formParams();
+	var item = this.getItemFromFormRow(tr);
 	//console.log(item);
 
 	// Get the element from the project and update it.
@@ -297,7 +297,7 @@ EditableTable.prototype.saveEditedRowInput = function(srcelement) {
 	var tr = $(srcelement).parent().parent();
 
 	// read form values
-	var item = tr.formParams();
+	var item = this.getItemFromFormRow(tr);
 	
 	// get the appropriate project element
 	var projelement = this.project.getProperty(this.property);
@@ -323,6 +323,18 @@ EditableTable.prototype.saveEditedRowInput = function(srcelement) {
 	newtr.children().first().children("input").change();
 
 	this.styleEdit(newtr, true);
+}
+
+/**
+ * Construct a project item from the values of the form elements in the add/edit table row.
+ * By default, this simply returns the value of formParams().  Child classes can override
+ * this to implement custom mappings of form values to project item properties.
+ *
+ * @param tablerow The table row object containing the form elements.
+ * @returns An object containing the values for the new project item.
+ **/
+EditableTable.prototype.getItemFromFormRow = function(tablerow) {
+	return tablerow.formParams();
 }
 
 /**
