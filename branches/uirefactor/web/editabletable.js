@@ -156,14 +156,40 @@ EditableTable.prototype.createTableRow = function(item) {
 	var self = this;
 	td.children("input").change(function() { self.selectionChanged(this); }).prop("checked", true);
 
-	//td.children("input").change(radioChange).prop("checked", true);
-
-	$.each(item, function(name, value) { 
-		var vKeys = (value.substr ? [] : Object.keys(value)); // extract keys from Object-like value
-		td = td.next().html(value[vKeys[0]] || value).attr("title", value[vKeys[1]]); // write value to next sibling (td)
-	});
+	this.mapItemToTableRow(item, td);
 
 	return newrow;
+}
+
+/**
+ * Add the properties of a project item to the <td> elements of a table row.  By default, this 
+ * simply maps each property sequentially to its own <td>.  Child classes can override this to
+ * provide custom mappings of project properties to UI display fields.
+ *
+ * @param item The project item to map to a table row.
+ * @param td The first <td> element in the table row.
+ *
+ * @returns None.
+ **/
+EditableTable.prototype.mapItemToTableRow = function(item, td) {
+	$.each(item, function(name, value) {
+		var vKeys, valstr;
+
+		// See if this value is an object or a string.
+		if (value.substr) {
+			vKeys = [];
+			valstr = value;
+		} else {
+			// Extract the keys from the value object.
+			vKeys = Object.keys(value);
+			valstr = value[vKeys[0]];
+		}
+	
+		// Write value to the next sibling <td>.
+		td = td.next();
+		td.html(valstr);
+		td.attr("title", value[vKeys[1]]);
+	});
 }
 
 /**
@@ -223,7 +249,8 @@ EditableTable.prototype.editButtonClicked = function() {
 	this.populateTableRowOptions(tr, true);
 
 	// set the form values to match those of the targeted row
-	tr.formParams(this.project[this.property][this.selrowindex]);
+	var paramvals = this.getFormParamsFromItem(this.project[this.property][this.selrowindex]);
+	tr.formParams(paramvals);
 
 	// add the input row to the table immediately after the selected row
 	tr.insertAfter(this.selectedtr);
@@ -335,6 +362,10 @@ EditableTable.prototype.saveEditedRowInput = function(srcelement) {
  **/
 EditableTable.prototype.getItemFromFormRow = function(tablerow) {
 	return tablerow.formParams();
+}
+
+EditabelTable.prototype.getFormParamsFromItem = function(item) {
+	return item;
 }
 
 /**

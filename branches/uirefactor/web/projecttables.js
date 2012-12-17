@@ -143,6 +143,44 @@ EntitiesTable.prototype.getItemFromFormRow = function(tablerow) {
 }
 
 /**
+ * Add the properties of a concept item to the <td> elements of a table row.  This method is identical
+ * to the parent class implementation except for handling the idPrefixColumn property, which is mapped
+ * to the "Globally Unique ID" column in the UI.
+ *
+ * @param item The concept item to map to a table row.
+ * @param td The first <td> element in the table row.
+ *
+ * @returns None.
+ **/
+EditableTable.prototype.mapItemToTableRow = function(item, td) {
+	$.each(item, function(name, value) {
+		var vKeys, valstr;
+
+		// See if this value is an object or a string.
+		if (value.substr) {
+			vKeys = [];
+			valstr = value;
+		} else {
+			// Extract the keys from the value object.
+			vKeys = Object.keys(value);
+			valstr = value[vKeys[0]];
+		}
+	
+		// Write value to the next sibling <td>.
+		td = td.next();
+		if (name != 'idPrefixColumn') {
+			td.html(valstr);
+		} else {
+			if (value == '')
+				td.html('no');
+			else
+				td.html('yes');
+		}
+		td.attr("title", value[vKeys[1]]);
+	});
+}
+
+/**
  * Adds the table names from the project to the table row.
  *
  * @param tr The table row with the input elements to populate.
