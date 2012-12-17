@@ -202,12 +202,12 @@
         <table>
             <thead>
             <tr>
-                <th/>
+                <th />
                 <th>Table</th>
                 <th>ID Column</th>
-                <th>Globally Unique ID</th>
+                <th>Unique IDs? <span class="contexthelp"><a id="IDs_help" href="#">?</a></span></th>
                 <th>Class</th>
-                <th/>
+                <th />
             </tr>
             </thead>
             <tbody>
@@ -217,15 +217,14 @@
                 <td />
                 <td style="text-align: center;" />
                 <td />
+                <td />
             </tr>
 
             <tr class="edit">
                 <td />
                 <td><select name="table"/></td>
-		<td>
-			<select name="idColumn"/>
-				</td><td style="text-align: center;">
-			<input name="uniqueID" type="checkbox" /></td>
+		<td><select name="idColumn"/></td>
+		<td style="text-align: center;"><input name="uniqueID" type="checkbox" /></td>
                 <td>
                     <input type="hidden" name="rdfClass[name]"/>
                     <select name="rdfClass[uri]"/>

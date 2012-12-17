@@ -340,8 +340,6 @@ EditableTable.prototype.saveEditedRowInput = function(srcelement) {
 	// need to be notified of this change.
 	this.project.setProperty(this.property, projelement, this);
 
-	// trigger the edited method for observers here
-
 	// remove the old table row displaying this item
 	tr.prev().remove();
 
@@ -364,7 +362,15 @@ EditableTable.prototype.getItemFromFormRow = function(tablerow) {
 	return tablerow.formParams();
 }
 
-EditabelTable.prototype.getFormParamsFromItem = function(item) {
+/**
+ * Construct a form parameters object from the properties of a project item.  Be default, this
+ * does nothing more than return the item as the parameters object.  Child classes can override
+ * this to implement custom mappings of form values to project item properties.
+ *
+ * @param item A project item.
+ * @returns A form parameters object.
+ **/
+EditableTable.prototype.getFormParamsFromItem = function(item) {
 	return item;
 }
 

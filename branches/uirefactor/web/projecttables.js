@@ -128,10 +128,10 @@ EntitiesTable.prototype.getItemFromFormRow = function(tablerow) {
 	var idprefix;
 	if (params.uniqueID == 'on')
 		// "Unique ID" is checked.
-		idprefix = params.table;
+		idprefix = '';
 	else
 		// "Unique ID" is not checked.
-		idprefix = '';
+		idprefix = params.table;
 
 	// Build a new parameters object.  This is necessary to make sure the properties are in
 	// the correct order.
@@ -140,6 +140,24 @@ EntitiesTable.prototype.getItemFromFormRow = function(tablerow) {
 
 	console.log(newparams);
 	return newparams;
+}
+
+/**
+ * Construct a form parameters object from the properties of a concept item.  The idPrefixColumn
+ * property of the concept item is mapped to the "uniqueID" checkbox on the HTML form.
+ *
+ * @param item A project item.
+ * @returns A form parameters object.
+ **/
+EditableTable.prototype.getFormParamsFromItem = function(item) {
+	var isunique = undefined;
+	if (item.idPrefixColumn == '')
+		isunique = 'on';
+
+	var formparams = { table:item.table, idColumn:item.idColumn, uniqueID:isunique,
+		rdfClass:item.rdfClass };
+
+	return formparams;
 }
 
 /**
@@ -172,9 +190,9 @@ EditableTable.prototype.mapItemToTableRow = function(item, td) {
 			td.html(valstr);
 		} else {
 			if (value == '')
-				td.html('no');
-			else
 				td.html('yes');
+			else
+				td.html('no');
 		}
 		td.attr("title", value[vKeys[1]]);
 	});
