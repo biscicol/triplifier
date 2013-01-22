@@ -95,7 +95,12 @@ public class run {
         //runReader(rm.openFile("dwca-hsu_wildlife_mammals.zip", "DWCA"));
         //runReader(rm.openFile("dwca-nysm_mammals.zip", "DWCA"));
         //runReader(rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/test-dwca", "DWCA"));
-        runReader(rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/test-dwca", "DWCA"));
+        //runReader(rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/BiocodeTemplate_TEST-2.xls", "EXCEL"));
         //runReader(rm.openFile("testdata/CanadensysTest.zip", "DWCA"));
+        
+        TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/BiocodeTemplate_TEST-2.xls");
+        TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/test.sqlite");
+        tdc.convert();
+        tdr.closeFile();
     }
 }

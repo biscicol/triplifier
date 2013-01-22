@@ -1,29 +1,40 @@
 #
-# Rename to triplifiersettings.props
+# This file should be renamed/copied to triplifiersettings.props prior to deploying the
+# Triplifier application.
 #
 
-# specifications for reading various RDF files:
-# cName: URI of how Classes are referred to
-# cProperty: URI of Class designation property (usually just rdf:type)
+# Specifications for reading various RDF vocabulary files.  These settings are used by the
+# Vocabulary classes to read in vocabulary sets for use by the Triplifier.  The members are
+# as follows.
+#
+# cName: URI to identify "class" objects in a vocabulary.
+# cProperty: URI of "class" designation property (usually just rdf:type).
 # cSubClass: URI of subClass Predicate
-# pName: URI of Property Name
+# pName: URI to identify "property" objects in a vocabulary.
 # pSubProperty: URI of subProperty Predicate
 # domain: URI of domain property
 # range: URI of range property
+#
+# Specification for standard RDF (and RDFS) vocabulary files.
 RDFspec = {"cName":"http://www.w3.org/2000/01/rdf-schema#Class","cProperty":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type","cSubClass":"http://www.w3.org/2000/01/rdf-schema#subClassOf","pName":"http://www.w3.org/1999/02/22-rdf-syntax-ns#Property","pSubProperty":"http://www.w3.org/2000/01/rdf-schema#subPropertyOf"}
+# Specification for the Darwin Core RDF vocabulary file.  The DwC specification does not use rdfs:domain, but
+# does use dwcattributes:organizedInClass, which is similar and is used here to decide the domain of a property.
+DwCRDFspec = {"cName":"http://www.w3.org/2000/01/rdf-schema#Class","cProperty":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type","cSubClass":"http://www.w3.org/2000/01/rdf-schema#subClassOf","pName":"http://www.w3.org/1999/02/22-rdf-syntax-ns#Property","pSubProperty":"http://www.w3.org/2000/01/rdf-schema#subPropertyOf","domain":"http://rs.tdwg.org/dwc/terms/attributes/organizedInClass"}
+# Specification for OWL vocabulary files.
 OWLspec = {"cName":"http://www.w3.org/2002/07/owl#Class","cProperty":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type","cSubClass":"http://www.w3.org/2000/01/rdf-schema#subClassOf","pName":"http://www.w3.org/2002/07/owl#ObjectProperty","pSubProperty":"http://www.w3.org/2000/01/rdf-schema#subPropertyOf","domain":"http://www.w3.org/2000/01/rdf-schema#domain","range":"http://www.w3.org/2000/01/rdf-schema#range"}
 
-# built-in vocabularies provided in Triplifier
-# pair of fileName and vocabulary settings property
-# each file must exist in vocabularies folder
-# each property must exist in this file
+# Defines the built-in vocabularies provided with the Triplifier.
+# Each entry is a pair consisting of a file name and a vocabulary settings variable.
+# Each file must exist in the vocabularies folder.
+# Each settings variable must be defined in this file.
 vocabularies = {"dwcterms.rdf":"dwcVocabulary","dsw.owl":"dswVocabulary","txn.owl":"txnVocabulary"}
 
-# settings used to read vocabulary files
-dwcVocabulary = {"displayName":"Darwin Core","spec":"RDFspec","subClasses":"false","subProperties":"true"}
+# Define the settings used to read vocabulary files.  Each settings variable name should correspond to
+# an entry in the vocabularies object defined above.
+dwcVocabulary = {"displayName":"Darwin Core","spec":"DwCRDFspec","subClasses":"false","subProperties":"true"}
 dswVocabulary = {"displayName":"Darwin-SW","spec":"OWLspec","subClasses":"true","subProperties":"false"}
 txnVocabulary = {"displayName":"Taxon Concept","spec":"OWLspec","subClasses":"false","subProperties":"true"}
-# default settings for reading user vocabularies
+# Default settings for reading user vocabularies.
 defaultVocabulary = {"spec":"OWLspec","subClasses":"true","subProperties":"false"}
 defaultURI = urn:x-biscicol:
 
@@ -38,3 +49,4 @@ bcidUrl = jdbc:mysql://darwin.berkeley.edu:3306/biscicol
 bcidClass = com.mysql.jdbc.Driver
 bcidShoulder = ark:/99999/fk4
 doiShoulder = doi:10.5072/FK2
+

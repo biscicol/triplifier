@@ -50,6 +50,7 @@ public class RDFreader {
         propertyName = createResource(spec.get("pName"));
         propertySubProperty = "true".equals(settings.get("subProperties")) ? createProperty(spec.get("pSubProperty")) : null;
         domainProperty = createProperty(spec.get("domain"));
+        //System.out.println(Rest.getVocabulariesPath());
         rangeProperty = createProperty(spec.get("range"));
         
         String fileUrl = FileUtils.toURL(Rest.getVocabulariesPath() + "/" + fileName);
@@ -89,6 +90,14 @@ public class RDFreader {
     	return subItems;
     }
 
+    /**
+     * Retrieves all of the property values for a given "subject" (in the sense
+     * of an RDF triple) and property name.
+     * 
+     * @param resource The subject to retrieve property values for.
+     * @param property The property definition to look for.
+     * @return The set of property values.
+     */
     private Set<String> getProperties(Resource resource, Property property) {
     	if (property == null)
     		return null;
@@ -136,7 +145,7 @@ public class RDFreader {
      * Main class for testing purposes
      *
      * @param args
-     * @throws Exception 
+     * @throws Exception
      */
     public static void main(String args[]) throws Exception {
     	SettingsManager sm = SettingsManager.getInstance();

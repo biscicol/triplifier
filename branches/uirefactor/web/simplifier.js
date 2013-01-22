@@ -138,11 +138,17 @@ DwCASimplifier.prototype.simplify = function(project) {
 	if (projentlen != projentities.length)
 		this.project.setProperty('entities', projentities);
 
-	// Next, work on the attributes.  Note the "domain" property of each property item from VocabularyManager
-	// could indicate which class each property is appropriate for, but the domain property does not seem to
-	// get defined by VocabularyManager, so it is not used here.  This problem needs to be solved eventually.
+	// Next, work on the attributes.  The "domain" array of each property item from VocabularyManager indicates
+	// which class each property is appropriate for, and is used here to match properties to their classes.
+	//
+	// The domain definition actually comes from the dwcattributes:organizedInClass property of the DwC RDF
+	// specification.  It should be noted that some DwC terms, such as basisOfRecord, have "all" as the value
+	// of organizedInClass.  This appears to be the case for all "record-level" terms.  Right now, these terms
+	// are not getting mapped because it is not clear how to best handle them.
 	var dwcatts = vocabularyManager.getSelectedVocabulary()['properties'];
 	var cnt3, entity, columns, prop;
+	console.log(vocabularyManager.getSelectedVocabulary());
+	
 	// The general strategy is to look at each entity (concept) in the project and see if we can define any
 	// attributes for it.
 	// Object format for an attribute entry:
@@ -153,6 +159,7 @@ DwCASimplifier.prototype.simplify = function(project) {
 	var projattlen = projattributes.length;
 	for (cnt = 0; cnt < this.project.entities.length; cnt++) {
 		entity = this.project.entities[cnt];
+		//alert(entity.rdfClass.uri);
 		
 		// Examine each column of this entity's table and see if it can be matched to a DwC property name.
 		columns = this.project.getTableByName(entity.table).columns;
@@ -160,18 +167,22 @@ DwCASimplifier.prototype.simplify = function(project) {
 			col = columns[cnt2];
 			// Only consider columns that are not already part of an attribute or entity.
 			if (this.project.isColumnAvailable(entity.table, col)) {
-				// See if there is a DwC property name that matches the column name.  If so,
-				// define a new attribute for the current entity.
+				// Look through all of the DwC property names to see if there is a property name
+				// that matches the column name.
 				for (cnt3 = 0; cnt3 < dwcatts.length; cnt3++) {
 					prop = dwcatts[cnt3];
 					if (prop.name == col) {
-						// Found a match, so define a new attribute.
-						var newattrib = {
-							entity:entity.table + '.' + entity.idColumn,
-							rdfProperty:{ name:prop.name, uri:prop.uri },
-							column:col
-						};
-						projattributes.push(newattrib);
+						// Found a match, so now see if the domain of this property includes
+						// the class of the current DwC entity (concept).
+						if (prop.domain.indexOf(entity.rdfClass.uri) != -1) {
+							// It does, so define a new attribute for the current entity.
+							var newattrib = {
+								entity:entity.table + '.' + entity.idColumn,
+								rdfProperty:{ name:prop.name, uri:prop.uri },
+								column:col
+							};
+							projattributes.push(newattrib);
+						}
 					}
 				}
 			}
