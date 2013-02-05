@@ -166,7 +166,7 @@ DwCASimplifier.prototype.simplify = function(project) {
 	var projattlen = projattributes.length;
 	for (cnt = 0; cnt < this.project.entities.length; cnt++) {
 		entity = this.project.entities[cnt];
-		alert(entity.rdfClass.uri);
+		//alert(entity.rdfClass.uri);
 		
 		// Examine each column of this entity's table and see if it can be matched to a DwC property name.
 		columns = this.project.getTableByName(entity.table).columns;

@@ -1,16 +1,25 @@
 
+// Define a few global variables.  There are far fewer globals in the system than previously,
+// but nearly all globals could be eliminated by defining a central Triplifier class.  That
+// will probably be a final step in refactoring the code, but it is not crucial at the moment.
+
 // The currently-open project.
 var mainproject;
 
-// ProjectSection objects.
-var dSsection, joinsPT, entitiesPT, attributesPT, relationsPT, triplifyPT;
-// SectionManager object.
+// ProjectSection objects.  Each of these corresponds to one of the main sections in the UI.
+var dSsection, joinsPS, entitiesPS, attributesPS, relationsPS, triplifyPS;
+// SectionManager object.  This coordinates the various ProjectSection objects, making sure
+// that their overall presentation in the UI remains consistent (e.g., ensuring that only one
+// ProjectSection can be active at a time).
 var sectionmgr;
+// VocabularyManager object.
+var vocabularyManager;
 
-var	vocabularyManager,
-	relationPredicates = ["ma:isSourceOf", "ma:isRelatedTo"],
-	biscicolUrl = "http://biscicol.org/",
-	triplifierUrl = "http://biscicol.org:8080/triplifier/"; // [hack] when file on triplifier is accessed from biscicol on the same server then port forwarding won't work so the port is set here
+// Define the relation predicates supported by the Triplifier.
+var relationPredicates = ["ma:isSourceOf", "ma:isRelatedTo"];
+
+var biscicolUrl = "http://biscicol.org/";
+var triplifierUrl = "http://biscicol.org:8080/triplifier/"; // [hack] when file on triplifier is accessed from biscicol on the same server then port forwarding won't work so the port is set here
 
 //	biscicolUrl = "http://geomuseblade.colorado.edu/biscicol/",
 //	triplifierUrl = "http://geomuseblade.colorado.edu/triplifier/";
@@ -26,20 +35,20 @@ var	vocabularyManager,
  * sets up the main navigation buttons, and initializes the contextual help.
  **/
 $(function() {
-	// VocabularyManager must be created before FlexTables
+	// Create the VocabularyManager.
 	vocabularyManager = new VocabularyManager($("#vocabularies"), $("#vocabularyUpload"), getStorageKey("vocabularies"), alertError);
 
 	// Create the main project sections.
-	joinsPT = new JoinsTable($("#joinDiv"));
-	entitiesPT = new EntitiesTable($("#entityDiv"));
-	attributesPT = new AttributesTable($("#attributeDiv"));
-	relationsPT = new RelationsTable($("#relationDiv"));
-	triplifyPT = new ProjectSection($("#triplifyDiv"));
-	dSsection = new DataSourceSection($('#dsDiv'), triplifyPT);
+	joinsPS = new JoinsTable($("#joinDiv"));
+	entitiesPS = new EntitiesTable($("#entityDiv"));
+	attributesPS = new AttributesTable($("#attributeDiv"));
+	relationsPS = new RelationsTable($("#relationDiv"));
+	triplifyPS = new ProjectSection($("#triplifyDiv"));
+	dSsection = new DataSourceSection($('#dsDiv'), triplifyPS);
 
 	// Set up the SectionManager.
 	sectionmgr = new SectionManager();
-	sectionmgr.addSections(dSsection, joinsPT, entitiesPT, attributesPT, relationsPT, triplifyPT);
+	sectionmgr.addSections(dSsection, joinsPS, entitiesPS, attributesPS, relationsPS, triplifyPS);
 
 	// Assign event handlers for the "triplify" section.
 	$("#getMapping").click(function() { triplify("rest/getMapping", downloadFile); });
@@ -57,16 +66,16 @@ $(function() {
 	// Notice that we also explicitly set the buttons not to be disabled.  This shouldn't be necessary, but it
 	// seems that Firefox will occasionally disable some of these buttons for no apparent reason.  Setting the
 	// disabled property here seems to fix the problem.
-	$("#dsDiv input.next").click(function() { joinsPT.setActive(true); }).prop("disabled", false);
+	$("#dsDiv input.next").click(function() { joinsPS.setActive(true); }).prop("disabled", false);
 	$('#joinDiv input.back').click(function() { dSsection.setActive(true); }).prop("disabled", false);
-	$('#joinDiv input.next').click(function() { entitiesPT.setActive(true); }).prop("disabled", false);
-	$('#entityDiv input.back').click(function() { joinsPT.setActive(true); }).prop("disabled", false);
-	$('#entityDiv input.next').click(function() { attributesPT.setActive(true); }).prop("disabled", false);
-	$('#attributeDiv input.back').click(function() { entitiesPT.setActive(true); }).prop("disabled", false);
-	$('#attributeDiv input.next').click(function() { relationsPT.setActive(true); }).prop("disabled", false);
-	$('#relationDiv input.back').click(function() { attributesPT.setActive(true); }).prop("disabled", false);
-	$('#relationDiv input.next').click(function() { triplifyPT.setActive(true); }).prop("disabled", false);
-	$('#triplifyDiv input.back').click(function() { relationsPT.setActive(true); }).prop("disabled", false);
+	$('#joinDiv input.next').click(function() { entitiesPS.setActive(true); }).prop("disabled", false);
+	$('#entityDiv input.back').click(function() { joinsPS.setActive(true); }).prop("disabled", false);
+	$('#entityDiv input.next').click(function() { attributesPS.setActive(true); }).prop("disabled", false);
+	$('#attributeDiv input.back').click(function() { entitiesPS.setActive(true); }).prop("disabled", false);
+	$('#attributeDiv input.next').click(function() { relationsPS.setActive(true); }).prop("disabled", false);
+	$('#relationDiv input.back').click(function() { attributesPS.setActive(true); }).prop("disabled", false);
+	$('#relationDiv input.next').click(function() { triplifyPS.setActive(true); }).prop("disabled", false);
+	$('#triplifyDiv input.back').click(function() { relationsPS.setActive(true); }).prop("disabled", false);
 
 	// Create a ProjectManager and associate it with a ProjectUI.
 	var projman = new ProjectManager();
@@ -129,11 +138,11 @@ function projectSelectionChanged(project) {
 	// buttons if necessary.
 	if (!mainproject.schema.length) {
 		$("#dsDiv input.next").prop('disabled', true);
-		sectionmgr.setSectionsEnabled(false, joinsPT, entitiesPT, attributesPT, relationsPT, triplifyPT);
+		sectionmgr.setSectionsEnabled(false, joinsPS, entitiesPS, attributesPS, relationsPS, triplifyPS);
 	}
 	if (!mainproject.entities.length) {
 		$('#entityDiv input.next').prop('disabled', true);
-		sectionmgr.setSectionsEnabled(false, attributesPT, relationsPT, triplifyPT);
+		sectionmgr.setSectionsEnabled(false, attributesPS, relationsPS, triplifyPS);
 	}
 
 	// We want to be notified of project changes so we can update the state of the concepts "Next"
@@ -162,47 +171,47 @@ function projectPropertyChanged(project, propname) {
 		// set which sections are enabled.
 		if (!mainproject.entities.length) {
 			$('#entityDiv input.next').prop('disabled', true);
-			sectionmgr.setSectionsEnabled(false, attributesPT, relationsPT, triplifyPT);
+			sectionmgr.setSectionsEnabled(false, attributesPS, relationsPS, triplifyPS);
 		}
 		else {
 			$('#entityDiv input.next').prop('disabled', false);
-			sectionmgr.setSectionsEnabled(true, attributesPT, relationsPT, triplifyPT);
+			sectionmgr.setSectionsEnabled(true, attributesPS, relationsPS, triplifyPS);
 		}
 	} else if (propname == 'schema') {
 		// If the data source was changed, update the "Next" button state accordingly, and set
 		// which sections are enabled.
 		if (!mainproject.schema.length) {
 			$("#dsDiv input.next").prop('disabled', true);
-			sectionmgr.setSectionsEnabled(false, joinsPT, entitiesPT, attributesPT, relationsPT, triplifyPT);
+			sectionmgr.setSectionsEnabled(false, joinsPS, entitiesPS, attributesPS, relationsPS, triplifyPS);
 		}
 		else {
 			$("#dsDiv input.next").prop('disabled', false);
-			sectionmgr.setSectionsEnabled(true, joinsPT, entitiesPT);
+			sectionmgr.setSectionsEnabled(true, joinsPS, entitiesPS);
 			if (mainproject.entities.length)
-				sectionmgr.setSectionsEnabled(true, attributesPT, relationsPT, triplifyPT);
+				sectionmgr.setSectionsEnabled(true, attributesPS, relationsPS, triplifyPS);
 		}
 	}	
 }
 
 function updateProjectSections() {	
 	dSsection.setProject(mainproject);
-	joinsPT.setProject(mainproject, 'joins');
+	joinsPS.setProject(mainproject, 'joins');
 	// update joins, delete invalid (not in schema)
-	//joinsPT.removeMatching(function(join) {
+	//joinsPS.removeMatching(function(join) {
 	//	return !findInSchema(join.foreignTable, join.foreignColumn) || !findInSchema(join.primaryTable, join.primaryColumn);
 	//});
-	entitiesPT.setProject(mainproject, 'entities');
-	attributesPT.setProject(mainproject, 'attributes');
-	relationsPT.setProject(mainproject, 'relations');
+	entitiesPS.setProject(mainproject, 'entities');
+	attributesPS.setProject(mainproject, 'attributes');
+	relationsPS.setProject(mainproject, 'relations');
 
 	// Activate/deactivate each section depending on the project state.  Note the use of "!!" to ensure
 	// we have a true boolean value.
 	dSsection.setActive(!mainproject.schema.length); 
-	joinsPT.setActive(!!mainproject.schema.length && !mainproject.entities.length && !mainproject.relations.length);
-	entitiesPT.setActive(!!mainproject.entities.length && !mainproject.attributes.length && !mainproject.relations.length)
-	attributesPT.setActive(!!mainproject.attributes.length && !mainproject.relations.length)
-	relationsPT.setActive(!!mainproject.relations.length)
-	triplifyPT.setActive(false);
+	joinsPS.setActive(!!mainproject.schema.length && !mainproject.entities.length && !mainproject.relations.length);
+	entitiesPS.setActive(!!mainproject.entities.length && !mainproject.attributes.length && !mainproject.relations.length)
+	attributesPS.setActive(!!mainproject.attributes.length && !mainproject.relations.length)
+	relationsPS.setActive(!!mainproject.relations.length)
+	triplifyPS.setActive(false);
 }
 
 function alertError(xhr, status, error) {
