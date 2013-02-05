@@ -143,11 +143,18 @@ DwCASimplifier.prototype.simplify = function(project) {
 	//
 	// The domain definition actually comes from the dwcattributes:organizedInClass property of the DwC RDF
 	// specification.  It should be noted that some DwC terms, such as basisOfRecord, have "all" as the value
-	// of organizedInClass.  This appears to be the case for all "record-level" terms.  Right now, these terms
-	// are not getting mapped because it is not clear how to best handle them.
+	// of organizedInClass.  This is the case for all "record-level" terms.
+	// Right now, we are mapping some record-level terms to the Occurrence class and dropping the others,
+	// because we do not know how to best handle them.  The record-level terms that map to Occurrence are 
+	// dcterms:type, institutionID, collectionID, institutionCode, collectionCode, ownerInstitutionCode, and
+	// basisOfRecord.
 	var dwcatts = vocabularyManager.getSelectedVocabulary()['properties'];
+	// Define the record-level terms that should be mapped to the Occurrence class.
+	var record_level_occurrence = ['dcterms:type', 'institutionID', 'collectionID', 'institutionCode',
+	    'collectionCode', 'ownerInstitutionCode', 'basisOfRecord'];
+	// basisOfRecord
 	var cnt3, entity, columns, prop;
-	console.log(vocabularyManager.getSelectedVocabulary());
+	//console.log(vocabularyManager.getSelectedVocabulary());
 	
 	// The general strategy is to look at each entity (concept) in the project and see if we can define any
 	// attributes for it.
@@ -159,7 +166,7 @@ DwCASimplifier.prototype.simplify = function(project) {
 	var projattlen = projattributes.length;
 	for (cnt = 0; cnt < this.project.entities.length; cnt++) {
 		entity = this.project.entities[cnt];
-		//alert(entity.rdfClass.uri);
+		alert(entity.rdfClass.uri);
 		
 		// Examine each column of this entity's table and see if it can be matched to a DwC property name.
 		columns = this.project.getTableByName(entity.table).columns;
@@ -174,14 +181,22 @@ DwCASimplifier.prototype.simplify = function(project) {
 					if (prop.name == col) {
 						// Found a match, so now see if the domain of this property includes
 						// the class of the current DwC entity (concept).
-						if (prop.domain.indexOf(entity.rdfClass.uri) != -1) {
-							// It does, so define a new attribute for the current entity.
+						if (
+							// Check if either this property matches the current class...
+							prop.domain.indexOf(entity.rdfClass.uri) != -1 ||
+							// or if it is a record-level term that goes with Occurrence.
+							(entity.rdfClass.uri == 'http://rs.tdwg.org/dwc/terms/Occurrence'
+							 && record_level_occurrence.indexOf(prop.name) != -1)
+						   ) {
+							// We found a match, so define a new attribute for the current entity.
 							var newattrib = {
 								entity:entity.table + '.' + entity.idColumn,
 								rdfProperty:{ name:prop.name, uri:prop.uri },
 								column:col
 							};
 							projattributes.push(newattrib);
+						} else if (record_level_occurrence.indexOf(prop.name) != -1) {
+							alert(prop.name);
 						}
 					}
 				}
