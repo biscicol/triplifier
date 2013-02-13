@@ -95,6 +95,33 @@ DwCASimplifier.prototype.cncpttable = {
 	resourceRelationshipID: {name:'ResourceRelationship', uri:'http://rs.tdwg.org/dwc/terms/ResourceRelationship'}
 }
 
+// Define the record-level terms that should be mapped to the Occurrence class.
+DwCASimplifier.prototype.record_level_occurrence = ['dcterms:type', 'institutionID', 'collectionID', 'institutionCode',
+    'collectionCode', 'ownerInstitutionCode', 'basisOfRecord'];
+
+// A tree-like data structure that specifies all possible relations.  The top-level
+// indices are the subjects, which each point to a list of possible objects and predicates.
+DwCASimplifier.prototype.rels_list = {
+	'Identification': {
+		'Taxon': 'bsc:depends_on',
+		'Occurrence': 'bsc:depends_on'
+	},
+	'Event': {
+		'dcterms:Location': 'bsc:related_to',
+		'GeologicalContext': 'bsc:related_to'
+	},
+	'Occurrence': {
+		'Event': 'bsc:depends_on',
+		'GeologicalContext': 'bsc:depends_on',
+		'dcterms:Location': 'bsc:depends_on',
+		'Taxon': 'bsc:related_to'
+	},
+};
+
+// The order in which to map subject classes.  This is important to make sure that classes
+// do not first get mapped to Occurrence when they should be mapped to Event or Identification.
+DwCASimplifier.prototype.map_order = ['Identification', 'Event', 'Occurrence'];
+
 /**
  * Attempts to "simplify" the data schema of a project by automatically defining as many project
  * elements as possible.  For a single-table Darwin Core Archive, this means inferring concept and
@@ -150,10 +177,6 @@ DwCASimplifier.prototype.simplify = function(project) {
 	// dcterms:type, institutionID, collectionID, institutionCode, collectionCode, ownerInstitutionCode, and
 	// basisOfRecord.
 	var dwcatts = vocabularyManager.getSelectedVocabulary()['properties'];
-	// Define the record-level terms that should be mapped to the Occurrence class.
-	var record_level_occurrence = ['dcterms:type', 'institutionID', 'collectionID', 'institutionCode',
-	    'collectionCode', 'ownerInstitutionCode', 'basisOfRecord'];
-	// basisOfRecord
 	var cnt3, entity, columns, prop;
 	//console.log(vocabularyManager.getSelectedVocabulary());
 	
@@ -187,7 +210,7 @@ DwCASimplifier.prototype.simplify = function(project) {
 							prop.domain.indexOf(entity.rdfClass.uri) != -1 ||
 							// or if it is a record-level term that goes with Occurrence.
 							(entity.rdfClass.uri == 'http://rs.tdwg.org/dwc/terms/Occurrence'
-							 && record_level_occurrence.indexOf(prop.name) != -1)
+							 && this.record_level_occurrence.indexOf(prop.name) != -1)
 						   ) {
 							// We found a match, so define a new attribute for the current entity.
 							var newattrib = {
@@ -208,7 +231,14 @@ DwCASimplifier.prototype.simplify = function(project) {
 		this.project.setProperty('attributes', projattributes);
 
 
-	// Define relationships between classes, if possible.
+	// Finally, define relationships between classes, if possible.  The basic idea is to take each
+	// class in this.map_order, see if it is included in the data source, and then try to map it
+	// to any matching object classes.
+	//
+	// The implementation is not particularly efficient in that the entire class list is
+	// searched from beginning to end multiple times, but given that there are only 6 classes
+	// in common use, it doesn't matter at all for performance.  Plus, this straightforward
+	// implementation keeps the code a bit easier to read.
 	// Object format for a concept project entry:
 	// {	table:"occurrence_txt", idColumn:"taxonID", idPrefixColumn:"",
 	// 	rdfClass:{name:"Taxon", uri:"http://rs.tdwg.org/dwc/terms/Taxon"} }
@@ -219,65 +249,48 @@ DwCASimplifier.prototype.simplify = function(project) {
 	// 	object: "occurrence_txt.taxonID"
 	// }
 	
-	// A tree-like data structure that specifies all possible relations.  The top-level
-	// indices are the subjects, which each point to a list of possible objects and predicates.
-	var rels_list = {
-		'Identification': {
-			'Taxon': 'bsc:depends_on',
-			'Occurrence': 'bsc:depends_on'
-		},
-		'Event': {
-			'dcterms:Location': 'bsc:related_to',
-			'GeologicalContext': 'bsc:related_to'
-		},
-		'Occurrence': {
-			'Event': 'bsc:depends_on',
-			'GeologicalContext': 'bsc:depends_on',
-			'dcterms:Location': 'bsc:depends_on',
-			'Taxon': 'bsc:related_to'
-		},
-	};
 	// Keeps track of which concepts we've already mapped to a relation so we don't
 	// try to map anything twice.
 	var relation_objects = [];
 
-	var cnt, cnt2, subj_concept, subj_class, obj_concept, obj_class;
+	var ordercnt, cnt, cnt2, subj_concept, subj_class, obj_concept, obj_class;
 	var projentities = this.project.getProperty('entities');
 	var projrelations = this.project.getProperty('relations');
 	var projrellen = projrelations.length;
 
-	// Examine each concept and try to map it to a relation with another concept.  We have
-	// to start with Identification and Event to ensure that if they are present, they are
-	// mapped properly.  If they are not present, then we can simply look at each concept
-	// in turn and try to map it.
-	for (cnt = 0; cnt < projentities.length; cnt++) {
-		// See if the current concept can be the subject for any relations.
-		if (projentities[cnt].rdfClass.name in rels_list) {
-			subj_concept = projentities[cnt];
-			subj_class = subj_concept.rdfClass.name;
-			// It can, so we need to look at all of the other concepts to try to find
-			// an object for the relation (or relations).
-			for (cnt2 = 0; cnt2 < projentities.length; cnt2++) {
-				// Check if this concept can be the object of a relation with the current
-				// subject and if it is not already an object in a relation.
-				if (
-					projentities[cnt2].rdfClass.name in rels_list[subj_class] &&
-			       		projentities.indexOf(projentities[cnt2].rdfClass.name) == -1
-				) {
-					// We found a match, so define the new relation.
-					obj_concept = projentities[cnt2];
-					obj_class = obj_concept.rdfClass.name;
-					//alert (subj_class + ": " + obj_class);
-					var newrel = {
-						subject: subj_concept.table + '.' + subj_concept.idColumn,
-						predicate: rels_list[subj_class][obj_class],
-						object: obj_concept.table + '.' + obj_concept.idColumn
-					}
-					projrelations.push(newrel);
-					//console.log(newrel);
+	// Do the actual mapping.  Try to map each class in map_order, in order.
+	for (ordercnt = 0; ordercnt < this.map_order.length; ordercnt++) {
+		// Look at all concepts to try to find a potential subject class.
+		for (cnt = 0; cnt < projentities.length; cnt++) {
+			// See if this concept matches the class we are currently mapping.
+			if (this.map_order[ordercnt] == projentities[cnt].rdfClass.name) {
+				// Found a potential subject class.
+				subj_concept = projentities[cnt];
+				subj_class = subj_concept.rdfClass.name;
+				// Next, we need to look at all of the other concepts to try to find
+				// an object for the relation (or relations).
+				for (cnt2 = 0; cnt2 < projentities.length; cnt2++) {
+					// Check if this concept can be the object of a relation with the current
+					// subject and if it is not already an object in a relation.
+					if (
+						projentities[cnt2].rdfClass.name in this.rels_list[subj_class] &&
+			       			projentities.indexOf(projentities[cnt2].rdfClass.name) == -1
+					) {
+						// We found a match, so define the new relation.
+						obj_concept = projentities[cnt2];
+						obj_class = obj_concept.rdfClass.name;
+						//alert (subj_class + ": " + obj_class);
+						var newrel = {
+							subject: subj_concept.table + '.' + subj_concept.idColumn,
+							predicate: this.rels_list[subj_class][obj_class],
+							object: obj_concept.table + '.' + obj_concept.idColumn
+						}
+						projrelations.push(newrel);
+						//console.log(newrel);
 
-					// Add the object to the list of "used" object classes.
-					relation_objects.push(obj_class);
+						// Add the object to the list of "used" object classes.
+						relation_objects.push(obj_class);
+					}
 				}
 			}
 		}
