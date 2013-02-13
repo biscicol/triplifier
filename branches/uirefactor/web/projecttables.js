@@ -424,8 +424,8 @@ RelationsTable.prototype.populateTableRowOptions = function(tr, isedit) {
 	var allrelations = this.project.getAllPossibleRelations();
 
 	// Determine which entity names should be added to the "Subject" drop-down list.  Only add an
-	// entity if it is either part of the relation currently selected for editing or there are relations
-	// remaining that include it.
+	// entity if it is either part of the relation currently selected for editing or there are
+	// possible relations remaining that include it.
 	$.each(allrelations.relations, function(i, relobj) {
 		if (relobj.subject == relation.subject 
 				|| relobj.subject == relation.object

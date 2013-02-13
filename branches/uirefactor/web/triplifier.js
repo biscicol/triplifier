@@ -16,7 +16,7 @@ var sectionmgr;
 var vocabularyManager;
 
 // Define the relation predicates supported by the Triplifier.
-var relationPredicates = ["ma:isSourceOf", "ma:isRelatedTo"];
+var relationPredicates = ["ro:derives_from", "bsc:depends_on", "bsc:alias_of", "bsc:related_to"];
 
 var biscicolUrl = "http://biscicol.org/";
 var triplifierUrl = "http://biscicol.org:8080/triplifier/"; // [hack] when file on triplifier is accessed from biscicol on the same server then port forwarding won't work so the port is set here
@@ -87,6 +87,7 @@ $(function() {
 
 	// Set the default project selection in the UI.
 	projUI.selectDefaultProject();
+	//console.log(mainproject);
 
 	// Set up the contextual popup help.
 	var helpmgr = new ContextHelpManager('helpmsg');

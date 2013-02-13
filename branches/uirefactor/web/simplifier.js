@@ -114,7 +114,8 @@ DwCASimplifier.prototype.simplify = function(project) {
 	// Now try to figure out the DwC concepts (entities) that are used.
 	// Look at each column of each table.
 	// Object format for a concept project entry:
-	// { table:"DarwinCore_txt", idColumn:"taxonID", idPrefixColumn:"", rdfClass:{name:"Taxon", uri:"http://rs.tdwg.org/dwc/terms/Taxon"}}
+	// {	table:"occurrence_txt", idColumn:"taxonID", idPrefixColumn:"",
+	// 	rdfClass:{name:"Taxon", uri:"http://rs.tdwg.org/dwc/terms/Taxon"} }
 	var cnt, cnt2, table, col;
 	var projentities = this.project.getProperty('entities');
 	var projentlen = projentities.length;
@@ -159,7 +160,7 @@ DwCASimplifier.prototype.simplify = function(project) {
 	// The general strategy is to look at each entity (concept) in the project and see if we can define any
 	// attributes for it.
 	// Object format for an attribute entry:
-	// { 	entity:"DarwinCore_txt.taxonID",
+	// { 	entity:"occurrence_txt.taxonID",
 	// 	rdfProperty:{name:"Binomial", uri:"http://rs.tdwg.org/dwc/terms/Binomial"},
 	// 	column:"scientificName" }
 	var projattributes = this.project.getProperty('attributes');
@@ -195,8 +196,6 @@ DwCASimplifier.prototype.simplify = function(project) {
 								column:col
 							};
 							projattributes.push(newattrib);
-						} else if (record_level_occurrence.indexOf(prop.name) != -1) {
-							alert(prop.name);
 						}
 					}
 				}
@@ -207,6 +206,87 @@ DwCASimplifier.prototype.simplify = function(project) {
 	// If we defined new attributes, save them to the project.
 	if (projattlen != projattributes.length)
 		this.project.setProperty('attributes', projattributes);
+
+
+	// Define relationships between classes, if possible.
+	// Object format for a concept project entry:
+	// {	table:"occurrence_txt", idColumn:"taxonID", idPrefixColumn:"",
+	// 	rdfClass:{name:"Taxon", uri:"http://rs.tdwg.org/dwc/terms/Taxon"} }
+	// Object format for a relations entry:
+	// {
+	// 	subject: "occurrence_txt.occurrenceID",
+	// 	predicate: "bsc:related_to",
+	// 	object: "occurrence_txt.taxonID"
+	// }
+	
+	// A tree-like data structure that specifies all possible relations.  The top-level
+	// indices are the subjects, which each point to a list of possible objects and predicates.
+	var rels_list = {
+		'Identification': {
+			'Taxon': 'bsc:depends_on',
+			'Occurrence': 'bsc:depends_on'
+		},
+		'Event': {
+			'dcterms:Location': 'bsc:related_to',
+			'GeologicalContext': 'bsc:related_to'
+		},
+		'Occurrence': {
+			'Event': 'bsc:depends_on',
+			'GeologicalContext': 'bsc:depends_on',
+			'dcterms:Location': 'bsc:depends_on',
+			'Taxon': 'bsc:related_to'
+		},
+	};
+	// Keeps track of which concepts we've already mapped to a relation so we don't
+	// try to map anything twice.
+	var relation_objects = [];
+
+	var cnt, cnt2, subj_concept, subj_class, obj_concept, obj_class;
+	var projentities = this.project.getProperty('entities');
+	var projrelations = this.project.getProperty('relations');
+	var projrellen = projrelations.length;
+
+	// Examine each concept and try to map it to a relation with another concept.  We have
+	// to start with Identification and Event to ensure that if they are present, they are
+	// mapped properly.  If they are not present, then we can simply look at each concept
+	// in turn and try to map it.
+	for (cnt = 0; cnt < projentities.length; cnt++) {
+		// See if the current concept can be the subject for any relations.
+		if (projentities[cnt].rdfClass.name in rels_list) {
+			subj_concept = projentities[cnt];
+			subj_class = subj_concept.rdfClass.name;
+			// It can, so we need to look at all of the other concepts to try to find
+			// an object for the relation (or relations).
+			for (cnt2 = 0; cnt2 < projentities.length; cnt2++) {
+				// Check if this concept can be the object of a relation with the current
+				// subject and if it is not already an object in a relation.
+				if (
+					projentities[cnt2].rdfClass.name in rels_list[subj_class] &&
+			       		projentities.indexOf(projentities[cnt2].rdfClass.name) == -1
+				) {
+					// We found a match, so define the new relation.
+					obj_concept = projentities[cnt2];
+					obj_class = obj_concept.rdfClass.name;
+					//alert (subj_class + ": " + obj_class);
+					var newrel = {
+						subject: subj_concept.table + '.' + subj_concept.idColumn,
+						predicate: rels_list[subj_class][obj_class],
+						object: obj_concept.table + '.' + obj_concept.idColumn
+					}
+					projrelations.push(newrel);
+					//console.log(newrel);
+
+					// Add the object to the list of "used" object classes.
+					relation_objects.push(obj_class);
+				}
+			}
+		}
+	}
+
+	// If we defined new relations, save them to the project.
+	if (projrellen != projrelations.length)
+		this.project.setProperty('relations', projrelations);
+
 
 	// If we defined at least one concept, consider the simplification successful.
 	if (projentlen != projentities.length)
