@@ -87,6 +87,7 @@ DwCASimplifier.formatcode = 'DwCA';
 DwCASimplifier.prototype.cncpttable = {
 	taxonID: {name:'Taxon', uri:'http://rs.tdwg.org/dwc/terms/Taxon'},
 	datasetID: {name:'Dataset', uri:'http://rs.tdwg.org/dwc/terms/Dataset'},
+	locationID: {name:'dcterms:Location', uri:'http://purl.org/dc/terms/Location'},
 	eventID: {name:'Event', uri:'http://rs.tdwg.org/dwc/terms/Event'},
 	geologicalContextID: {name:'GeologicalContext', uri:'http://rs.tdwg.org/dwc/terms/GeologicalContext'},
 	identificationID: {name:'Identification', uri:'http://rs.tdwg.org/dwc/terms/Identification'},
@@ -274,7 +275,7 @@ DwCASimplifier.prototype.simplify = function(project) {
 					// subject and if it is not already an object in a relation.
 					if (
 						projentities[cnt2].rdfClass.name in this.rels_list[subj_class] &&
-			       			projentities.indexOf(projentities[cnt2].rdfClass.name) == -1
+			       			relation_objects.indexOf(projentities[cnt2].rdfClass.name) == -1
 					) {
 						// We found a match, so define the new relation.
 						obj_concept = projentities[cnt2];
