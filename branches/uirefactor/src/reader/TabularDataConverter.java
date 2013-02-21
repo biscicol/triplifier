@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Random;
 import reader.plugins.TabularDataReader;
 
 
@@ -140,7 +141,9 @@ public final class TabularDataConverter
      * table in the data source.  If the specified table name already exists in
      * the database, IT IS DROPPED.  A new table with columns matching the names
      * and number of elements in the first row of the source data is created,
-     * and all rows from the source are copied to the new table.
+     * and all rows from the source are copied to the new table.  If a data
+     * source returns a blank column name, then a machine-generated column name
+     * will be used.
      *
      * @param conn A valid connection to a destination database.
      * @param tname The name to use for the table in the destination database.
@@ -150,6 +153,21 @@ public final class TabularDataConverter
     private void buildTable(Connection conn, String tname) throws SQLException {
         int colcnt, cnt;
         Statement stmt = conn.createStatement();
+        // Counter for machine-generated column names.
+        int col_cnt = 0;
+        
+        // Generate a short string of random characters to use for machine-
+        // generated column names if the data source provides a blank column
+        // name.
+        char[] rand_prefix_arr = new char[10];
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        int alphindex;
+        Random randgen = new Random();
+        for (cnt = 0; cnt < rand_prefix_arr.length; cnt++) {
+            alphindex = randgen.nextInt(alphabet.length());
+            rand_prefix_arr[cnt] = alphabet.charAt(alphindex);
+        }
+        String rand_prefix = String.copyValueOf(rand_prefix_arr);
 
         // if this table exists, drop it
         stmt.executeUpdate("DROP TABLE IF EXISTS [" + tname + "]");
@@ -160,15 +178,20 @@ public final class TabularDataConverter
         for (String colname : source.tableGetNextRow()) {
             if (colcnt++ > 0)
                 query += ", ";
+            // If the column name is blank, generate a suitable name.
+            if (colname.trim().equals("")) {
+                    colname = tname + "_" + rand_prefix + "_" + col_cnt;
+                    col_cnt++;
+            }
             query += "\"" + colname + "\"";
         }
         query += ")";
-        //System.out.println(query);
+        System.out.println(query);
 
-        // createEZID the table
+        // create the table
         stmt.executeUpdate(query);
 
-        // createEZID a prepared statement for insert queries
+        // create a prepared statement for insert queries
         query = "INSERT INTO [" + tname + "] VALUES (";
         for (cnt = 0; cnt < colcnt; cnt++) {
             if (cnt > 0)
