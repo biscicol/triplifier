@@ -71,12 +71,12 @@ public class DWCAReader implements TabularDataReader {
 
     @Override
     public String getFormatString() {
-        return "DWCA";
+        return "DwCA";
     }
 
     @Override
     public String getShortFormatDesc() {
-        return "DWCA";
+        return "DwCA";
     }
 
     @Override

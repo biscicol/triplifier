@@ -108,6 +108,9 @@ public final class TabularDataConverter
      * be DROPPED.  Destination tables will have columns matching the names and
      * number of elements in the first row of each table in the source data.
      * All rows from the source are copied to the new table.
+     * If the input data source is a Darwin Core archive, convert() will also
+     * attempt to "re-normalize" the archive data.  This task is handed off to
+     * an instance of DwCAFixer.
      * 
      * @throws SQLException 
      */
@@ -133,6 +136,13 @@ public final class TabularDataConverter
                 buildTable(conn, fixTableName(tname));
         }
         
+        // If the data source is a DwC archive, attempt to "fix" any missing
+        // ID columns.  This could be designed more elegantly with a generic
+        // "fixer" interface, but since we are only planning to do it for DwC
+        // archives, the implementation is for now input type-specific.
+        if (source.getFormatString().equals("DwCA")) {
+            DwCAFixer.fixArchive(conn);
+        }
         conn.close();
     }
 
@@ -186,7 +196,7 @@ public final class TabularDataConverter
             query += "\"" + colname + "\"";
         }
         query += ")";
-        System.out.println(query);
+        //System.out.println(query);
 
         // create the table
         stmt.executeUpdate(query);

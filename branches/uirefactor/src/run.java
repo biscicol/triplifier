@@ -98,7 +98,8 @@ public class run {
         //runReader(rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/BiocodeTemplate_TEST-2.xls", "EXCEL"));
         //runReader(rm.openFile("testdata/CanadensysTest.zip", "DWCA"));
         
-        TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/BiocodeTemplate_TEST-2.xls");
+        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/BiocodeTemplate_TEST-2.xls");
+        TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/fishtest.zip");
         TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/test.sqlite");
         tdc.convert();
         tdr.closeFile();
