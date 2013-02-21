@@ -139,10 +139,11 @@ public final class TabularDataConverter
         // If the data source is a DwC archive, attempt to "fix" any missing
         // ID columns.  This could be designed more elegantly with a generic
         // "fixer" interface, but since we are only planning to do it for DwC
-        // archives, the implementation is for now input type-specific.
+        // archives, the implementation is, for now, format specific.
         if (source.getFormatString().equals("DwCA")) {
             DwCAFixer.fixArchive(conn);
         }
+        
         conn.close();
     }
 
