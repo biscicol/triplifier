@@ -70,6 +70,22 @@ public class DwCAFixer
         return terms;
     }
     
+    /**
+     * Attempts to "fix" Darwin Core archive data.  This method expects to get
+     * an active connection to a SQLite database that contains the data for a
+     * single-table DwC archive.  All column names in the archive table are 
+     * examined to infer which DwC concepts are present in the data.  Then,
+     * fixArchive() identifies all unique concept "instance" values, generates
+     * (local) ID numbers for each instance, and assigns these IDs to a new
+     * concept ID column in the database table.  In effect, this "re-normalizes"
+     * the data, although everything remains within a single table.  The net
+     * result is what would be obtained by joining all of the fully normalized
+     * data into a single database table.  Note that only single-table archives
+     * are currently supported by fixArchive().
+     * 
+     * @param dbconn A connection to a SQLite database for a DwC archive.
+     * @throws SQLException 
+     */
     public static void fixArchive(Connection dbconn) throws SQLException {
         Statement stmt = dbconn.createStatement();
         // A list for tracking which terms are present in the source data.
@@ -118,7 +134,7 @@ public class DwCAFixer
             }
             
             // Check if we found terms for the current conceptID and if there is
-            // not already an ID column for it.
+            // already an ID column for it.
             if (!includedterms.isEmpty() && !colnames.contains(conceptID)) {
                 System.out.println("Fixing missing \"" + conceptID + "\" column.");
                 
