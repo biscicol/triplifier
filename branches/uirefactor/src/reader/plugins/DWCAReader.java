@@ -57,7 +57,8 @@ public class DWCAReader implements TabularDataReader {
     private HashMap<String, String> rowtypes;
     
     public DWCAReader() {
-        // Initialize the map of row types.
+        // Initialize the map of row types.  This is used to infer the term for
+        // for ID columns with no specific term name defined in meta.xml.
         rowtypes = new HashMap(8);
         rowtypes.put("http://rs.tdwg.org/dwc/terms/Occurrence", "occurrenceID");
         rowtypes.put("http://rs.tdwg.org/dwc/terms/Event", "eventID");
@@ -218,11 +219,24 @@ public class DWCAReader implements TabularDataReader {
             // If no ID field type was provided, try to infer it from the row
             // type definition.  The rowType attribute is required, so this
             // should usually work, unless the row type is not recognized or
-            // invalid.  In that case, fall back to "ID" as the field name.
+            // invalid, or if the row type ID term is already in use for another
+            // column.  In those cases, fall back to "ID" as the field name.
             if (has_id && !id_has_field) {
                 String rtype = currfile.getRowType();
-                if (rowtypes.containsKey(rtype))
+                if (rowtypes.containsKey(rtype)) {
                     id_field_term = rowtypes.get(rtype);
+                    
+                    // We also need to make sure that the matching ID term isn't
+                    // already used in another column.  If it is, then we have
+                    // to fall back to "ID" for the table ID field name.
+                    for (ArchiveField field : fields) {
+                        if (field.getTerm().simpleName().equals(id_field_term)) {
+                            // The term was already used for another column, so
+                            // conclude that no term was specified for the ID.
+                            id_field_term = "";
+                        }
+                    }
+                }
             }
         }
         else
@@ -264,7 +278,7 @@ public class DWCAReader implements TabularDataReader {
             
             // Add the ID field if there is one.
             if (has_id) {
-                if (id_field_term != "")
+                if (!id_field_term.equals(""))
                     row[fieldcnt++] = id_field_term;
                 else {
                     if (tablecnt == 1)
