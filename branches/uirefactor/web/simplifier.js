@@ -155,7 +155,7 @@ DwCASimplifier.prototype.simplify = function(project) {
 			if (col in this.cncpttable) {
 				// Found an ID column, so create the concept and add it to the project.
 				var newcncpt = {
-					table:table.name, idColumn:col, idPrefixColumn:table.name,
+					table:table.name, idColumn:col, idPrefixColumn:(table.name + '.' + col + '_'),
 					rdfClass:{ name:this.cncpttable[col].name, uri:this.cncpttable[col].uri }
 				};
 				projentities.push(newcncpt);

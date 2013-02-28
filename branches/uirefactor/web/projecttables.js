@@ -89,8 +89,8 @@ JoinsTable.prototype.primaryTableChange = function(eventsrc) {
 
 
 /**
- * EntitiesTable is a subclass of EditableTable that allows the user to add and modify entities in
- * the triplifier interface.
+ * EntitiesTable is a subclass of EditableTable that allows the user to add and modify entities
+ * (concepts) in the triplifier interface.
  **/
 function EntitiesTable(element) {
 	// call the parent's constructor
@@ -131,14 +131,14 @@ EntitiesTable.prototype.getItemFromFormRow = function(tablerow) {
 		idprefix = '';
 	else
 		// "Unique ID" is not checked.
-		idprefix = params.table;
+		idprefix = params.table + '.' + params.idColumn + '_';
 
 	// Build a new parameters object.  This is necessary to make sure the properties are in
 	// the correct order.
 	var newparams = { table:params.table, idColumn:params.idColumn, idPrefixColumn:idprefix,
 		rdfClass:params.rdfClass };
 
-	console.log(newparams);
+	//console.log(newparams);
 	return newparams;
 }
 
