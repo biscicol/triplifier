@@ -500,6 +500,62 @@ Project.prototype.getRelations = function() {
 function ProjectManager() {
 	this.projectskey = "triplifier.projects";
 	this.projects = localStorage.getObject(this.projectskey) || [];
+
+	// An array for keeping track of observers of this ProjectManager.
+	this.observers = [];
+}
+
+/**
+ * Register an observer of this ProjectManager.  Observers are notified whenever a
+ * single project is created/added or deleted.  To be a ProjectManager observer, an
+ * object must provide the following methods:
+ *
+ * projectAdded(projectname) { ... }.
+ * projectDeleted(projectname) { ... }.
+ *
+ * The argument "projectname" is the name of the project that was added to or
+ * deleted from this ProjectManager.
+ *
+ * @param observer The object that will observe this ProjectManager.
+ **/
+ProjectManager.prototype.registerObserver = function(observer) {
+	this.observers.push(observer);
+}
+
+/**
+ * Remove an object from this ProjectManager's list of observers.
+ *
+ * @param observer The object that will no longer observe this ProjectManager.
+ **/
+ProjectManager.prototype.unregisterObserver = function(observer) {
+	for (var cnt = this.observers.length - 1; cnt >= 0; cnt--) {
+		if (this.observers[cnt] === observer) {
+			// Remove the observer from the list.
+			this.observers.splice(cnt, 1);
+		}
+	}
+}
+
+/**
+ * Notify observers that a project was deleted.
+ *
+ * @param projectname The name of the deleted project.
+ **/
+ProjectManager.prototype.notifyProjectDeleted = function(projectname) {
+	for (var cnt = 0; cnt < this.observers.length; cnt++) {
+		this.observers[cnt].projectDeleted(projectname);
+	}
+}
+
+/**
+ * Notify observers that a project was added.
+ *
+ * @param projectname The name of the added project.
+ **/
+ProjectManager.prototype.notifyProjectAdded = function(projectname) {
+	for (var cnt = 0; cnt < this.observers.length; cnt++) {
+		this.observers[cnt].projectAdded(projectname);
+	}
 }
 
 /**
@@ -562,6 +618,8 @@ ProjectManager.prototype.addProject = function(project) {
 		var propname = Project.PROPNAMES[cnt];
 		localStorage.setObject(this.getStorageKey(propname, project.getName()), project.getProperty(propname));
 	}
+
+	this.notifyProjectAdded(project.getName());
 }
 
 /**
@@ -613,14 +671,12 @@ ProjectManager.prototype.deleteProject = function(project) {
 		localStorage.setObject(this.projectskey, this.projects);
 	}
 
-	// remove the project items from local storage
-	/*$.each(project, function(key, value) { 
-		localStorage.removeItem(this.getStorageKey(key, project['name']));
-	});*/
 	for (var cnt = 0; cnt < Project.PROPNAMES.length; cnt++) {
 		var propname = Project.PROPNAMES[cnt];
 		localStorage.removeItem(this.getStorageKey(propname, project.getName()));
 	}
+
+	this.notifyProjectDeleted(project.getName());
 }
 
 /**

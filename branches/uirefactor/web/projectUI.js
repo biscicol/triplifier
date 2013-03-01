@@ -61,6 +61,9 @@ function ProjectUI(UIdiv, projectmanager) {
 		projDOM.push(self.createProjectElement(projname, self.lastProject++).get(0));
 	});
 
+	// Register as an observer of the ProjectManager.
+	this.projman.registerObserver(this);
+
 	if (this.projman.getProjectCnt() > 0)
 		// Add the radio-button HTML to the project UI. and trigger the change() event on the first
 		// project button in order to load it.
@@ -68,7 +71,6 @@ function ProjectUI(UIdiv, projectmanager) {
 	else {
 		// No projects exist yet, so create a new empty project.
 		this.projman.newProject('new project');
-		this.addProjectToUI('new project');
 	}
 }
 
@@ -131,11 +133,34 @@ ProjectUI.prototype.createProjectClicked = function(element) {
 	}
 
 	this.projman.newProject(newProjName);
-	this.addProjectToUI(newProjName);
 }
 
 /**
- * Adds a radio button for the specified project name to the user interface.
+ * Update the UI whenever we are notified that a project was added to the ProjectManager.
+ **/
+ProjectUI.prototype.projectAdded = function(projectname) {
+	this.addProjectToUI(projectname);
+}
+
+/**
+ * Update the UI whenever we are notified that a project was removed from the ProjectManager.
+ **/
+ProjectUI.prototype.projectDeleted = function(projectname) {
+	// Remove the deleted project's radio button.
+	this.UIdiv.find("div.project").children("input[value='" + projectname + "']").parent().remove();
+
+	// If there are no projects left, create a new empty project.
+	if (this.projman.getProjectCnt() == 0) {
+		this.projman.newProject('new project');
+	}
+
+	// Select the next project in the set of radio buttons.
+	this.selectDefaultProject();
+}
+
+/**
+ * Adds a radio button for the specified project name to the user interface and make it
+ * the currently-selected project.
  **/
 ProjectUI.prototype.addProjectToUI = function(projectname) {
 	// Add the project name to the UI and trigger the change event.
@@ -169,16 +194,6 @@ ProjectUI.prototype.deleteProjectClicked = function() {
 		return;
 
 	this.projman.deleteProject(this.selproject);
-
-	this.UIdiv.find("div.project").children("input[value='" + this.selproject.getName() + "']").parent().remove();
-
-	if (this.projman.getProjectCnt() == 0) {
-		this.projman.newProject('new project');
-		this.addProjectToUI('new project');
-	}
-
-	// Select the next project in the set of radio buttons.
-	this.selectDefaultProject();
 }
 	
 ProjectUI.prototype.deleteAllClicked = function() {
