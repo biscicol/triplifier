@@ -3,7 +3,7 @@
 
 ==Introduction==
 
-There are at least two ways in which software developers might want to interact with the [http://biscicol.blogspot.com/ BiSciCol] triplifier.  First, programmers can extend the number of input formats supported by the triplifier by writing new reader plugins.  Second, the triplifier can also be used as a component of other software projects.    This document discusses both writing new reader plugins and using the triplifier in other software.
+There are at least two ways in which software developers might want to interact with the [http://biscicol.blogspot.com/ BiSciCol] triplifier.  First, programmers can extend the number of input formats supported by the triplifier by writing new reader plugins.  Second, the triplifier's reader system can also be used as a component of other software projects.    This document discusses both writing new reader plugins and using the triplifier in other software.
 
 ==Writing new reader plugins==
 
@@ -50,17 +50,17 @@ We'll next implement getFileExtensions() to indicate the file extensions we expe
     }
 }}}
 
-The remaining methods implement the "guts" of the plugin that handle opening files and reading data from them.  !TabularDataReader considers a data source to consist of one or more "tables" of data, and provides methods to iterate through all of the tables in a data source.  Thus, even though A CSV file represents a single table of data, !TabularDataReader also supports data sources with multiple "tables" of data, such as spreadsheet files with more than one worksheet.  Rows in a table are returned one at a time.  Each row must be returned as an array of Strings, where each element of the array corresponds to one column in the source format.
+The remaining methods implement the "guts" of the plugin that handle opening files and reading data from them.  !TabularDataReader considers a data source to consist of one or more "tables" of data, and provides methods to iterate through all of the tables in a data source.  Thus, even though a CSV file represents a single table of data, !TabularDataReader also supports data sources with multiple "tables" of data, such as spreadsheet files with more than one worksheet.  Rows in a table are returned one at a time.  Each row must be returned as an array of Strings, where each element of the array corresponds to one column in the source format.
 
 Rather than take the space to illustrate full implementations of the remaining !TabularDataReader methods here, please refer to the javadoc documentation of !TabularDataReader, as well as the source code of the reader plugins provided with the triplifier.
 
 Once the reader plugin is fully implemented and compiled, the compiled .class file must be placed in the "plugins" directory of the compiled triplifier code.  That is all that is required to "install" the new plugin.  The triplifier will automatically detect and load the new plugin the next time it is run.
 
-Finally, although this discussion has focused on writing plugins for file-based input data, this is not a requirement.  Reader plugins could just as well be written for input data that is received from a Web service, for example.
+Finally, although this discussion has focused on writing plugins for file-based input data, this is not a requirement.  Reader plugins could just as well be written for input data that is accessed from a Web service, for example.
 
 == Using the triplifier in other software ==
 
-Accessing the triplifier components from other java software is straightforward.  To use the reader system, you will need an instance of !ReaderManager.  !ReaderManager handles finding and loading all available plugins and provides an interface for getting reader objects to process input data sources.  Although individual reader plugins could also be instantiated directly, using a !eaderManager is recommended.
+Accessing the server-side triplifier components from other Java software is straightforward.  To use the reader system, you will need an instance of !ReaderManager.  !ReaderManager handles finding and loading all available plugins and provides an interface for getting reader objects to process input data sources.  Although individual reader plugins could also be instantiated directly, using a !ReaderManager is recommended.
 
 ===Initializing the !ReaderManager and processing input files===
 
@@ -73,21 +73,25 @@ try {
 catch (FileNotFoundException e) { /* Handle the exception... */ }
 }}}
 
-You can then open a data file and loop through its contents one row at a time.  To open a file, you can either request a specific reader from the !ReaderManager using getReader(), or simply call openFile(), which will automatically determine the appropriate reader for the specified file.
+You can then open a data file and loop through each of its data tables one row at a time.  To open a file, you can either request a specific reader from the !ReaderManager using getReader(), or simply call openFile(), which will automatically determine the appropriate reader for the specified file.
 {{{
 TabularDataReader reader = rm.openFile("/path/to/data/file");
 
 String[] row;
-while (reader.hasNextRow())
-{
-    row = reader.getNextRow();
-    /* Code to process the data... */
+while (reader.hasNextTable()) {
+    reader.moveToNextTable();
+
+    while (reader.hasNextRow())
+    {
+        row = reader.getNextRow();
+        /* Code to process the data... */
+    }
 }
 }}}
 
 ===Converting input data to a SQLite database===
 
-The triplifier uses a [http://www.sqlite.org/ SQLite] database as an intermediate format for incoming data prior to passing it off to [http://www4.wiwiss.fu-berlin.de/bizer/d2rq/ D2RQ].  Thus, all input sources that are not already relational databases are first converted to a table in a SQLite database.
+The triplifier uses a [http://www.sqlite.org/ SQLite] database as an intermediate format for incoming data prior to passing it off to [http://www4.wiwiss.fu-berlin.de/bizer/d2rq/ D2RQ].  Thus, all input sources that are not already relational databases are first converted to tables in a SQLite database.
 
 To access this functionality, use !TabularDataConverter.  You will need to provide the !TabularDataConverter with a valid !TabularDataReader (usually obtained from a !ReaderManager, as described above) and a SQLite JDBC connection string.  Then simply call the convert() method of !TabularDataConverter and it will read all source data and store it in the SQLite database.  A simple example follows.
 {{{
