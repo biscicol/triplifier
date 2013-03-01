@@ -145,7 +145,7 @@ DwCASimplifier.prototype.simplify = function(project) {
 	// {	table:"occurrence_txt", idColumn:"taxonID", idPrefixColumn:"",
 	// 	rdfClass:{name:"Taxon", uri:"http://rs.tdwg.org/dwc/terms/Taxon"} }
 	var cnt, cnt2, table, col;
-	var projentities = this.project.getProperty('entities');
+	var projentities = this.project.getPropertyCopy('entities');
 	var projentlen = projentities.length;
 	for (cnt = 0; cnt < this.project.schema.length; cnt++) {
 		table = this.project.schema[cnt];
@@ -187,7 +187,7 @@ DwCASimplifier.prototype.simplify = function(project) {
 	// { 	entity:"occurrence_txt.taxonID",
 	// 	rdfProperty:{name:"Binomial", uri:"http://rs.tdwg.org/dwc/terms/Binomial"},
 	// 	column:"scientificName" }
-	var projattributes = this.project.getProperty('attributes');
+	var projattributes = this.project.getPropertyCopy('attributes');
 	var projattlen = projattributes.length;
 	for (cnt = 0; cnt < this.project.entities.length; cnt++) {
 		entity = this.project.entities[cnt];
@@ -256,7 +256,7 @@ DwCASimplifier.prototype.simplify = function(project) {
 
 	var ordercnt, cnt, cnt2, subj_concept, subj_class, obj_concept, obj_class;
 	var projentities = this.project.getProperty('entities');
-	var projrelations = this.project.getProperty('relations');
+	var projrelations = this.project.getPropertyCopy('relations');
 	var projrellen = projrelations.length;
 
 	// Do the actual mapping.  Try to map each class in map_order, in order.
