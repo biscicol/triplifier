@@ -48,8 +48,8 @@ function ProjectUI(UIdiv, projectmanager) {
 	UIdiv.find("form.new").submit(function() { self.createProjectClicked(this); return false; });
 	var exportform = UIdiv.find("form.export");
 	exportform.submit(function() { self.exportProjectClicked(exportform); return true; });
-	UIdiv.find("input.importFile").change(function() { self.importProjectClicked(this); });	
-	UIdiv.find("input.import").click(function() {UIdiv.find("input.importFile").val("").click();});
+	UIdiv.find("input.importFile").change(function() { self.importProjectFileSelected(); });
+	UIdiv.find("input.import").click(function() { UIdiv.find("input.importFile").val("").click(); });
 	UIdiv.find("input.delete").click(function() { self.deleteProjectClicked(); });
 	UIdiv.find("input.deleteAll").click(function() { self.deleteAllClicked(); });
 
@@ -203,6 +203,36 @@ ProjectUI.prototype.exportProjectClicked = function(element) {
 	form.content.value = this.projman.getProjectJSON(this.selproject);
 }
 	
-ProjectUI.prototype.importProjectClicked = function() {
+/**
+ * Handle project file import requests.  This method is triggered whenever the value of the
+ * "file" form element changes.
+ **/
+ProjectUI.prototype.importProjectFileSelected = function() {
+	// Get the File object to read.
+	var fileobj = this.UIdiv.find("input.importFile").get(0).files[0];
+
+	this.readProjectFile(fileobj);
 }
+
+/**
+ * Attempt to read a project definition from the specified file.  The file must contain
+ * a JSON-encoded project object.
+ *
+ * @param file The path of the project file to read.
+ **/
+ProjectUI.prototype.readProjectFile = function(file) {
+	var reader = new FileReader();
+
+	// Save a local reference to this ProjectManager object.
+	var self = this;
+
+	// Define a function for handling the file contents.
+	reader.onload = function() {
+		self.projman.loadProjectJSON(this.result);
+	}
+
+	// Read the file.
+	reader.readAsText(file);
+}
+
 

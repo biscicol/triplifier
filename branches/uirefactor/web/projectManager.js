@@ -646,47 +646,34 @@ ProjectManager.prototype.getProjectJSON = function(project) {
 }
 	
 /**
- * Attempt to read a project definition from the specified file.  The file must contain
- * a JSON-encoded project object.
- **/
-ProjectManager.prototype.importProject = function(file) {
-    var reader = new FileReader();
-
-    // Save a local reference to this ProjectManager object.
-    var self = this;
-
-    // Define a function for handling the file contents.
-    reader.onload = function() {
-	    self.loadProjectJSON(this.result);
-	}
-
-    // Read the file.
-    reader.readAsText(file);
-}
-
-/**
  * Attempt to load a project from a JSON-formatted string representation of a project object.
  **/
 ProjectManager.prototype.loadProjectJSON = function(jsonstring) {
 	try {
-		var newProject = JSON.parse(jsonstring);
-		var originalName = newProject['name'];
+		var projectdata = JSON.parse(jsonstring);
+		var originalName = projectdata['name'];
 		var i = 1;
 
 		// Generate a unique name for the project if a project with the same name
 		// already exists.
-		while (this.projectExists(newProject['name']))
-			newProject['name'] = originalName + "." + i++;
+		while (this.projectExists(projectdata['name']))
+			projectdata['name'] = originalName + "." + i++;
 
-		// Save the contents of the project to local storage.
-		$.each(newProject, function(key, value) { 
-			localStorage.setObject(this.getStorageKey(key, newProject['name']), newProject[key]);
-		});
+		var newproject = new Project(projectdata['name']);
 
-		this.addProject(newProject['name']);
+		// Load the project data into the new project.
+		var propname;
+		for (var cnt = 0; cnt < Project.PROPNAMES.length; cnt++) {
+			propname = Project.PROPNAMES[cnt];
+			newproject.setProperty(propname, projectdata[propname]);
+		}
+
+		// Add the new project to the projects list and save the contents of the
+		// project to local storage.
+		this.addProject(newproject);
 	}
 	catch(err) {
-		alert("Error reading file.");
+		alert("Could not load project file.  Please verify that the input file is a valid triplifier project file.");
 	}
 }
 
