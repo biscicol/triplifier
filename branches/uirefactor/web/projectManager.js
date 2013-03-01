@@ -39,6 +39,8 @@ Project.prototype.REL_CHANGED = 0;*/
  *
  * The argument "project" references the Project object that triggered the event, and 
  * "property_name" is a string indicating which property changed.
+ *
+ * @param observer The object that will observe this project.
  **/
 Project.prototype.registerObserver = function(observer) {
 	this.observers.push(observer);
@@ -46,6 +48,8 @@ Project.prototype.registerObserver = function(observer) {
 
 /**
  * Remove an object from this Project's list of observers.
+ *
+ * @param observer The object that will no longer observe this project.
  **/
 Project.prototype.unregisterObserver = function(observer) {
 	for (var cnt = this.observers.length - 1; cnt >= 0; cnt--) {
@@ -56,14 +60,47 @@ Project.prototype.unregisterObserver = function(observer) {
 	}
 }
 
+/**
+ * Notify observers that a property of this project changed.
+ *
+ * @param propname The name of the property that changed.
+ **/
 Project.prototype.notifyPropertyChange = function(propname) {
 	for (var cnt = 0; cnt < this.observers.length; cnt++) {
 		this.observers[cnt].projectPropertyChanged(this, propname);
 	}
 }
 
+/**
+ * Get the data for a particular property of this project.  Note that this method returns
+ * a reference to the actual project data, so the data returned by this method should be
+ * considered read-only.
+ *
+ * @param propname The name of the property to retrieve.
+ **/
 Project.prototype.getProperty = function(propname) {
 	return this[propname];
+}
+
+/**
+ * Get the data for a particular property of this project.  Unlike getProperty() (see above),
+ * this method returns a copy of the actual project data, so it is safer in some circumstances.
+ *
+ * @param propname The name of the property to retrieve.
+ **/
+Project.prototype.getPropertyCopy = function(propname) {
+	if (propname == 'name' || propname == 'dateTime') {
+		// Return name and dateTime directly because they are just strings.
+		return this.getProperty(propname);
+	} else {
+		// Make a deep copy of the property data.
+		var propcopy;
+		if (propname == 'connection')
+			propcopy = $.extend(true, {}, this[propname]);
+		else
+			propcopy = $.extend(true, [], this[propname]);
+		return propcopy;
+	}
 }
 
 /**
@@ -264,9 +301,9 @@ Project.prototype.getEntityCntByTable = function(tablename) {
  * project object when entities and attributes were combined in the user interface.
  **/
 Project.prototype.getCombinedEntitiesAndAttributes = function() {
-	// Make a deep copy of the project's entities so we don't modify the entities
-	// in the project.
-	var entcopy = $.extend(true, {}, this.entities);
+	// Get a copy of the project's entities so we don't modify the entities in
+	// the project.
+	var entcopy = this.getPropertyCopy('entities');
 
 	// An array for the combined entities and attributes.  This is necessary because
 	// the result of the extend() operation produces an object, not an array, which
@@ -591,6 +628,21 @@ ProjectManager.prototype.deleteProject = function(project) {
  **/
 ProjectManager.prototype.deleteAll = function() {
 	localStorage.clear();
+}
+
+/**
+ * Get a JSON-formatted representation of all of a project's data.
+ **/
+ProjectManager.prototype.getProjectJSON = function(project) {
+	var projdata = {};
+
+	var propname;
+	for (var cnt = 0; cnt < Project.PROPNAMES.length; cnt++) {
+		propname = Project.PROPNAMES[cnt];
+		projdata[propname] = project.getProperty(propname);
+	}
+
+	return JSON.stringify(projdata);
 }
 	
 /**

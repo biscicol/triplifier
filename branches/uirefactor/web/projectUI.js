@@ -32,8 +32,8 @@
 function ProjectUI(UIdiv, projectmanager) {
 	this.projman = projectmanager;
 	this.UIdiv = UIdiv;
-	this.lastProject = 0;	// used to assign ids to project DOM elements (needed for labels to work)
-	this.projectTemplate = UIdiv.find("div.project").remove(); // used to create project DOM elements
+	this.lastProject = 0;	// Used to assign IDs to project DOM elements (needed for labels to work).
+	this.projectTemplate = UIdiv.find("div.project").remove(); // Used to create project DOM elements.
 
 	// An array for keeping track of observers of this ProjectUI.
 	this.observers = [];
@@ -45,8 +45,9 @@ function ProjectUI(UIdiv, projectmanager) {
 	var self = this;
 
 	// assign event handlers
-	UIdiv.find("form.new").submit(function() { self.createProjectClicked(this); return false; });	
-	UIdiv.find("form.export").submit(function() { self.exportProjectClicked(this); return false; });
+	UIdiv.find("form.new").submit(function() { self.createProjectClicked(this); return false; });
+	var exportform = UIdiv.find("form.export");
+	exportform.submit(function() { self.exportProjectClicked(exportform); return true; });
 	UIdiv.find("input.importFile").change(function() { self.importProjectClicked(this); });	
 	UIdiv.find("input.import").click(function() {UIdiv.find("input.importFile").val("").click();});
 	UIdiv.find("input.delete").click(function() { self.deleteProjectClicked(); });
@@ -186,10 +187,20 @@ ProjectUI.prototype.deleteAllClicked = function() {
 		location.reload();
 	}
 }
-	
+
+/**
+ * Handle "Export" button clicks.  Sets the hidden elements of the export form to the values
+ * appropriate for the current project so that they can be submitted to the server for
+ * export to the user as a file.
+ *
+ * @param element The export form JQuery object.
+ **/
 ProjectUI.prototype.exportProjectClicked = function(element) {
-	//element.filename.value = project[projectKey].replace(/\s+/g, "_") + ".trp";
-	//element.content.value = JSON.stringify(project); 
+	// Access the form DOM element directly, because in this case, it is simpler
+	// than going through JQuery.
+	var form = element.get(0);
+	form.filename.value = this.selproject.getName().replace(/\s+/g, "_") + ".trp";
+	form.content.value = this.projman.getProjectJSON(this.selproject);
 }
 	
 ProjectUI.prototype.importProjectClicked = function() {
