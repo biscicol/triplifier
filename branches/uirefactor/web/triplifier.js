@@ -138,12 +138,20 @@ function projectSelectionChanged(project) {
 	// the project has a valid data source and if any concepts have been defined, and disable the "Next"
 	// buttons if necessary.
 	if (!mainproject.schema.length) {
+		// Disable all sections (except for the Data Source section).
 		$("#dsDiv input.next").prop('disabled', true);
 		sectionmgr.setSectionsEnabled(false, joinsPS, entitiesPS, attributesPS, relationsPS, triplifyPS);
-	}
-	if (!mainproject.entities.length) {
+	} else if (!mainproject.entities.length) {
+		// Disable Attributes, Concept Relations, and Triplify.
+		$("#dsDiv input.next").prop('disabled', false);
 		$('#entityDiv input.next').prop('disabled', true);
 		sectionmgr.setSectionsEnabled(false, attributesPS, relationsPS, triplifyPS);
+		sectionmgr.setSectionsEnabled(true, joinsPS, entitiesPS);
+	} else {
+		// Enable all sections.
+		$("#dsDiv input.next").prop('disabled', false);
+		$('#entityDiv input.next').prop('disabled', false);
+		sectionmgr.setSectionsEnabled(true, joinsPS, entitiesPS, attributesPS, relationsPS, triplifyPS);
 	}
 
 	// We want to be notified of project changes so we can update the state of the concepts "Next"
@@ -194,6 +202,10 @@ function projectPropertyChanged(project, propname) {
 	}	
 }
 
+/**
+ * Updates each of the ProjectSections to work with the main project and activate/deactivate sections
+ * as needed depending on the project state.
+ **/
 function updateProjectSections() {	
 	dSsection.setProject(mainproject);
 	joinsPS.setProject(mainproject, 'joins');

@@ -101,9 +101,9 @@ ProjectUI.prototype.unregisterObserver = function(observer) {
 /**
  * Notify all observers of a change in the currently-selected project.
  **/
-ProjectUI.prototype.notifyProjectSelectionChange = function(projname) {
+ProjectUI.prototype.notifyProjectSelectionChange = function(project) {
 	for (var cnt = 0; cnt < this.observers.length; cnt++) {
-		this.observers[cnt].projectSelectionChanged(projname);
+		this.observers[cnt].projectSelectionChanged(project);
 	}
 }
 
