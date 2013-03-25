@@ -124,7 +124,7 @@ public class RDFreader {
 	            subSubItems = getSubClasses(subject.getModel().listStatements(null, classSubClass, subject));
 
 
-            subItems.add(new RDFclass(subject.getLocalName(), subject.toString(), subSubItems));
+            subItems.add(new RDFclass(model.getNsURIPrefix(subject.getNameSpace()) + ":" + subject.getLocalName(), subject.toString(), subSubItems));
         }
     	return subItems;
     }
@@ -151,7 +151,7 @@ public class RDFreader {
     	SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
 
-        RDFreader or = new RDFreader("dwcterms.rdf");
+        RDFreader or = new RDFreader("triplifier-vocab.rdf");
         
 //        System.out.println(or.getProperties());
 //        System.out.println(or.getClasses());

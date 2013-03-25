@@ -85,15 +85,15 @@ DwCASimplifier.formatcode = 'DwCA';
 
 // A lookup table for matching DwC concept ID field names to DwC concepts.
 DwCASimplifier.prototype.cncpttable = {
-	taxonID: {name:'Taxon', uri:'http://rs.tdwg.org/dwc/terms/Taxon'},
-	datasetID: {name:'Dataset', uri:'http://rs.tdwg.org/dwc/terms/Dataset'},
+	taxonID: {name:'dwc:Taxon', uri:'http://rs.tdwg.org/dwc/terms/Taxon'},
+	datasetID: {name:'dwc:Dataset', uri:'http://rs.tdwg.org/dwc/terms/Dataset'},
 	locationID: {name:'dcterms:Location', uri:'http://purl.org/dc/terms/Location'},
-	eventID: {name:'Event', uri:'http://rs.tdwg.org/dwc/terms/Event'},
-	geologicalContextID: {name:'GeologicalContext', uri:'http://rs.tdwg.org/dwc/terms/GeologicalContext'},
-	identificationID: {name:'Identification', uri:'http://rs.tdwg.org/dwc/terms/Identification'},
-	measurementID: {name:'MeasurementOrFact', uri:'http://rs.tdwg.org/dwc/terms/MeasurementOrFact'},
-	occurrenceID: {name:'Occurrence', uri:'http://rs.tdwg.org/dwc/terms/Occurrence'},
-	resourceRelationshipID: {name:'ResourceRelationship', uri:'http://rs.tdwg.org/dwc/terms/ResourceRelationship'}
+	eventID: {name:'dwc:Event', uri:'http://rs.tdwg.org/dwc/terms/Event'},
+	geologicalContextID: {name:'dwc:GeologicalContext', uri:'http://rs.tdwg.org/dwc/terms/GeologicalContext'},
+	identificationID: {name:'dwc:Identification', uri:'http://rs.tdwg.org/dwc/terms/Identification'},
+	measurementID: {name:'dwc:MeasurementOrFact', uri:'http://rs.tdwg.org/dwc/terms/MeasurementOrFact'},
+	occurrenceID: {name:'dwc:Occurrence', uri:'http://rs.tdwg.org/dwc/terms/Occurrence'},
+	resourceRelationshipID: {name:'dwc:ResourceRelationship', uri:'http://rs.tdwg.org/dwc/terms/ResourceRelationship'}
 }
 
 // Define the record-level terms that should be mapped to the Occurrence class.
