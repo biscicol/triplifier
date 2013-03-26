@@ -74,22 +74,26 @@ public final class TabularDataConverter
     }
 
     /**
-     * Corrects a few common problems with table names that cause some SQLite
-     * applications to complain.  Spaces and periods are replaced with
-     * underscores, and if the name starts with a digit, an underscore is added
-     * to the beginning of the name.
+     * Ensures that table and column names are valid SQLite identifiers that do
+     * not require quoting in brackets for maximum compatibility.  Spaces and
+     * periods are replaced with underscores, and if the name starts with a
+     * digit, an underscore is added to the beginning of the name.  Any other
+     * non-alphanumeric characters are removed.
      *
      * @param tname The table name to fix, if needed.
      * @return The corrected table name.
      */
-    private String fixTableName(String tname) {
+    private String fixSQLiteIdentifierName(String tname) {
         String newname;
 
         // replace spaces with underscores
         newname = tname.replace(' ', '_');
 
         // replace periods with underscores
-        newname = tname.replace('.', '_');
+        newname = newname.replace('.', '_');
+        
+        // Remove any remaining non-alphanumeric characters.
+        newname = newname.replaceAll("[^_a-zA-Z0-9]", "");
 
         // if the table name starts with a digit, prepend an underscore
         if (newname.matches("[0-9].*"))
@@ -133,7 +137,7 @@ public final class TabularDataConverter
                 tname = source.getCurrentTableName();
 
             if (source.tableHasNextRow())
-                buildTable(conn, fixTableName(tname));
+                buildTable(conn, fixSQLiteIdentifierName(tname));
         }
         
         // If the data source is a DwC archive, attempt to "fix" any missing
@@ -194,6 +198,7 @@ public final class TabularDataConverter
                     colname = tname + "_" + rand_prefix + "_" + col_cnt;
                     col_cnt++;
             }
+            colname = fixSQLiteIdentifierName(colname);
             query += "\"" + colname + "\"";
         }
         query += ")";

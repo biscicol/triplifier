@@ -150,7 +150,7 @@ public class ReaderManager implements Iterable<TabularDataReader> {
         for (TabularDataReader reader : readers) {
             if (reader.testFile(filepath)) {
                 try {
-                    // A matching reader was found, so createEZID a new instance of
+                    // A matching reader was found, so create a new instance of
                     // the reader, open the file with it, and return it.
                     TabularDataReader newreader = reader.getClass().newInstance();
                     newreader.openFile(filepath);

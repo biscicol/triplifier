@@ -124,7 +124,8 @@ public class RDFreader {
 	            subSubItems = getSubClasses(subject.getModel().listStatements(null, classSubClass, subject));
 
 
-            subItems.add(new RDFclass(model.getNsURIPrefix(subject.getNameSpace()) + ":" + subject.getLocalName(), subject.toString(), subSubItems));
+            subItems.add(new RDFclass(model.getNsURIPrefix(subject.getNameSpace())
+                    + ":" + subject.getLocalName(), subject.toString(), subSubItems));
         }
     	return subItems;
     }
