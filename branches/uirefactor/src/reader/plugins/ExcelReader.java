@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -40,11 +42,15 @@ public class ExcelReader implements TabularDataReader
     // The number of columns in the active worksheet (set by the first row).
     private int numcols;
     
-    // the index for the active worksheet
+    // The index for the active worksheet.
     private int currsheet;
     
-    // the entire workbook (e.g., spreadsheet file)
+    // The entire workbook (e.g., spreadsheet file).
     private Workbook excelwb;
+    
+    // DataFormatter and FormulaEvaluator for dealing with cells with formulas.
+    private DataFormatter df;
+    private FormulaEvaluator fe;
     
     @Override
     public String getShortFormatDesc() {
@@ -115,6 +121,11 @@ public class ExcelReader implements TabularDataReader
         catch (Exception e) {
             return false;
         }
+        
+        // Create a new DataFormatter and FormulaEvaluator to use for cells with
+        // formulas.
+        df = new DataFormatter();
+        fe = excelwb.getCreationHelper().createFormulaEvaluator();
         
         return true;
     }
@@ -215,7 +226,9 @@ public class ExcelReader implements TabularDataReader
                         ret[cnt] = "false";
                     break;
                 case Cell.CELL_TYPE_FORMULA:
-                    ret[cnt] = cell.getCellFormula();
+                    // Use the FormulaEvaluator to determine the result of the
+                    // cell's formula, then convert the result to a String.
+                    ret[cnt] = df.formatCellValue(cell, fe);
                     break;
                 default:
                     ret[cnt] = "";

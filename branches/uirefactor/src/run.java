@@ -101,8 +101,9 @@ public class run {
         
         //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/test-weird_data.ods");
         //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/vertnet_sample.xlsx");
-        TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/vertnet_sample.ods");
-        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/test.ods");
+        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/vertnet_sample.ods");
+        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/biocode_template.xls");
+        TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/test.ods");
         //runReader(tdr);
         //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/BiocodeTemplate_TEST-2.xls");
         //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/CanadensysTest.zip");
