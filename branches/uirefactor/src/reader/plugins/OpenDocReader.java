@@ -18,7 +18,9 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
  * data types for dates and times.  If a date is encountered, the reader will
  * convert it to a standard ISO8601 date/time string (yyyy-MM-ddTHH:mm:ss.SSSZZ).
  * If a time is encountered, the reader will convert it to an ISO 8601 time
- * string (HH:mm:ss.SSSZZ).
+ * string (HH:mm:ss.SSSZZ).  Also, the first row in each worksheet is assumed to
+ * contain the column headers for the data and determines how many columns are
+ * examined for all subsequent rows.
  */
 public class OpenDocReader implements TabularDataReader
 {
@@ -31,9 +33,13 @@ public class OpenDocReader implements TabularDataReader
     // the index of the active worksheet
     private int currsheet;
     
-    // used for tracking the dimensions of the active sheet as well as the
-    // current row in the active sheet
+    // Used for tracking the dimensions of the active sheet as well as the
+    // current row in the active sheet.  The number of columns in the active
+    // worksheet is determined by the first row.
     private int numrows, curr_row, numcols;
+    
+    private boolean hasnext = false;
+    private String[] nextrow;
     
     @Override
     public String getFormatString() {
@@ -113,10 +119,9 @@ public class OpenDocReader implements TabularDataReader
             
             numrows = odsheet.getRowCount();
             curr_row = 0;
-            numcols = odsheet.getColumnCount();
-            
+            numcols = 0;
             //System.out.println(numrows);
-            //System.out.println(numcols);
+            testNext();
         }
         else
             throw new NoSuchElementException();
@@ -129,27 +134,35 @@ public class OpenDocReader implements TabularDataReader
 
     @Override
     public boolean tableHasNextRow() {
-        return curr_row < numrows;
+        return hasnext;
     }
 
     /**
-     * Get the next data-containing row from the document.  The length of the
-     * returned array will always be equal to the length of the longest row
-     * in the document, even if the current row has fewer data-containing cells.
-     * Completely empty rows are ignored, unless the last defined row in the
-     * sheet is empty, in which case an array of empty strings is returned.
-     * 
-     * @return The data from the next row of the spreadsheet.
+     * Internal method to see if the current sheet has another data row.  This
+     * is necessary to avoid returning blank rows at the end of the sheet in
+     * certain cases.  If another valid row is found, it will be parsed and
+     * assigned to nextrow;
      */
-    @Override
-    public String[] tableGetNextRow() {
+    private void testNext() {
         Cell cell;
         boolean blankrow = true;
+        hasnext = false;
         
-        if (!tableHasNextRow())
-            throw new NoSuchElementException();
+        // If this is the first row in the sheet, we need to determine how many
+        // columns there are.
+        if (numcols == 0 && curr_row < numrows) {
+            numcols = 0;
+            for (int cnt = 0; cnt < odsheet.getColumnCount(); cnt++) {
+                cell = odsheet.getCellAt(cnt, curr_row);
+                if (!cell.getTextValue().equals(""))
+                    numcols++;
+                else
+                    // Stop looking after the first blank cell.
+                    break;
+            }
+        }
         
-        String[] ret = new String[numcols];
+        nextrow = new String[numcols];
 
         // get the next row that actually contains data
         while (blankrow && (curr_row < numrows)) {
@@ -166,7 +179,7 @@ public class OpenDocReader implements TabularDataReader
                     // convert the time value to an ISO 8601 time string
                     GregorianCalendar cal = (GregorianCalendar)cell.getValue();
                     DateTime date = new DateTime(cal.getTime());
-                    ret[cnt] = date.toString("HH:mm:ss.SSSZZ");
+                    nextrow[cnt] = date.toString("HH:mm:ss.SSSZZ");
                 }
                 else if (cell.getValueType() == ODValueType.DATE) {
                     // Although not stated in the API documentation, getting the
@@ -177,13 +190,13 @@ public class OpenDocReader implements TabularDataReader
                     // get the date value and convert it to an ISO 8601 string
                     DateTime date;
                     date = new DateTime(cell.getValue());
-                    ret[cnt] = date.toString();
+                    nextrow[cnt] = date.toString();
                 }
                 else {
-                    ret[cnt] = cell.getTextValue();
+                    nextrow[cnt] = cell.getTextValue();
                 }
 
-                if (!ret[cnt].equals("")) {
+                if (!nextrow[cnt].equals("")) {
                     blankrow = false;
                 }
             }
@@ -191,6 +204,25 @@ public class OpenDocReader implements TabularDataReader
             curr_row++;
         }
 
+        hasnext = !blankrow;
+    }
+    
+    /**
+     * Get the next data-containing row from the current worksheet.  The length
+     * of the returned array will always be equal to the number of columns in
+     * the sheet, as determined from the first row, even if the current row has
+     * fewer data-containing cells.  Completely empty rows are ignored.
+     * 
+     * @return The data from the next row of the spreadsheet.
+     */
+    @Override
+    public String[] tableGetNextRow() {
+        if (!tableHasNextRow())
+            throw new NoSuchElementException();
+        
+        String ret[] = nextrow;
+        testNext();
+        
         return ret;
     }
 

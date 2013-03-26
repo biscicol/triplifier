@@ -19,12 +19,13 @@ public class run {
 
             System.out.println("TABLE: " + reader.getCurrentTableName());
 
+            int rowcnt = 1;
             while (reader.tableHasNextRow()) {
                 record = reader.tableGetNextRow();
                 for (int cnt = 0; cnt < record.length; cnt++) {
                     System.out.print(cnt > 0 ? ", " + record[cnt] : record[cnt]);
                 }
-
+                //System.out.print(rowcnt++);
                 System.out.println();
             }
 
@@ -98,7 +99,11 @@ public class run {
         //runReader(rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/BiocodeTemplate_TEST-2.xls", "EXCEL"));
         //runReader(rm.openFile("testdata/CanadensysTest.zip", "DWCA"));
         
-        TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/test-weird_data.ods");
+        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/test-weird_data.ods");
+        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/vertnet_sample.xlsx");
+        TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/vertnet_sample.ods");
+        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/test.ods");
+        //runReader(tdr);
         //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/BiocodeTemplate_TEST-2.xls");
         //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/CanadensysTest.zip");
         //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/fishtest.zip");
