@@ -223,10 +223,11 @@ DataSourceSection.prototype.setProject = function(project) {
 	//this.project.registerObserver(this);
 	
 	// Fill in the database form.  Leave it blank if the source was a sqlite database.
-	if (mainproject.connection.system) {
+	var self = this;
+	if (this.project.connection.system) {
 		$.each($("#dbForm").get(0), function(i, element) {
 			if (element.type != "submit")
-				element.value = (mainproject.connection.system == "sqlite" ? "" : (mainproject.connection[element.name] || ""));
+				element.value = (self.project.connection.system == "sqlite" ? "" : (self.project.connection[element.name] || ""));
 		});
 	}
 
