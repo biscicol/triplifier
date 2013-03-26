@@ -103,25 +103,25 @@ DwCASimplifier.prototype.record_level_occurrence = ['dcterms:type', 'institution
 // A tree-like data structure that specifies all possible relations.  The top-level
 // indices are the subjects, which each point to a list of possible objects and predicates.
 DwCASimplifier.prototype.rels_list = {
-	'Identification': {
-		'Taxon': 'bsc:depends_on',
-		'Occurrence': 'bsc:depends_on'
+	'dwc:Identification': {
+		'dwc:Taxon': 'bsc:depends_on',
+		'dwc:Occurrence': 'bsc:depends_on'
 	},
-	'Event': {
+	'dwc:Event': {
 		'dcterms:Location': 'bsc:related_to',
-		'GeologicalContext': 'bsc:related_to'
+		'dwc:GeologicalContext': 'bsc:related_to'
 	},
-	'Occurrence': {
-		'Event': 'bsc:depends_on',
-		'GeologicalContext': 'bsc:depends_on',
+	'dwc:Occurrence': {
+		'dwc:Event': 'bsc:depends_on',
+		'dwc:GeologicalContext': 'bsc:depends_on',
 		'dcterms:Location': 'bsc:depends_on',
-		'Taxon': 'bsc:related_to'
+		'dwc:Taxon': 'bsc:related_to'
 	},
 };
 
 // The order in which to map subject classes.  This is important to make sure that classes
 // do not first get mapped to Occurrence when they should be mapped to Event or Identification.
-DwCASimplifier.prototype.map_order = ['Identification', 'Event', 'Occurrence'];
+DwCASimplifier.prototype.map_order = ['dwc:Identification', 'dwc:Event', 'dwc:Occurrence'];
 
 /**
  * Attempts to "simplify" the data schema of a project by automatically defining as many project
