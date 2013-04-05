@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -25,18 +27,30 @@ import org.joda.time.DateTime;
  * by checking if the cell is date-formatted.  It so, the numerical value is
  * converted to a standard ISO8601 date/time string (yyyy-MM-ddTHH:mm:ss.SSSZZ).
  * This should work properly with both the Excel "1900 Date System" and the
- * "1904 Date System".
+ * "1904 Date System".  Also, the first row in each worksheet is assumed to
+ * contain the column headers for the data and determines how many columns are
+ * examined for all subsequent rows.
  */
 public class ExcelReader implements TabularDataReader
 {
     // iterator for moving through the active worksheet
     private Iterator<Row> rowiter = null;
+    private boolean hasnext = false;
     
-    // the index for the active worksheet
+    Row nextrow;
+    
+    // The number of columns in the active worksheet (set by the first row).
+    private int numcols;
+    
+    // The index for the active worksheet.
     private int currsheet;
     
-    // the entire workbook (e.g., spreadsheet file)
+    // The entire workbook (e.g., spreadsheet file).
     private Workbook excelwb;
+    
+    // DataFormatter and FormulaEvaluator for dealing with cells with formulas.
+    private DataFormatter df;
+    private FormulaEvaluator fe;
     
     @Override
     public String getShortFormatDesc() {
@@ -108,6 +122,11 @@ public class ExcelReader implements TabularDataReader
             return false;
         }
         
+        // Create a new DataFormatter and FormulaEvaluator to use for cells with
+        // formulas.
+        df = new DataFormatter();
+        fe = excelwb.getCreationHelper().createFormulaEvaluator();
+        
         return true;
     }
 
@@ -124,6 +143,8 @@ public class ExcelReader implements TabularDataReader
         if (hasNextTable()) {
             Sheet exsheet = excelwb.getSheetAt(currsheet++);
             rowiter = exsheet.rowIterator();
+            numcols = -1;
+            testNext();
         }
         else
             throw new NoSuchElementException();
@@ -139,23 +160,45 @@ public class ExcelReader implements TabularDataReader
         if (rowiter == null)
             return false;
         else
-            return rowiter.hasNext();
+            return hasnext;
     }
 
+    /**
+     * Internal method to see if there is another line with data remaining in
+     * the current table.  Any completely blank lines will be skipped.  This
+     * method is necessary because the POI row iterator does not always reliably
+     * end with the last data-containing row.
+     */
+    private void testNext() {
+        int lastcellnum = 0;
+        while (rowiter.hasNext() && lastcellnum < 1) {
+            nextrow = rowiter.next();
+            lastcellnum = nextrow.getLastCellNum();
+        }
+
+        hasnext = lastcellnum > 0;
+    }
+    
     @Override
     public String[] tableGetNextRow() {
         if (!tableHasNextRow())
             throw new NoSuchElementException();
         
-        Row row = rowiter.next();
+        Row row = nextrow;
         Cell cell;
 
-        String[] ret = new String[row.getLastCellNum()];
+        // If this is the first row in the sheet, use it to determine how many
+        // columns this sheet has.  This is necessary to make sure that all rows
+        // have the same number of cells for SQLite.
+        if (numcols < 0)
+            numcols = row.getLastCellNum();
+        
+        String[] ret = new String[numcols];
         
         // Unfortunately, we can't use a cell iterator here because, as
         // currently implemented in POI, iterating over cells in a row will
         // silently skip blank cells.
-        for (int cnt = 0; cnt < row.getLastCellNum(); cnt++) {
+        for (int cnt = 0; cnt < numcols; cnt++) {
             cell = row.getCell(cnt, Row.CREATE_NULL_AS_BLANK);
             
             // inspect the data type of this cell and act accordingly
@@ -183,12 +226,17 @@ public class ExcelReader implements TabularDataReader
                         ret[cnt] = "false";
                     break;
                 case Cell.CELL_TYPE_FORMULA:
-                    ret[cnt] = cell.getCellFormula();
+                    // Use the FormulaEvaluator to determine the result of the
+                    // cell's formula, then convert the result to a String.
+                    ret[cnt] = df.formatCellValue(cell, fe);
                     break;
                 default:
                     ret[cnt] = "";
             }
         }
+        
+        // Determine if another row is available after this one.
+        testNext();
         
         return ret;
     }

@@ -25,7 +25,7 @@ import com.hp.hpl.jena.util.FileUtils;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
-import de.fuberlin.wiwiss.d2rq.ModelD2RQ;
+import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
 
 /**
  * Provides RESTful web services using Jersey JAX-RS implementation. 
@@ -284,7 +284,7 @@ public class Rest {
     }
     
     /**
-     * Return a Map of available RDF files defined in triplifiersettings.props: 
+     * Return a Map of available RDF files defined in triplifiersettings.props:
      * "vocabularies", each with its "displayName" property,
      * plus given user vocabulary files if they exist in vocabularies folder. 
      * 

@@ -4,7 +4,7 @@ import java.io.FileOutputStream;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileUtils;
-import de.fuberlin.wiwiss.d2rq.ModelD2RQ;
+import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
 import reader.ReaderManager;
 import reader.TabularDataConverter;
 import reader.plugins.*;
@@ -19,12 +19,13 @@ public class run {
 
             System.out.println("TABLE: " + reader.getCurrentTableName());
 
+            int rowcnt = 1;
             while (reader.tableHasNextRow()) {
                 record = reader.tableGetNextRow();
                 for (int cnt = 0; cnt < record.length; cnt++) {
                     System.out.print(cnt > 0 ? ", " + record[cnt] : record[cnt]);
                 }
-
+                //System.out.print(rowcnt++);
                 System.out.println();
             }
 
@@ -68,7 +69,7 @@ public class run {
     public static void main(String[] args) throws Exception {
         //runReaders();
 
-        // create the ReaderManager and load the plugins
+        // createEZID the ReaderManager and load the plugins
         ReaderManager rm = new ReaderManager();
         try {
             rm.loadReaders();
@@ -90,10 +91,25 @@ public class run {
         //runReader(rm.openFile("sampledata/test.xlsx"));
         //runReader(rm.openFile("sampledata/test.xlsx"));
         //runReader(rm.openFile("test.csv", "CSV"));
-        //runReader(rm.openFile("test-archive.zip", "DWCA"));
+        //System.out.println(System.getProperty("user.dir"));
+        //runReader(rm.openFile("testdata/test-archive.zip", "DWCA"));
         //runReader(rm.openFile("dwca-hsu_wildlife_mammals.zip", "DWCA"));
         //runReader(rm.openFile("dwca-nysm_mammals.zip", "DWCA"));
-        //runReader(rm.openFile("testdata/test-dwca", "DWCA"));
+        //runReader(rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/test-dwca", "DWCA"));
+        //runReader(rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/BiocodeTemplate_TEST-2.xls", "EXCEL"));
         //runReader(rm.openFile("testdata/CanadensysTest.zip", "DWCA"));
+        
+        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/test-weird_data.ods");
+        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/vertnet_sample.xlsx");
+        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/vertnet_sample.ods");
+        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/biocode_template.xls");
+        TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/test.ods");
+        //runReader(tdr);
+        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/BiocodeTemplate_TEST-2.xls");
+        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/CanadensysTest.zip");
+        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/fishtest.zip");
+        TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/test.sqlite");
+        tdc.convert();
+        tdr.closeFile();
     }
 }

@@ -8,11 +8,11 @@ import java.util.Set;
  * Can generate a D2RQ Mapping entry.
  */
 public class Entity {
-	public String table;
-	public String idColumn;
+    public String table;
+    public String idColumn;
     public String idPrefixColumn;
-	public VocabularyItem rdfClass;
-	public Set<Attribute> attributes;
+    public VocabularyItem rdfClass;
+    public Set<Attribute> attributes;
 	
     /**
      * Generate D2RQ Mapping Language representation of this Entity with Attributes.
