@@ -1,0 +1,91 @@
+@prefix map: <> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix jdbc: <http://d2rq.org/terms/jdbc/> .
+@prefix ma: <http://www.w3.org/ns/ma-ont#> .
+
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "com.mysql.jdbc.Driver";
+	d2rq:jdbcDSN "jdbc:mysql://darwin.berkeley.edu/biocode_reporting";
+	d2rq:username "webuser";
+	d2rq:password "Amar*tus";
+	d2rq:fetchSize "-2147483648";
+	.
+map:pcr_id a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+    d2rq:uriPattern "pcr/@@pcr.id|urlify@@";
+	d2rq:class <http://purl.org/dc/dcmitype/Event>;
+	d2rq:condition "pcr.id <> ''";
+	.
+map:assembly_id a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+    d2rq:uriPattern "assembly/@@assembly.id|urlify@@";
+	d2rq:class <http://purl.org/dc/dcmitype/Event>;
+	d2rq:condition "assembly.id <> ''";
+	.
+map:biocode_tissue_join_tissue_id a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+    d2rq:uriPattern "tissue/@@biocode_tissue_join.tissue_id|urlify@@";
+	d2rq:class <http://purl.org/dc/dcmitype/PhysicalObject>;
+	d2rq:condition "biocode_tissue_join.tissue_id <> ''";
+	.
+map:biocode_bnhm_id a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+    d2rq:uriPattern "specimen/@@biocode.bnhm_id|urlify@@";
+	d2rq:class <http://rs.tdwg.org/dwc/terms/Occurrence>;
+	d2rq:condition "biocode.bnhm_id <> ''";
+	.
+map:biocode_collecting_event_EventID a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+    d2rq:uriPattern "event/@@biocode_collecting_event.EventID|urlify@@";
+	d2rq:class <http://purl.org/dc/dcmitype/Event>;
+	d2rq:condition "biocode_collecting_event.TaxTeam = 'TINV'";
+	.
+map:extraction_id a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "extraction/@@extraction.extractionId|urlify@@";
+	d2rq:class <http://purl.org/dc/dcmitype/PhysicalObject>;
+	d2rq:condition "extraction.id <> ''";
+	.
+map:extraction_id_id_rel a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:extraction_id;
+	d2rq:property ma:isRelatedTo;
+	d2rq:refersToClassMap map:pcr_id;
+	d2rq:join "pcr.extractionId => extraction.extractionId";
+	.
+map:biocode_tissue_join_tissue_id_id_rel a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:biocode_tissue_join_tissue_id;
+	d2rq:property ma:isSourceOf;
+	d2rq:refersToClassMap map:extraction_id;
+	d2rq:join "extraction.sampleId => biocode_tissue_join.tissue_id";
+	.
+map:pcr_id_id_rel a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:pcr_id;
+	d2rq:property ma:isSourceOf;
+	d2rq:refersToClassMap map:assembly_id;
+	d2rq:join "assembly.extraction_id => pcr.extractionId";
+	.
+map:biocode_collecting_event_EventID_bnhm_id_rel a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:biocode_collecting_event_EventID;
+	d2rq:property ma:isSourceOf;
+	d2rq:refersToClassMap map:biocode_bnhm_id;
+	d2rq:join "biocode.Coll_EventID => biocode_collecting_event.EventID";
+	.
+map:biocode_bnhm_id_tissue_id_rel a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:biocode_bnhm_id;
+	d2rq:property ma:isSourceOf;
+	d2rq:refersToClassMap map:biocode_tissue_join_tissue_id;
+	d2rq:join "biocode_tissue_join.bnhm_id => biocode.bnhm_id";
+	.
+map:DataSet a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:constantValue <urn:x-biscicol:biocode_reporting@darwin.berkeley.edu>;
+	d2rq:class <http://rs.tdwg.org/dwc/terms/DataSet>;
+	.
+map:DataSet_biocode_bnhm_id a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:DataSet;
+	d2rq:property ma:isSourceOf;
+	d2rq:uriColumn "biocode.bnhm_id";
+	.

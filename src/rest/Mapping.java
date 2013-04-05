@@ -113,12 +113,13 @@ public class Mapping {
      */
     public String getColumnPrefix(Entity entity) {
         String result = "";
+        
         if (entity.idPrefixColumn.equalsIgnoreCase("") || entity.idPrefixColumn == null) {
             result += "\td2rq:uriColumn \"" + entity.getColumn() + "\";";
-            // This assigns the default urn:x-biscicol: patter before the identifier, ensuring it is a URI
+            // This assigns the default urn:x-biscicol: pattern before the identifier, ensuring it is a URI.
         } else {
             result += "\td2rq:uriPattern \"" + entity.idPrefixColumn + "@@" + entity.getColumn() + "@@\";";
-        }
+        }        
         return result;
     }
 
@@ -134,6 +135,8 @@ public class Mapping {
         pw.println("@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .");
         pw.println("@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .");
         pw.println("@prefix jdbc: <http://d2rq.org/terms/jdbc/> .");
+        pw.println("@prefix ro: <http://www.obofoundry.org/ro/ro.owl#> .");
+        pw.println("@prefix bsc: <http://biscicol.org/terms/index.html#> .");
         pw.println("@prefix ma: <http://www.w3.org/ns/ma-ont#> .");
         pw.println();
     }

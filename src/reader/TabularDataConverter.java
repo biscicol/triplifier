@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Random;
 import reader.plugins.TabularDataReader;
 
 
@@ -73,22 +74,26 @@ public final class TabularDataConverter
     }
 
     /**
-     * Corrects a few common problems with table names that cause some SQLite
-     * applications to complain.  Spaces and periods are replaced with
-     * underscores, and if the name starts with a digit, an underscore is added
-     * to the beginning of the name.
+     * Ensures that table and column names are valid SQLite identifiers that do
+     * not require quoting in brackets for maximum compatibility.  Spaces and
+     * periods are replaced with underscores, and if the name starts with a
+     * digit, an underscore is added to the beginning of the name.  Any other
+     * non-alphanumeric characters are removed.
      *
      * @param tname The table name to fix, if needed.
      * @return The corrected table name.
      */
-    private String fixTableName(String tname) {
+    private String fixSQLiteIdentifierName(String tname) {
         String newname;
 
         // replace spaces with underscores
         newname = tname.replace(' ', '_');
 
         // replace periods with underscores
-        newname = tname.replace('.', '_');
+        newname = newname.replace('.', '_');
+        
+        // Remove any remaining non-alphanumeric characters.
+        newname = newname.replaceAll("[^_a-zA-Z0-9]", "");
 
         // if the table name starts with a digit, prepend an underscore
         if (newname.matches("[0-9].*"))
@@ -107,6 +112,9 @@ public final class TabularDataConverter
      * be DROPPED.  Destination tables will have columns matching the names and
      * number of elements in the first row of each table in the source data.
      * All rows from the source are copied to the new table.
+     * If the input data source is a Darwin Core archive, convert() will also
+     * attempt to "re-normalize" the archive data.  This task is handed off to
+     * an instance of DwCAFixer.
      * 
      * @throws SQLException 
      */
@@ -129,7 +137,15 @@ public final class TabularDataConverter
                 tname = source.getCurrentTableName();
 
             if (source.tableHasNextRow())
-                buildTable(conn, fixTableName(tname));
+                buildTable(conn, fixSQLiteIdentifierName(tname));
+        }
+        
+        // If the data source is a DwC archive, attempt to "fix" any missing
+        // ID columns.  This could be designed more elegantly with a generic
+        // "fixer" interface, but since we are only planning to do it for DwC
+        // archives, the implementation is, for now, format specific.
+        if (source.getFormatString().equals("DwCA")) {
+            DwCAFixer.fixArchive(conn);
         }
         
         conn.close();
@@ -140,7 +156,9 @@ public final class TabularDataConverter
      * table in the data source.  If the specified table name already exists in
      * the database, IT IS DROPPED.  A new table with columns matching the names
      * and number of elements in the first row of the source data is created,
-     * and all rows from the source are copied to the new table.
+     * and all rows from the source are copied to the new table.  If a data
+     * source returns a blank column name, then a machine-generated column name
+     * will be used.
      *
      * @param conn A valid connection to a destination database.
      * @param tname The name to use for the table in the destination database.
@@ -150,6 +168,21 @@ public final class TabularDataConverter
     private void buildTable(Connection conn, String tname) throws SQLException {
         int colcnt, cnt;
         Statement stmt = conn.createStatement();
+        // Counter for machine-generated column names.
+        int col_cnt = 0;
+        
+        // Generate a short string of random characters to use for machine-
+        // generated column names if the data source provides a blank column
+        // name.
+        char[] rand_prefix_arr = new char[10];
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        int alphindex;
+        Random randgen = new Random();
+        for (cnt = 0; cnt < rand_prefix_arr.length; cnt++) {
+            alphindex = randgen.nextInt(alphabet.length());
+            rand_prefix_arr[cnt] = alphabet.charAt(alphindex);
+        }
+        String rand_prefix = String.copyValueOf(rand_prefix_arr);
 
         // if this table exists, drop it
         stmt.executeUpdate("DROP TABLE IF EXISTS [" + tname + "]");
@@ -160,6 +193,12 @@ public final class TabularDataConverter
         for (String colname : source.tableGetNextRow()) {
             if (colcnt++ > 0)
                 query += ", ";
+            // If the column name is blank, generate a suitable name.
+            if (colname.trim().equals("")) {
+                    colname = tname + "_" + rand_prefix + "_" + col_cnt;
+                    col_cnt++;
+            }
+            colname = fixSQLiteIdentifierName(colname);
             query += "\"" + colname + "\"";
         }
         query += ")";
