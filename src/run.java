@@ -1,10 +1,5 @@
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.util.FileUtils;
-import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
 import reader.ReaderManager;
 import reader.TabularDataConverter;
 import reader.plugins.*;
@@ -67,9 +62,12 @@ public class run {
     }
 
     public static void main(String[] args) throws Exception {
+        // Sets the path to the test files.
+        String testfilepath = "../triplifiersvn/testdata/";
+                
         //runReaders();
 
-        // createEZID the ReaderManager and load the plugins
+        // Create the ReaderManager and load the plugins
         ReaderManager rm = new ReaderManager();
         try {
             rm.loadReaders();
@@ -84,32 +82,16 @@ public class run {
         }
         System.out.println();
 
-        // open a file and print the data
-        //runReader(rm.openFile("/Users/jdeck/bioValidatorSpreadsheets/biocode_fishes.xls"));
-        //System.out.println(rm.getReader("DWCA").testFile("test.xls"));
+        // Open a file and print the data.
+        runReader(rm.openFile(testfilepath + "test.ods"));
         //System.out.println(Thread.currentThread().getContextClassLoader().getResource("sqlite").getFile());
-        //runReader(rm.openFile("sampledata/test.xlsx"));
-        //runReader(rm.openFile("sampledata/test.xlsx"));
-        //runReader(rm.openFile("test.csv", "CSV"));
         //System.out.println(System.getProperty("user.dir"));
-        //runReader(rm.openFile("testdata/test-archive.zip", "DWCA"));
-        //runReader(rm.openFile("dwca-hsu_wildlife_mammals.zip", "DWCA"));
-        //runReader(rm.openFile("dwca-nysm_mammals.zip", "DWCA"));
-        //runReader(rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/test-dwca", "DWCA"));
-        //runReader(rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/BiocodeTemplate_TEST-2.xls", "EXCEL"));
-        //runReader(rm.openFile("testdata/CanadensysTest.zip", "DWCA"));
-        
-        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/test-weird_data.ods");
-        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/vertnet_sample.xlsx");
-        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/vertnet_sample.ods");
-        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/biocode_template.xls");
-        TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/test.ods");
-        //runReader(tdr);
-        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/BiocodeTemplate_TEST-2.xls");
-        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/CanadensysTest.zip");
-        //TabularDataReader tdr = rm.openFile("/home/stuckyb/RAwork/biscicol/triplifierui/testdata/fishtest.zip");
-        TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:/home/stuckyb/RAwork/biscicol/triplifierui/sampledata/test.sqlite");
-        tdc.convert();
-        tdr.closeFile();
+        //runReader(rm.openFile(testfilepath + "fishtest.zip"));
+
+        // Try converting an input file to a SQLite database.
+        //TabularDataReader tdr = rm.openFile(testfilepath + "fishtest.zip");
+        //TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + testfilepath + "test.sqlite");
+        //tdc.convert();
+        //tdr.closeFile();
     }
 }
