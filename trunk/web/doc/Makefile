@@ -1,7 +1,7 @@
 SRC = ../../src
 
-doc: $(SRC)/reader/*.java $(SRC)/reader/plugins/*.java
-	-javadoc -sourcepath $(SRC) -subpackages reader
+doc: $(SRC)/reader/*.java $(SRC)/reader/plugins/*.java $(SRC)/rest/*.java
+	-javadoc -classpath .:../../lib/* -sourcepath $(SRC) rest -subpackages reader
 	touch doc
 
 clean:
