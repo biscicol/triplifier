@@ -21,10 +21,24 @@ public final class TabularDataConverter
     String dest;
     String tablename;
     
+    /**
+     * Constructs a new TabularDataConverter for the specified source.
+     * 
+     * @param source A TabularDataReader with an open data source.
+     * @throws ClassNotFoundException 
+     */
     public TabularDataConverter(TabularDataReader source) throws ClassNotFoundException {
         this(source, "");
     }
     
+    /**
+     * Constructs a new TabularDataConverter for the specified source and
+     * destination database connection.
+     * 
+     * @param source A TabularDataReader with an open data source.
+     * @param dest A valid SQLIte JDBC connection string.
+     * @throws ClassNotFoundException 
+     */
     public TabularDataConverter(TabularDataReader source, String dest) throws ClassNotFoundException {
         // load the Sqlite JDBC driver
         Class.forName("org.sqlite.JDBC");
@@ -53,6 +67,11 @@ public final class TabularDataConverter
         this.dest = dest;
     }
     
+    /**
+     * Get the JDBC connection string for the destination SQLite database.
+     * 
+     * @return The JDBC connection string.
+     */
     public String getDestination() {
         return dest;
     }
@@ -69,6 +88,11 @@ public final class TabularDataConverter
         this.tablename = tablename;
     }
     
+    /**
+     * Gets the table name string to use for the first table in the data source.
+     * 
+     * @return The table name string.
+     */
     public String getTableName() {
         return tablename;
     }

@@ -12,6 +12,14 @@ import java.util.NoSuchElementException;
 import reader.plugins.TabularDataReader;
 
 
+/**
+ * Provides high-level access to the Triplifier's data reader plugin system.
+ * Includes methods for opening data files and getting instances of particular
+ * reader plugins.  There should generally be few situations where you might
+ * need to manually instantiate plugin classes.  Using the methods in
+ * ReaderManager is much simpler, less error-prone, and recommended whenever
+ * possible.
+ */
 public class ReaderManager implements Iterable<TabularDataReader> {
     private LinkedList<TabularDataReader> readers;
 
