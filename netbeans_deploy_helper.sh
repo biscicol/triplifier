@@ -8,9 +8,9 @@
 # deploying the triplifier for the first time, unless you do a "Clean and Build" from Netbeans.
 # Prior to running the script, set the value of WEBINFDIR to match your Netbeans project.
 
-# The location of the Netbeans project's WEB-INF directory (typically, this will be in
-# "build/web/" inside the Netbeans project's directory).
-WEBINFDIR="../triplifier-web-netbeans/build/web/WEB-INF/"
+# The path to the Netbeans project's WEB-INF directory (typically, this will be
+# "build/web/WEB-INF" inside the Netbeans project's directory).
+WEBINFDIR="../netbeans_project/build/web/WEB-INF/"
 
 # Note that we use rsync instead of cp for directories to avoid copying any of the SVN stuff.
 cp triplifiersettings.props $WEBINFDIR"classes/"
