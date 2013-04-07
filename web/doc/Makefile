@@ -1,12 +1,13 @@
 SRC = ../../src
 
-doc: $(SRC)/plugins/*.java $(SRC)/ReaderManager.java
-	-javadoc -sourcepath $(SRC) plugins $(SRC)/ReaderManager.java $(SRC)/TabularDataConverter.java
+doc: $(SRC)/reader/*.java $(SRC)/reader/plugins/*.java
+	-javadoc -sourcepath $(SRC) -subpackages reader
 	touch doc
 
 clean:
 	-rm -r *.html
 	-rm resources/*
+	-rm plugins/*
 	-rm package-list
 	-rm *.css
 	-rm doc
