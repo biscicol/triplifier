@@ -85,10 +85,10 @@
 
     <property name="compiler.args.triplifier" value="${compiler.args}"/>
 
-    <property name="triplifier.output.dir" value="${module.triplifier.basedir}/out/production/triplifier"/>
+    <property name="triplifier.output.dir" value="${module.triplifier.basedir}/out/triplifier"/>
 	
     <property name="triplifier.web.source.dir" value="${module.triplifier.basedir}/src.web"/>
-    <property name="triplifier.web.output.dir" value="${module.triplifier.basedir}/out/production/triplifier.web"/>
+    <property name="triplifier.web.output.dir" value="${module.triplifier.basedir}/out/triplifier.web"/>
     <property name="triplifier.web.combined" value="combined"/>
 
     <path id="triplifier.module.bootclasspath">
@@ -167,11 +167,13 @@
 	</target>
 	
     <target name="build.web" depends="js.concat, js.min, css.concat, css.min" description="Build web modules"/>
-              -->
-	<target name="compile.module.triplifier" depends="compile.module.triplifier.production"
-            description="Compile module Triplifier"/>
+	      -->
 
-    <target name="compile.module.triplifier.production" description="Compile module Triplifier; production classes">
+    <!-- This is currently just a synonym for the next target, so no description is given. -->
+    <target name="compile.module.triplifier" depends="compile.module.triplifier.production" />
+
+    <!-- Internal target for compiling all Triplifier code. -->
+    <target name="compile.module.triplifier.production">
         <mkdir dir="${triplifier.output.dir}"/>
         <javac destdir="${triplifier.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}"
                srcdir="src" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.triplifier}/javac">
@@ -189,21 +191,20 @@
         </copy>
     </target>
 
-    <target name="clean.module.triplifier" description="cleanup module">
-        <delete dir="${triplifier.output.dir}"/>
-    </target>
-
-    <target name="init" description="Build initialization">
+    <!-- Currently does nothing, so no description is given for -projecthelp. -->
+    <target name="init">
         <!-- Perform any build initialization in this target -->
     </target>
 
-    <target name="clean" depends="clean.module.triplifier" description="cleanup all"/>
+    <target name="clean" description="Deletes the build directory and its contents.">
+        <delete dir="${triplifier.output.dir}"/>
+    </target>
 
     <!--<target name="build.modules" depends="init, clean, compile.module.triplifier, build.web, war" description="build all modules"/>-->
-    <target name="build.modules" depends="init, clean, compile.module.triplifier, war" description="build all modules"/>
 
+    <target name="compile" depends="compile.module.triplifier" description="Compiles the Triplifier without building a Web archive." />
 
-    <target name="war" depends="compile.module.triplifier.production">
+    <target name="war" depends="compile.module.triplifier.production" description="Builds the Triplifier Web archive for deployment.">
         <war destfile="dist/triplifier.war" webxml="web/WEB-INF/web.xml">
             <fileset dir="web"/>
 	        <!--<fileset dir="${triplifier.web.output.dir}" includes="${triplifier.web.combined}.min.js, ${triplifier.web.combined}.min.css" />-->
@@ -215,6 +216,16 @@
         </war>
     </target>
 
-    <target name="all" depends="build.modules" description="build all"/>
+    <target name="all" depends="init, clean, compile.module.triplifier, war" description="Builds all targets."/>
+
+    <target name="help" description="Displays detailed information about building the Triplifier.">
+	<echo>Running "ant", "ant all", or "ant war" will compile the Triplifier and build a web archive (WAR file) suitable for deployment on an application server such as Apache Tomcat or GlassFish.  The web archive file can be found at ./dist/triplifier.war.</echo>
+	<echo />
+	<echo>The complete list of build targets is as follows.</echo>
+	<echo />
+        <exec executable="ant">
+            <arg value="-p"/>
+        </exec>
+    </target>
 
 </project> 
