@@ -1,7 +1,6 @@
-#
-# This file should be renamed/copied to triplifiersettings.props prior to deploying the
-# Triplifier application.
-#
+# Global settings for the Triplifier.  The contents of this file should not need to be modified unless
+# you want to add new vocabulary definitions to the system.
+
 
 # Specifications for reading various RDF vocabulary files.  These settings are used by the
 # Vocabulary classes to read in vocabulary sets for use by the Triplifier.  The members are
@@ -37,19 +36,8 @@ tripVocabulary = {"displayName":"Triplifier","spec":"DwCRDFspec","subClasses":"f
 dwcVocabulary = {"displayName":"Darwin Core","spec":"DwCRDFspec","subClasses":"false","subProperties":"true"}
 dswVocabulary = {"displayName":"Darwin-SW","spec":"OWLspec","subClasses":"true","subProperties":"false"}
 txnVocabulary = {"displayName":"Taxon Concept","spec":"OWLspec","subClasses":"false","subProperties":"true"}
+
 # Default settings for reading user vocabularies.
 defaultVocabulary = {"spec":"OWLspec","subClasses":"true","subProperties":"false"}
 defaultURI = urn:x-biscicol:
-
-# BCID; EZID creation default account
-eziduser = apitest
-ezidpass = PutSomePasswordHere
-
-# Mysql username/password
-bcidUser = user
-bcidPassword = password
-bcidUrl = jdbc:mysql://darwin.berkeley.edu:3306/biscicol
-bcidClass = com.mysql.jdbc.Driver
-bcidShoulder = ark:/99999/fk4
-doiShoulder = doi:10.5072/FK2
 
