@@ -90,8 +90,9 @@ public class run {
 
         // Try converting an input file to a SQLite database.
         //TabularDataReader tdr = rm.openFile(testfilepath + "fishtest.zip");
-        //TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + testfilepath + "test.sqlite");
-        //tdc.convert();
-        //tdr.closeFile();
+        TabularDataReader tdr = rm.openFile(testfilepath + "dwca-uafmc_fish.zip");
+        TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + testfilepath + "test.sqlite");
+        tdc.convert();
+        tdr.closeFile();
     }
 }
