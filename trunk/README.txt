@@ -1,0 +1,34 @@
+## Building the Triplifier ##
+
+Running "ant", "ant all", or "ant war" will compile the Triplifier and build a web
+archive (WAR file) suitable for deployment on an application server such as Apache
+Tomcat or GlassFish.  The web archive file can be found at ./dist/triplifier.war.
+
+The complete list of build targets is as follows.
+	all      Builds all targets.
+	clean    Deletes the build directory and its contents.
+	compile  Compiles the Triplifier without building a Web archive.
+	help     Displays detailed information about building the Triplifier.
+	war      Builds the Triplifier Web archive for deployment.
+
+
+## Deploying the Triplifier ##
+
+Deploy the WAR archive as you would any other Java Web application.  After
+deployment you will need to copy the JDBC driver JAR libraries from ./lib to the
+shared libraries location of your application server installation.  For Tomcat, for
+example, you would copy them to $CATALINA_HOME/lib.
+
+The JDBC drivers are not included in the WEB-INF/lib directory of the WAR archive
+because we ran into severe performance problems with JDBC after "hot"
+re-deployments on a running server when the drivers were loaded this way.  This is
+not an issue when the JDBC drivers are loaded from the common libraries location.
+
+The following driver files need to be copied.
+
+mysql-connector-java-*-bin.jar
+ojdbc6.jar
+postgresql-*.jdbc4.jar
+sqlite-jdbc-*.jar
+sqljdbc4.jar
+
