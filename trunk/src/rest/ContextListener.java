@@ -1,12 +1,8 @@
 package rest;
 
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Enumeration;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
 
 /**
  * Registers/unregisters JDBC drivers listed in DBsystem
@@ -22,6 +18,7 @@ public class ContextListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent event) {
 		for (DBsystem dbs : DBsystem.values())
 			try {
+                                System.out.println("Loading JBC driver: " + dbs.name());
 				Class.forName(dbs.driver);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -29,19 +26,9 @@ public class ContextListener implements ServletContextListener {
 	}
 
 	/**
-	 * Unregister all registered JDBC drivers.
+	 * Does nothing; only included to meet the interface requirements.
 	 */
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
-		Enumeration<Driver> drivers = DriverManager.getDrivers();
-		while (drivers.hasMoreElements()) {
-			try {
-				DriverManager.deregisterDriver(drivers.nextElement());
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-		}
-
 	}
 }

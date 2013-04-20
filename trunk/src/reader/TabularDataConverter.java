@@ -7,6 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import reader.plugins.TabularDataReader;
 
 
@@ -41,7 +43,7 @@ public final class TabularDataConverter
      */
     public TabularDataConverter(TabularDataReader source, String dest) throws ClassNotFoundException {
         // load the Sqlite JDBC driver
-        Class.forName("org.sqlite.JDBC");
+        //Class.forName("org.sqlite.JDBC");
         
         setSource(source);
         setDestination(dest);
@@ -145,7 +147,12 @@ public final class TabularDataConverter
     public void convert() throws SQLException {
         int tablecnt = 0;
         String tname;
-        
+        /*try {
+            //Class.forName("org.sqlite.JDBC");
+            System.out.println("CANTANKEROUS!!!!");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(TabularDataConverter.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
         Connection conn = DriverManager.getConnection(dest);
 
         while (source.hasNextTable()) {
@@ -167,7 +174,7 @@ public final class TabularDataConverter
         // If the data source is a DwC archive, attempt to "fix" any missing
         // ID columns.  This could be designed more elegantly with a generic
         // "fixer" interface, but since we are only planning to do it for DwC
-        // archives, the implementation is, for now, format specific.
+        // archives, the implementation is, for now, format-specific.
         if (source.getFormatString().equals("DwCA")) {
             DwCAFixer.fixArchive(conn);
         }

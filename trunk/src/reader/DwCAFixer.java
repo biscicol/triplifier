@@ -92,6 +92,8 @@ public class DwCAFixer
         ArrayList<String> includedterms = new ArrayList<String>();
         // A string for building SQL queries.
         String query;
+        // The name of the current newly-created table.
+        String newtablename;
         
         // Get the table name from the database, and verify that there is only
         // one table.
@@ -143,8 +145,11 @@ public class DwCAFixer
                         + conceptID + "'";
                 stmt.executeUpdate(query);
                 
-                // Create a temporary table to select all distinct values into.
-                query = "CREATE TEMPORARY TABLE 'tmp_distinct' "
+                // Create a new table to select all distinct values into.
+                //System.out.println("USING TEMPORARY TABLE!!!!!!");
+                //System.out.println("NOT USING TEMPORARY TABLE!!!!!!");
+                newtablename = conceptID.replace("ID", "");
+                query = "CREATE TEMPORARY TABLE '" + newtablename + "' "
                         + "(id INTEGER PRIMARY KEY";
                 for (String term : includedterms) {
                     query += ", '" + term + "'";
@@ -164,7 +169,7 @@ public class DwCAFixer
                     collist += "\"" + term + "\"";
                     cnt++;
                 }
-                query = "INSERT INTO \"tmp_distinct\" (" + collist +
+                query = "INSERT INTO \"" + newtablename + "\" (" + collist +
                         ") SELECT DISTINCT " + collist
                         + " FROM \"" + tablename + "\"";
                 //System.out.println(query);
@@ -172,12 +177,12 @@ public class DwCAFixer
                 
                 // Finally, copy the ID numbers to the appropriate ID column of
                 // the matching rows in the source data table.
-                String subquery = "SELECT id FROM \"tmp_distinct\" WHERE ";
+                String subquery = "SELECT id FROM \"" + newtablename + "\" WHERE ";
                 cnt = 0;
                 for (String term : includedterms) {
                     if (cnt > 0)
                         subquery += " AND ";
-                    subquery += "\"tmp_distinct\".\"" + term + "\"="
+                    subquery += "\"" + newtablename + "\".\"" + term + "\"="
                             + "\"" + tablename + "\".\"" + term + "\"";
                     cnt++;
                 }
@@ -186,9 +191,13 @@ public class DwCAFixer
                 //System.out.println(query);
                 stmt.executeUpdate(query);
                 
+                // Delete the columns that are no longer needed.
+                
                 // Delete the temporary table.
-                stmt.executeUpdate("DROP TABLE \"tmp_distinct\"");
+                stmt.executeUpdate("DROP TABLE \"" + newtablename + "\"");
             }
         }
+        
+        stmt.close();
     }
 }
