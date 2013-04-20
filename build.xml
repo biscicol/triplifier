@@ -208,7 +208,8 @@
         <war destfile="dist/triplifier.war" webxml="web/WEB-INF/web.xml">
             <fileset dir="web"/>
 	        <!--<fileset dir="${triplifier.web.output.dir}" includes="${triplifier.web.combined}.min.js, ${triplifier.web.combined}.min.css" />-->
-            <lib dir="lib" excludes="servlet-api.jar, yuicompressor*.jar"/>
+	    <lib dir="lib" excludes="servlet-api.jar, yuicompressor*.jar, mysql-connector-java-*.jar, ojdbc6.jar, postgresql-*.jar,
+		sqlite-*.jar, sqljdbc4.jar"/>
             <classes dir="${triplifier.output.dir}"/>
             <classes dir="" includes="sqlite/*.*"/>
             <classes dir="" includes="vocabularies/*.*"/>
