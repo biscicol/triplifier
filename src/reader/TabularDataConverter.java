@@ -147,12 +147,6 @@ public final class TabularDataConverter
     public void convert() throws SQLException {
         int tablecnt = 0;
         String tname;
-        /*try {
-            //Class.forName("org.sqlite.JDBC");
-            System.out.println("CANTANKEROUS!!!!");
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(TabularDataConverter.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
         Connection conn = DriverManager.getConnection(dest);
 
         while (source.hasNextTable()) {

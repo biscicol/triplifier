@@ -142,6 +142,8 @@ public class DwCAFixer
             if (!includedterms.isEmpty() && !colnames.contains(conceptID)) {
                 System.out.println("Fixing missing \"" + conceptID + "\" column.");
                 
+                stmt.execute("BEGIN TRANSACTION");
+                
                 // Add an ID column to the table for the current conceptID.
                 query = "ALTER TABLE \"" + tablename + "\" ADD COLUMN '"
                         + conceptID + "'";
@@ -193,6 +195,8 @@ public class DwCAFixer
                         + conceptID + "\" = (" + subquery + ")";
                 //System.out.println(query);
                 stmt.executeUpdate(query);
+                
+                stmt.execute("COMMIT");
             }
         }
         
@@ -216,21 +220,24 @@ public class DwCAFixer
         }
         
         // Run the queries.
+        System.out.println("Removing unneeded columns from the main table.");
         stmt.execute("BEGIN TRANSACTION");
+        
         query = "CREATE TABLE \"" + tablename + "_tmp\"(" + collist + ")";
-        System.out.println(query);
         stmt.executeUpdate(query);
+        
         query = "INSERT INTO \"" + tablename + "_tmp\" SELECT " + collist
                 + " FROM \"" + tablename + "\"";
-        System.out.println(query);
         stmt.executeUpdate(query);
+        
         query = "DROP TABLE \"" + tablename + "\"";
-        System.out.println(query);
         stmt.executeUpdate(query);
+        
         query = "ALTER TABLE \"" + tablename + "_tmp\" RENAME TO " +
                 "\"" + "maintable" + "\"";
-        System.out.println(query);
+        //System.out.println(query);
         stmt.executeUpdate(query);
+        
         stmt.execute("COMMIT");
 
         stmt.close();
