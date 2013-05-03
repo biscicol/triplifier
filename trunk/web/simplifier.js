@@ -125,8 +125,8 @@ DwCASimplifier.prototype.map_order = ['dwc:Identification', 'dwc:Event', 'dwc:Oc
 
 /**
  * Attempts to "simplify" the data schema of a project by automatically defining as many project
- * elements as possible.  For a single-table Darwin Core Archive, this means inferring concept and
- * attribute definitions.
+ * elements as possible.  For a Darwin Core Archive, this means specifying joins among concept
+ * tables, then inferring concept and attribute definitions.
  *
  * @param project The project to simplify.
  *
@@ -136,15 +136,47 @@ DwCASimplifier.prototype.simplify = function(project) {
 	this.project = project;
 
 	// Try to infer joins.  Joins are only possible if there are at least two tables.
+	// Object format for a join:
+	// {	foreignTable:"maintable", foreignColumn:"eventID",
+	// 	primaryTable:"event", primaryColumn:"id"}
+	var cnt, table, col, jtablename;
+	var projjoins = this.project.getPropertyCopy('joins');
+	var projjoinlen = projjoins.length;
 	if (this.project.schema.length > 1) {
+		// First, find the main table.
+		table = this.project.getTableByName('maintable');
+		if (table == undefined)
+			return false;
+
+		// Inspect all of the ID columns from the main table.
+		for (cnt = 0; cnt < table.columns.length; cnt++) {
+			col = table.columns[cnt];
+			if (col.search(/.*ID$/) != -1) {
+				// See if this ID column has a matching table.  If so,
+				// define a join for this column and the matching table.
+				jtablename = col.replace(/ID$/, '');
+				if (this.project.getTableByName(jtablename) != undefined) {
+					var newjoin = {
+						foreignTable:'maintable', foreignColumn:col,
+						primaryTable:jtablename, primaryColumn:'id'
+						};
+					projjoins.push(newjoin);
+				}
+			}
+		}
 	}
+
+	// If we defined new joins, save them to the project.
+	if (projjoinlen != projjoins.length)
+		this.project.setProperty('joins', projjoins);
+	return true;
 
 	// Now try to figure out the DwC concepts (entities) that are used.
 	// Look at each column of each table.
 	// Object format for a concept project entry:
 	// {	table:"occurrence_txt", idColumn:"taxonID", idPrefixColumn:"",
 	// 	rdfClass:{name:"Taxon", uri:"http://rs.tdwg.org/dwc/terms/Taxon"} }
-	var cnt, cnt2, table, col;
+	var cnt2;
 	var projentities = this.project.getPropertyCopy('entities');
 	var projentlen = projentities.length;
 	for (cnt = 0; cnt < this.project.schema.length; cnt++) {
