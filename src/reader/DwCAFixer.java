@@ -77,11 +77,9 @@ public class DwCAFixer
      * examined to infer which DwC concepts are present in the data.  Then,
      * fixArchive() identifies all unique concept "instance" values, generates
      * (local) ID numbers for each instance, and assigns these IDs to a new
-     * concept ID column in the database table.  In effect, this "re-normalizes"
-     * the data, although everything remains within a single table.  The net
-     * result is what would be obtained by joining all of the fully normalized
-     * data into a single database table.  Note that only single-table archives
-     * are currently supported by fixArchive().
+     * concept ID column in the database table.  The end result is pseudo-
+     * normalized data with each concept in its own table.  Note that only
+     * single-table archives are currently supported by fixArchive().
      * 
      * @param dbconn A connection to a SQLite database for a DwC archive.
      * @throws SQLException 
@@ -90,6 +88,9 @@ public class DwCAFixer
         Statement stmt = dbconn.createStatement();
         // A list for tracking which terms are present in the source data.
         ArrayList<String> includedterms = new ArrayList<String>();
+        // A list for keeping track of which columns we should delete from the
+        // original table after normalizing the data.
+        ArrayList<String> deletecolumns = new ArrayList<String>();
         // A string for building SQL queries.
         String query;
         // The name of the current newly-created table.
@@ -132,6 +133,7 @@ public class DwCAFixer
                 if (colnames.contains(term)) {
                     //System.out.println("  " + term);
                     includedterms.add(term);
+                    deletecolumns.add(term);
                 }
             }
             
@@ -143,13 +145,14 @@ public class DwCAFixer
                 // Add an ID column to the table for the current conceptID.
                 query = "ALTER TABLE \"" + tablename + "\" ADD COLUMN '"
                         + conceptID + "'";
+                colnames.add(conceptID);
                 stmt.executeUpdate(query);
                 
                 // Create a new table to select all distinct values into.
                 //System.out.println("USING TEMPORARY TABLE!!!!!!");
                 //System.out.println("NOT USING TEMPORARY TABLE!!!!!!");
                 newtablename = conceptID.replace("ID", "");
-                query = "CREATE TEMPORARY TABLE '" + newtablename + "' "
+                query = "CREATE TABLE '" + newtablename + "' "
                         + "(id INTEGER PRIMARY KEY";
                 for (String term : includedterms) {
                     query += ", '" + term + "'";
@@ -190,14 +193,46 @@ public class DwCAFixer
                         + conceptID + "\" = (" + subquery + ")";
                 //System.out.println(query);
                 stmt.executeUpdate(query);
-                
-                // Delete the columns that are no longer needed.
-                
-                // Delete the temporary table.
-                stmt.executeUpdate("DROP TABLE \"" + newtablename + "\"");
             }
         }
         
+        // Delete the columns that are no longer needed.
+        // First, get a list of all of the columns we are keeping.
+        ArrayList<String> keepcolumns = new ArrayList<String>();
+        for (String colname : colnames) {
+            if (!deletecolumns.contains(colname))
+                keepcolumns.add(colname);
+        }
+        // Build a formatted list of the column names to use in subsequent
+        // queries.
+        String collist = "";
+        int cnt = 0;
+        for (String colname : keepcolumns) {
+            if (cnt > 0) {
+                collist += ", ";
+            }
+            collist += "\"" + colname + "\"";
+            cnt++;
+        }
+        
+        // Run the queries.
+        stmt.execute("BEGIN TRANSACTION");
+        query = "CREATE TABLE \"" + tablename + "_tmp\"(" + collist + ")";
+        System.out.println(query);
+        stmt.executeUpdate(query);
+        query = "INSERT INTO \"" + tablename + "_tmp\" SELECT " + collist
+                + " FROM \"" + tablename + "\"";
+        System.out.println(query);
+        stmt.executeUpdate(query);
+        query = "DROP TABLE \"" + tablename + "\"";
+        System.out.println(query);
+        stmt.executeUpdate(query);
+        query = "ALTER TABLE \"" + tablename + "_tmp\" RENAME TO " +
+                "\"" + "maintable" + "\"";
+        System.out.println(query);
+        stmt.executeUpdate(query);
+        stmt.execute("COMMIT");
+
         stmt.close();
     }
 }

@@ -73,7 +73,7 @@ JoinsTable.prototype.foreignTableChange = function(eventsrc) {
  **/
 JoinsTable.prototype.primaryTableChange = function(eventsrc) {
 	var seltableindex = eventsrc.options[eventsrc.selectedIndex].getAttribute("data-schemaIdx");
-	var primaryTable = mainproject.schema[seltableindex];
+	var primaryTable = this.project.schema[seltableindex];
 	var ob = new OptionBuilder($(eventsrc).parent().parent());
 	var pk = "";
 
