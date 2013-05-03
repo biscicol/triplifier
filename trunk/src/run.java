@@ -63,7 +63,8 @@ public class run {
 
     public static void main(String[] args) throws Exception {
         // Sets the path to the test files.
-        String testfilepath = "../triplifiersvn/testdata/";
+        //String testfilepath = "../triplifiersvn/testdata/";
+        String testfilepath = "../triplifiersvn/testdata/vertnet/";
                 
         //runReaders();
 
@@ -83,14 +84,20 @@ public class run {
         System.out.println();
 
         // Open a file and print the data.
-        runReader(rm.openFile(testfilepath + "test.ods"));
+        //runReader(rm.openFile(testfilepath + "test.ods"));
         //System.out.println(Thread.currentThread().getContextClassLoader().getResource("sqlite").getFile());
         //System.out.println(System.getProperty("user.dir"));
         //runReader(rm.openFile(testfilepath + "fishtest.zip"));
 
         // Try converting an input file to a SQLite database.
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException ex) {
+            System.out.println(ex);
+        }
         //TabularDataReader tdr = rm.openFile(testfilepath + "fishtest.zip");
-        TabularDataReader tdr = rm.openFile(testfilepath + "dwca-uafmc_fish.zip");
+        TabularDataReader tdr = rm.openFile(testfilepath + "uafmc_fish.zip");
+        //TabularDataReader tdr = rm.openFile(testfilepath + "hsu_wildlife_birds.zip");
         TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + testfilepath + "test.sqlite");
         tdc.convert();
         tdr.closeFile();
