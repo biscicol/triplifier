@@ -169,14 +169,13 @@ DwCASimplifier.prototype.simplify = function(project) {
 	// If we defined new joins, save them to the project.
 	if (projjoinlen != projjoins.length)
 		this.project.setProperty('joins', projjoins);
-	return true;
 
 	// Now try to figure out the DwC concepts (entities) that are used.
 	// Look at each column of each table.
 	// Object format for a concept project entry:
 	// {	table:"occurrence_txt", idColumn:"taxonID", idPrefixColumn:"",
 	// 	rdfClass:{name:"Taxon", uri:"http://rs.tdwg.org/dwc/terms/Taxon"} }
-	var cnt2;
+	var cnt2, cncptname, cncpttname;
 	var projentities = this.project.getPropertyCopy('entities');
 	var projentlen = projentities.length;
 	for (cnt = 0; cnt < this.project.schema.length; cnt++) {
@@ -185,11 +184,24 @@ DwCASimplifier.prototype.simplify = function(project) {
 			col = table.columns[cnt2];
 			// See if this column is a known ID column.
 			if (col in this.cncpttable) {
+				cncptname = this.cncpttable[col].name;
+				cncpttname = col.replace(/ID$/, '');
 				// Found an ID column, so create the concept and add it to the project.
-				var newcncpt = {
-					table:table.name, idColumn:col, idPrefixColumn:(table.name + '.' + col + '_'),
-					rdfClass:{ name:this.cncpttable[col].name, uri:this.cncpttable[col].uri }
-				};
+				var newcncpt;
+				if (this.project.getTableByName(cncpttname) != undefined) {
+					// Check if there is a table specifically for this concept; if so, use it to
+					// define the concept in the project.
+					newcncpt = {
+						table:cncpttname, idColumn:'id', idPrefixColumn:(cncpttname + '.id_'),
+						rdfClass:{ name:cncptname, uri:this.cncpttable[col].uri }
+					};
+				} else {
+					// Otherwise, use the current table to define the concept.
+					newcncpt = {
+						table:table.name, idColumn:col, idPrefixColumn:(table.name + '.' + col + '_'),
+						rdfClass:{ name:cncptname, uri:this.cncpttable[col].uri }
+					};
+				}
 				projentities.push(newcncpt);
 			}
 		}
