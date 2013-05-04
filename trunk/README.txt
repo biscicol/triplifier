@@ -26,9 +26,9 @@ not an issue when the JDBC drivers are loaded from the common libraries location
 
 The following driver files need to be copied.
 
-mysql-connector-java-*-bin.jar
-ojdbc6.jar
-postgresql-*.jdbc4.jar
-sqlite-jdbc-*.jar
-sqljdbc4.jar
+sudo cp ./lib/mysql-connector-java-*-bin.jar $CATALINA_HOME/lib
+sudo cp ./lib/ojdbc6.jar 		$CATALINA_HOME/lib
+sudo cp ./lib/postgresql-*.jdbc4.jar 	$CATALINA_HOME/lib
+sudo cp ./lib/sqlite-jdbc-*.jar		$CATALINA_HOME/lib
+sudo cp ./lib/sqljdbc4.jar		$CATALINA_HOME/lib
 
