@@ -37,7 +37,7 @@ public class Relation {
 
         System.out.println(subjTbl + "=" + objTbl + "+" + subjEntity.idPrefixColumn + "-" + objEntity.idPrefixColumn);
         if (subjTbl.equals(objTbl)) {
-            pw.println("map:" + subjClassMap + "_" + objClmn + "_rel" + " a d2rq:PropertyBridge;");
+            pw.println("map:" + subjClassMap + "_" + objClassMap + "_rel" + " a d2rq:PropertyBridge;");
             pw.println("\td2rq:belongsToClassMap " + "map:" + subjClassMap + ";");
             pw.println("\td2rq:property " + predicate + ";");
             pw.println(mapping.getColumnPrefix(objEntity));
@@ -47,7 +47,7 @@ public class Relation {
             Join join = mapping.findJoin(subjTbl, objTbl);
             if (join == null)
                 return;
-            pw.println("map:" + subjClassMap + "_" + objClmn + "_rel" + " a d2rq:PropertyBridge;");
+            pw.println("map:" + subjClassMap + "_" + objClassMap + "_rel" + " a d2rq:PropertyBridge;");
             pw.println("\td2rq:belongsToClassMap " + "map:" + subjClassMap + ";");
             pw.println("\td2rq:property " + predicate + ";");
             pw.println("\td2rq:refersToClassMap " + "map:" + objClassMap + ";");
