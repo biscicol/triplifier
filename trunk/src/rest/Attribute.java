@@ -22,6 +22,7 @@ public class Attribute {
 			pw.println("\td2rq:belongsToClassMap " + "map:" + classMap + ";");
 			pw.println("\td2rq:property <" + rdfProperty.uri + ">;");
 			pw.println("\td2rq:column \"" + table + "." + column + "\";");
+			pw.println("\td2rq:condition \"" + table + "." + column + " <> ''\";");
 			pw.println("\t.");	
 	}
 
