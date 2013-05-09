@@ -141,13 +141,12 @@ public class DwCAFixer
             hasIDcolumn = colnames.contains(conceptID);
             IDcolpopulated = false;
             if (hasIDcolumn) {
-                // If so, see if there are actually identifiers present by
-                // checking the value in the first row.
+                // If so, see if there are actually any identifiers present.
                 query = "SELECT \"" + conceptID + "\" FROM \"" + tablename + "\""
-                        + " LIMIT 1";
+                        + " WHERE \"" + conceptID + "\" != '' LIMIT 1";
                 rs = stmt.executeQuery(query);
-                rs.next();
-                IDcolpopulated = !rs.getString(1).trim().equals("");
+                IDcolpopulated = rs.next();
+                System.out.println(conceptID + ": " + IDcolpopulated);
             }
             
             // Check if we found terms for the current conceptID and if there is
