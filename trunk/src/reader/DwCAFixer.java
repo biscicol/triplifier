@@ -137,7 +137,7 @@ public class DwCAFixer
                 }
             }
             
-            // Check if an ID column already exists.
+            // Check if an ID column already exists for this concept.
             hasIDcolumn = colnames.contains(conceptID);
             IDcolpopulated = false;
             if (hasIDcolumn) {
@@ -146,7 +146,6 @@ public class DwCAFixer
                         + " WHERE \"" + conceptID + "\" != '' LIMIT 1";
                 rs = stmt.executeQuery(query);
                 IDcolpopulated = rs.next();
-                System.out.println(conceptID + ": " + IDcolpopulated);
             }
             
             // Check if we found terms for the current conceptID and if there is
@@ -218,6 +217,20 @@ public class DwCAFixer
             }
         }
         
+        IDcolpopulated = true;
+        if (colnames.contains("occurrenceID")) {
+            // See if the occurrenceID column for this table is populated.
+            query = "SELECT \"occurrenceID\" FROM \"" + tablename + "\""
+                    + " WHERE \"occurrenceID\" != '' LIMIT 1";
+            rs = stmt.executeQuery(query);
+            IDcolpopulated = rs.next();
+            
+            // If occurrenceID was not populated, add it to the list of columns
+            // to delete.
+            if (!IDcolpopulated)
+                deletecolumns.add("occurrenceID");
+        }
+        
         // Delete the columns that are no longer needed.
         // First, get a list of all of the columns we are keeping.
         ArrayList<String> keepcolumns = new ArrayList<String>();
@@ -227,25 +240,31 @@ public class DwCAFixer
         }
         // Build a formatted list of the column names to use in subsequent
         // queries.
-        String collist = "";
+        String savedcollist = "";
         int cnt = 0;
         for (String colname : keepcolumns) {
             if (cnt > 0) {
-                collist += ", ";
+                savedcollist += ", ";
             }
-            collist += "\"" + colname + "\"";
+            savedcollist += "\"" + colname + "\"";
             cnt++;
+        }
+        String newcollist = savedcollist;
+        if (!IDcolpopulated) {
+            // If occurrenceID was not populated, create a new auto-increment
+            // column for it.
+            newcollist = "\"occurrenceID\" INTEGER PRIMARY KEY, " + newcollist;
         }
         
         // Run the queries.
         System.out.println("Removing unneeded columns from the main table.");
         stmt.execute("BEGIN TRANSACTION");
         
-        query = "CREATE TABLE \"" + tablename + "_tmp\"(" + collist + ")";
+        query = "CREATE TABLE \"" + tablename + "_tmp\"(" + newcollist + ")";
         stmt.executeUpdate(query);
         
-        query = "INSERT INTO \"" + tablename + "_tmp\" SELECT " + collist
-                + " FROM \"" + tablename + "\"";
+        query = "INSERT INTO \"" + tablename + "_tmp\" (" + savedcollist +
+                ") SELECT " + savedcollist + " FROM \"" + tablename + "\"";
         stmt.executeUpdate(query);
         
         query = "DROP TABLE \"" + tablename + "\"";
