@@ -96,7 +96,8 @@ public class run {
             System.out.println(ex);
         }
         //TabularDataReader tdr = rm.openFile(testfilepath + "fishtest.zip");
-        TabularDataReader tdr = rm.openFile(testfilepath + "uafmc_fish.zip");
+        //TabularDataReader tdr = rm.openFile(testfilepath + "uafmc_fish.zip");
+        TabularDataReader tdr = rm.openFile(testfilepath + "uafmc_mammals.zip");
         //TabularDataReader tdr = rm.openFile(testfilepath + "hsu_wildlife_birds.zip");
         TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + testfilepath + "test.sqlite");
         tdc.convert();
