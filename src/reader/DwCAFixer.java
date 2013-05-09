@@ -122,6 +122,7 @@ public class DwCAFixer
         // Now work through each DwC concept.  See if the concept is represented
         // in the data source, verify if the appropriate ID column is present,
         // and if not, try to create it.
+        boolean hasIDcolumn, IDcolpopulated;
         for (String conceptID : dwcterms.keySet()) {
             //System.out.println(conceptID);
             
@@ -133,22 +134,37 @@ public class DwCAFixer
                 if (colnames.contains(term)) {
                     //System.out.println("  " + term);
                     includedterms.add(term);
-                    deletecolumns.add(term);
                 }
             }
             
+            // Check if an ID column already exists.
+            hasIDcolumn = colnames.contains(conceptID);
+            IDcolpopulated = false;
+            if (hasIDcolumn) {
+                // If so, see if there are actually identifiers present by
+                // checking the value in the first row.
+                query = "SELECT \"" + conceptID + "\" FROM \"" + tablename + "\""
+                        + " LIMIT 1";
+                rs = stmt.executeQuery(query);
+                rs.next();
+                IDcolpopulated = !rs.getString(1).trim().equals("");
+            }
+            
             // Check if we found terms for the current conceptID and if there is
-            // already an ID column for it.
-            if (!includedterms.isEmpty() && !colnames.contains(conceptID)) {
+            // already a populated ID column for it.
+            if (!includedterms.isEmpty() && !(hasIDcolumn && IDcolpopulated)) {
                 System.out.println("Fixing missing \"" + conceptID + "\" column.");
                 
                 stmt.execute("BEGIN TRANSACTION");
                 
-                // Add an ID column to the table for the current conceptID.
-                query = "ALTER TABLE \"" + tablename + "\" ADD COLUMN '"
-                        + conceptID + "'";
-                colnames.add(conceptID);
-                stmt.executeUpdate(query);
+                // Add an ID column to the table for the current conceptID,
+                // if needed.
+                if (!hasIDcolumn) {
+                    query = "ALTER TABLE \"" + tablename + "\" ADD COLUMN '"
+                            + conceptID + "'";
+                    colnames.add(conceptID);
+                    stmt.executeUpdate(query);
+                }
                 
                 // Create a new table to select all distinct values into.
                 //System.out.println("USING TEMPORARY TABLE!!!!!!");
@@ -158,12 +174,15 @@ public class DwCAFixer
                         + "(id INTEGER PRIMARY KEY";
                 for (String term : includedterms) {
                     query += ", '" + term + "'";
+                    // Keep track of the columns we are relocating so that they
+                    // can be deleted from the main table later.
+                    deletecolumns.add(term);
                 }
                 query += ")";
                 //System.out.println(query);
                 stmt.executeUpdate(query);
                 
-                // Populate the temporary table with all distinct combinations
+                // Populate the new table with all distinct combinations
                 // of the concept term values and generate integer IDs for each
                 // distinct "instance."
                 int cnt = 0;
