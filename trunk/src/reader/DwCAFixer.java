@@ -151,7 +151,7 @@ public class DwCAFixer
             // Check if we found terms for the current conceptID and if there is
             // already a populated ID column for it.
             if (!includedterms.isEmpty() && !(hasIDcolumn && IDcolpopulated)) {
-                System.out.println("Fixing missing \"" + conceptID + "\" column.");
+                System.out.println("Fixing missing or empty \"" + conceptID + "\" column.");
                 
                 stmt.execute("BEGIN TRANSACTION");
                 
@@ -225,7 +225,7 @@ public class DwCAFixer
             rs = stmt.executeQuery(query);
             IDcolpopulated = rs.next();
             
-            // If occurrenceID was not populated, add it to the list of columns
+            // If occurrenceID is not populated, add it to the list of columns
             // to delete.
             if (!IDcolpopulated)
                 deletecolumns.add("occurrenceID");
