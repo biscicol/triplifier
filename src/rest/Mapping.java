@@ -137,7 +137,6 @@ public class Mapping {
         pw.println("@prefix jdbc: <http://d2rq.org/terms/jdbc/> .");
         pw.println("@prefix ro: <http://www.obofoundry.org/ro/ro.owl#> .");
         pw.println("@prefix bsc: <http://biscicol.org/terms/index.html#> .");
-        pw.println("@prefix ma: <http://www.w3.org/ns/ma-ont#> .");
         pw.println();
     }
 }

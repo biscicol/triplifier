@@ -1,3 +1,4 @@
+
 package rest;
 
 import javax.management.relation.RelationService;
@@ -24,7 +25,13 @@ public class Dataseturi {
     void printD2RQ(PrintWriter pw, Mapping mapping) {
         Set<Relation> relations = mapping.relations;
 
-        String subject = "", predicate = "", object = "";
+        // The commented-out code below began with the intention of inspecting
+        // the defined relations to decide which entity (concept) to connect to
+        // the data source identifier.  However, the functionality was never
+        // completed, and it was replaced with the simpler approach implemented
+        // below.  For now, the old code is left here in case this problem is
+        // re-visited in the future.
+        /*String subject = "", predicate = "", object = "";
         // TODO: Figure out the top level relation, for now it just gets the last one expressed.
         for (Relation relation : relations) {
             subject = relation.subject;
@@ -50,6 +57,15 @@ public class Dataseturi {
             subjEntity = mapping.findEntity(subjTbl, subjClmn);
             if (subjEntity == null)
                 return;
+        }*/
+        
+        // See if instances of dwc:Occurrence are defined.  If so, use those
+        // instances to connect to the data source identifier.  Otherwise, just
+        // use the first entity (concept) that is returned.
+        Entity subjEntity = mapping.entities.iterator().next();
+        for (Entity entity : mapping.entities) {
+            if (entity.rdfClass.name.equals("dwc:Occurrence"))
+                subjEntity = entity;
         }
 
         String subjClassMap = subjEntity.classMap();
@@ -65,7 +81,7 @@ public class Dataseturi {
         // Associate the SubjClassMap with the DataSet Class Map
         pw.println("map:DataSet_" + subjClassMap + " a d2rq:PropertyBridge;");
         pw.println("\td2rq:belongsToClassMap map:DataSet;");
-        pw.println("\td2rq:property ma:isSourceOf;");
+        pw.println("\td2rq:property bsc:related_to;");
         pw.println(mapping.getColumnPrefix(subjEntity));
         pw.println("\t.");
 
