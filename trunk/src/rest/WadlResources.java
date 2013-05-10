@@ -1,15 +1,12 @@
 package rest;
 
-import com.sun.jersey.server.impl.wadl.WadlResource;
 import com.sun.jersey.server.wadl.ApplicationDescription;
 import com.sun.jersey.server.wadl.WadlApplicationContext;
 import com.sun.jersey.spi.resource.Singleton;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -41,7 +38,7 @@ public final class WadlResources {
     @GET
     public synchronized Response getWadl(@Context UriInfo uriInfo) {
 
-        String styleSheetUrl = uriInfo.getBaseUri().toString() + "../wadl.xsl";
+        String styleSheetUrl = uriInfo.getBaseUri().toString() + "web/wadl.xsl";
         ApplicationDescription ae = wadlContext.getApplication(uriInfo);
         this.application = ae.getApplication();
 
