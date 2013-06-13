@@ -14,6 +14,11 @@ import java.io.IOException;
  * This tool is powerful and does not constrain relationships, expressions, or attributes
  * in any way and thus should be used with care.
  *
+ * This class is different from triplify in that it cannot load text files or use any of
+ * the available Readers.  It only reads in a D2RQ mapping file that contains a database
+ * connection definition.  However, this makes it more powerful in that the full triplification
+ * process can be completed in a single step.
+ *
  * John Deck
  * June 12, 2013
  */
