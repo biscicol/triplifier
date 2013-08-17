@@ -1,0 +1,89 @@
+@prefix map: <file:/home/stuckyb/RAwork/biscicol/triplifier/d2r-server-0.7/biocode_example_mapping.n3#> .
+@prefix db: <> .
+@prefix vocab: <http://localhost:2020/vocab/resource/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix jdbc: <http://d2rq.org/terms/jdbc/> .
+
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "org.sqlite.JDBC";
+	d2rq:jdbcDSN "jdbc:sqlite:/tmp/ms_tmp/triples.sqlite";
+	.
+
+# Table collecting_events
+map:collecting_events a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "collecting_events/@@collecting_events.Coll_EventID_collector|urlify@@";
+	d2rq:class vocab:collecting_events;
+	d2rq:classDefinitionLabel "collecting_events";
+	.
+map:collecting_events__label a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:collecting_events;
+	d2rq:property rdfs:label;
+	d2rq:pattern "collecting_events #@@collecting_events.Coll_EventID_collector@@";
+	.
+map:collecting_events_Coll_EventID_collector a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:collecting_events;
+	d2rq:property vocab:collecting_events_Coll_EventID_collector;
+	d2rq:propertyDefinitionLabel "collecting_events Coll_EventID_collector";
+	d2rq:column "collecting_events.Coll_EventID_collector";
+	.
+# specify that Collector is a URI, not a literal
+map:collecting_events_Collector a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:collecting_events;
+	d2rq:property vocab:collecting_events_Collector;
+	d2rq:propertyDefinitionLabel "collecting_events Collector";
+	d2rq:uriColumn "collecting_events.Collector";
+	.
+map:collecting_events_Locality a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:collecting_events;
+	d2rq:property vocab:collecting_events_Locality;
+	d2rq:propertyDefinitionLabel "collecting_events Locality";
+	d2rq:column "collecting_events.Locality";
+	.
+
+# Specify that Collector in collecting_events should be an object, and that it already
+# has a URI.  Assign it the type <http://biocode.org/collector>.  Also, tell D2RQ to watch
+# for duplicate triples.
+map:collector a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriColumn "collecting_events.Collector";
+	d2rq:class <http://biocode.org/collector>;
+	d2rq:classDefinitionLabel "collector";
+	d2rq:containsDuplicates "true";
+	.
+
+# Table specimens
+map:specimens a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "specimens/@@specimens.Specimen_Num_Collector|urlify@@";
+	d2rq:class vocab:specimens;
+	d2rq:classDefinitionLabel "specimens";
+	.
+map:specimens__label a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:specimens;
+	d2rq:property rdfs:label;
+	d2rq:pattern "specimens #@@specimens.Specimen_Num_Collector@@";
+	.
+map:specimens_Specimen_Num_Collector a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:specimens;
+	d2rq:property vocab:specimens_Specimen_Num_Collector;
+	d2rq:propertyDefinitionLabel "specimens Specimen_Num_Collector";
+	d2rq:column "specimens.Specimen_Num_Collector";
+	.
+
+map:specimens_SpecificEpithet a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:specimens;
+	d2rq:property vocab:specimens_SpecificEpithet;
+	d2rq:propertyDefinitionLabel "specimens SpecificEpithet";
+	d2rq:column "specimens.SpecificEpithet";
+	.
+map:specimens_Coll_EventID_collector a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:specimens;
+	d2rq:property vocab:specimens_Coll_EventID_collector;
+	d2rq:refersToClassMap map:collecting_events;
+	d2rq:join "specimens.Coll_EventID_collector => collecting_events.Coll_EventID_collector";
+	.
+
