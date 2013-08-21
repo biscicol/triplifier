@@ -1,4 +1,4 @@
- package rest;
+package rest;
 
 import java.io.*;
 import java.net.URL;
@@ -28,10 +28,10 @@ import com.sun.jersey.multipart.FormDataParam;
 import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
 
 /**
- * Provides RESTful web services using Jersey JAX-RS implementation. 
- * Many of the public methods use Jackson Mapper to translate between 
+ * Provides RESTful web services using Jersey JAX-RS implementation.
+ * Many of the public methods use Jackson Mapper to translate between
  * JSON (received from/sent to the client) and Java objects.
- * Jersey POJOMappingFeature (entry in web.xml) allows to 
+ * Jersey POJOMappingFeature (entry in web.xml) allows to
  * achieve this without any special annotations of mapped Java classes,
  * sometimes argument-less constructor is needed. Exception handling
  * is achieved through a custom error page for error 500 (entry in web.xml),
@@ -39,8 +39,8 @@ import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
  */
 @Path("/")
 public class Rest {
-    private static final String sqliteFolder = "sqlite";
-    private static final String triplesFolder = "triples";
+    public static final String sqliteFolder = "sqlite";
+    public static final String triplesFolder = "triples";
     private static final String vocabulariesFolder = "vocabularies";
     @Context
     private static ServletContext context;
@@ -69,8 +69,14 @@ public class Rest {
      *
      * @return Real path of the triples folder with ending slash.
      */
-    static String getTriplesPath() {
-        return context.getRealPath(triplesFolder) + File.separator;
+    public static String getTriplesPath() {
+        if (context != null) {
+            return context.getRealPath(triplesFolder) + File.separator;
+        } else {
+            return System.getProperty("user.dir") + File.separator;
+        }
+
+
     }
 
     /**
@@ -90,7 +96,7 @@ public class Rest {
             throws Exception {
         String fileName = contentDisposition.getFileName();
         File sqliteFile = createUniqueFile(fileName + ".sqlite", getSqlitePath());
-        if (fileName.endsWith(".sqlite"))  {
+        if (fileName.endsWith(".sqlite")) {
             writeFile(inputStream, sqliteFile);
         } else {
             File tempFile = File.createTempFile("upload", fileName);
@@ -99,7 +105,39 @@ public class Rest {
             rm.loadReaders();
             TabularDataReader tdr = rm.openFile(tempFile.getPath());
             TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + sqliteFile.getPath());
-            tdc.convert();
+            tdc.convert(true);
+            tdr.closeFile();
+        }
+        return inspect(new Connection(sqliteFile));
+    }
+
+    /**
+     * Upload file, convert into sqlite database, return Mapping representation of tabular data.
+     *
+     * @param inputStream        File to be uploaded.
+     * @param contentDisposition Form-data content disposition header.
+     * @return Mapping representation of tabular data in the file.
+     */
+    @POST
+    @Path("/triplifyDirect")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Mapping triplifyDirect(
+            @FormDataParam("file") InputStream inputStream,
+            @FormDataParam("file") FormDataContentDisposition contentDisposition)
+            throws Exception {
+        String fileName = contentDisposition.getFileName();
+        File sqliteFile = createUniqueFile(fileName + ".sqlite", getSqlitePath());
+        if (fileName.endsWith(".sqlite")) {
+            writeFile(inputStream, sqliteFile);
+        } else {
+            File tempFile = File.createTempFile("upload", fileName);
+            writeFile(inputStream, tempFile);
+            ReaderManager rm = new ReaderManager();
+            rm.loadReaders();
+            TabularDataReader tdr = rm.openFile(tempFile.getPath());
+            TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + sqliteFile.getPath());
+            tdc.convert(true);
             tdr.closeFile();
         }
         return inspect(new Connection(sqliteFile));
@@ -124,15 +162,15 @@ public class Rest {
      * Create new file in given folder, add incremental number to base if filename already exists.
      *
      * @param fileName Name of the file.
-     * @param folder Folder where the file is created.
+     * @param folder   Folder where the file is created.
      * @return The new file.
      */
-    private File createUniqueFile(String fileName, String folder) {
-    	int dotIndex = fileName.lastIndexOf('.');
-    	if (dotIndex == -1)
-    		dotIndex = fileName.length();
-    	String base = fileName.substring(0, dotIndex);
-    	String ext = fileName.substring(dotIndex);
+    public File createUniqueFile(String fileName, String folder) {
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex == -1)
+            dotIndex = fileName.length();
+        String base = fileName.substring(0, dotIndex);
+        String ext = fileName.substring(dotIndex);
         File file = new File(folder + fileName);
         int i = 1;
         while (file.exists())
@@ -165,21 +203,26 @@ public class Rest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public String getMapping(Mapping mapping) throws Exception {
-    	return getMapping(mapping, false);
+        return getMapping(mapping, false);
     }
 
     private String getMapping(Mapping mapping, Boolean verifyFile) throws Exception {
-    	if (verifyFile)
-    		mapping.connection.verifyFile();
-        File mapFile = createUniqueFile("mapping.n3", getTriplesPath());
+        return getMapping("output",mapping, verifyFile);
+    }
+
+    private String getMapping(String filenamePrefix, Mapping mapping, Boolean verifyFile) throws Exception {
+        if (verifyFile)
+            mapping.connection.verifyFile();
+
+        File mapFile = createUniqueFile(filenamePrefix + ".mapping.n3", getTriplesPath());
         PrintWriter pw = new PrintWriter(mapFile);
         mapping.printD2RQ(pw);
         pw.close();
-        return triplesFolder + "/" + mapFile.getName();
+        return getTriplesPath() + mapFile.getName();
     }
 
     /**
-     * Generate RDF triples from given Mapping. 
+     * Generate RDF triples from given Mapping.
      * As intermediate step D2RQ Mapping Language is created.
      *
      * @param mapping Mapping to triplify.
@@ -190,28 +233,37 @@ public class Rest {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public String getTriples(Mapping mapping) throws Exception {
+        return getTriples("output", mapping);
+    }
+
+    public String getTriples(String filenamePrefix, Mapping mapping) throws Exception {
         System.gc();
         SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
-        Model model = new ModelD2RQ(FileUtils.toURL(context.getRealPath(getMapping(mapping, true))), 
-        		FileUtils.langN3, sm.retrieveValue("defaultURI","urn:x-biscicol:"));
-
-        File tripleFile = createUniqueFile("triples.nt", getTriplesPath());
+        Model model;
+        if (context != null) {
+            model = new ModelD2RQ(FileUtils.toURL(context.getRealPath(getMapping(mapping, true))),
+                    FileUtils.langN3, sm.retrieveValue("defaultURI", "urn:x-biscicol:"));
+        } else {
+            model = new ModelD2RQ(FileUtils.toURL(getMapping(filenamePrefix, mapping, true)),
+                    FileUtils.langN3, sm.retrieveValue("defaultURI", "urn:x-biscicol:"));
+        }
+        File tripleFile = createUniqueFile(filenamePrefix + ".triples.n3", getTriplesPath());
         FileOutputStream fos = new FileOutputStream(tripleFile);
         model.write(fos, FileUtils.langNTriple);
         fos.close();
-        return triplesFolder + "/" + tripleFile.getName();
+        return getTriplesPath() + tripleFile.getName();
     }
 
     /**
-     * Upload local RDF file, 
+     * Upload local RDF file,
      * place the file in vocabularies folder,
-     * extract vocabulary from the file. 
-     * 
-     * @param inputStream File to be uploaded.
+     * extract vocabulary from the file.
+     *
+     * @param inputStream        File to be uploaded.
      * @param contentDisposition Form-data content disposition header.
      * @return Vocabulary extracted from the uploaded file.
-     * @throws Exception 
+     * @throws Exception
      */
     @POST
     @Path("/uploadVocabulary")
@@ -220,31 +272,31 @@ public class Rest {
     public Vocabulary uploadVocabulary(
             @FormDataParam("file") InputStream inputStream,
             @FormDataParam("file") FormDataContentDisposition contentDisposition) throws Exception {
-    	File file = createUniqueFile(contentDisposition.getFileName(), getVocabulariesPath());
+        File file = createUniqueFile(contentDisposition.getFileName(), getVocabulariesPath());
         writeFile(inputStream, file);
-        return getVocabulary(file.getName());      
+        return getVocabulary(file.getName());
     }
-    
+
     /**
      * Upload RDF file from URL,
      * place the file in vocabularies folder,
-     * extract vocabulary from the file. 
-     * 
+     * extract vocabulary from the file.
+     *
      * @param urlString URL of file to be uploaded.
      * @return Vocabulary extracted from the uploaded file.
-     * @throws Exception 
+     * @throws Exception
      */
     @POST
     @Path("/uploadVocabulary")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     public Vocabulary uploadVocabulary(@FormParam("url") String urlString) throws Exception {
-    	// assume http if no protocol provided
-    	if (!urlString.contains("://"))
-    		urlString = "http://" + urlString;
-    
-    	// open URLConnection
-    	URLConnection connection = new URL(urlString).openConnection();
+        // assume http if no protocol provided
+        if (!urlString.contains("://"))
+            urlString = "http://" + urlString;
+
+        // open URLConnection
+        URLConnection connection = new URL(urlString).openConnection();
         InputStream inputStream = connection.getInputStream();
 
         // try to read filename from Content-Disposition header
@@ -253,7 +305,7 @@ public class Rest {
             int start = fileName.indexOf("filename=\"") + 10;
             int end = fileName.indexOf("\"", start);
             fileName = fileName.substring(start, end);
-        } 
+        }
         // if above fails, try to read filename from URL
         if (fileName == null || fileName.isEmpty())
             fileName = urlString.substring(urlString.lastIndexOf("/") + 1);
@@ -262,35 +314,35 @@ public class Rest {
         if (fileName.isEmpty())
             fileName = "upload.rdf";
 
-    	File file = createUniqueFile(fileName, getVocabulariesPath());
+        File file = createUniqueFile(fileName, getVocabulariesPath());
         writeFile(inputStream, file);
-        return getVocabulary(file.getName());      
+        return getVocabulary(file.getName());
     }
 
     /**
-     * Extract vocabulary from given file. 
-     * 
+     * Extract vocabulary from given file.
+     *
      * @param fileName Name of the RDF file in vocabularies folder.
      * @return Vocabulary extracted from the file.
-     * @throws Exception 
+     * @throws Exception
      */
     @POST
     @Path("/getVocabulary")
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     public Vocabulary getVocabulary(String fileName) throws Exception {
-        Vocabulary vocabulary= new RDFreader(fileName).getVocabulary();
+        Vocabulary vocabulary = new RDFreader(fileName).getVocabulary();
         return vocabulary;
     }
-    
+
     /**
      * Return a Map of available RDF files defined in triplifiersettings.props:
      * "vocabularies", each with its "displayName" property,
-     * plus given user vocabulary files if they exist in vocabularies folder. 
-     * 
+     * plus given user vocabulary files if they exist in vocabularies folder.
+     *
      * @param userVocabularies Names of user vocabulary files.
      * @return Available vocabularies.
-     * @throws Exception 
+     * @throws Exception
      */
     @POST
     @Path("/getVocabularies")
@@ -298,26 +350,26 @@ public class Rest {
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, String> getVocabularies(List<String> userVocabularies) throws Exception {
         Map<String, String> vocabulariesMap = new LinkedHashMap<String, String>();
-        
+
         SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
         for (Entry<String, String> vocabularyEntry : sm.retrieveJsonMap("vocabularies").entrySet())
-        	vocabulariesMap.put(vocabularyEntry.getKey(), 
-        			sm.retrieveJsonMap(vocabularyEntry.getValue()).get("displayName"));
+            vocabulariesMap.put(vocabularyEntry.getKey(),
+                    sm.retrieveJsonMap(vocabularyEntry.getValue()).get("displayName"));
 
         String vocabulariesPath = getVocabulariesPath();
-    	for (String vocabularyFileName : userVocabularies)
-	   		if (new File(vocabulariesPath + vocabularyFileName).exists())
-	        	vocabulariesMap.put(vocabularyFileName, vocabularyFileName);
+        for (String vocabularyFileName : userVocabularies)
+            if (new File(vocabulariesPath + vocabularyFileName).exists())
+                vocabulariesMap.put(vocabularyFileName, vocabularyFileName);
 
-    	return vocabulariesMap;
+        return vocabulariesMap;
     }
 
     /**
      * Download a file with a given filename and content.
-     * 
-     * @param filename   Name of the file.
-     * @param content    Content of the file.
+     *
+     * @param filename Name of the file.
+     * @param content  Content of the file.
      * @return Response with 'attachment' Content-Disposition header.
      */
     @POST
@@ -326,9 +378,9 @@ public class Rest {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response download(@FormParam("filename") String filename, @FormParam("content") String content) {
         return Response
-        		.ok(content)
-        		.header("Content-Disposition", "attachment; filename=" + filename)
-        		.build();
+                .ok(content)
+                .header("Content-Disposition", "attachment; filename=" + filename)
+                .build();
     }
 
 }
