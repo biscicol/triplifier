@@ -59,6 +59,7 @@ public class triplifyDirect {
      * @param args
      */
     public static void main(String args[]) {
+
         // String D2RQmappingfile = "file:sampledata/biocode_dbtest_mapping.n3";
         // String outputfile = "/tmp/ms_tmp/biocode_dbtest.n3";
         triplifyDirect tD = null;

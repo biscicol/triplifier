@@ -26,12 +26,12 @@ public class Relation {
         subjClmn = subjArray[1];
         objTbl = objArray[0];
         objClmn = objArray[1];
-
         // check if entities exist
         Entity subjEntity = mapping.findEntity(subjTbl, subjClmn),
                 objEntity = mapping.findEntity(objTbl, objClmn);
-        if (subjEntity == null || objEntity == null)
+        if (subjEntity == null || objEntity == null) {
             return;
+        }
         String subjClassMap = subjEntity.classMap(),
                 objClassMap = objEntity.classMap();
 
@@ -56,4 +56,3 @@ public class Relation {
         }
     }
 }
-

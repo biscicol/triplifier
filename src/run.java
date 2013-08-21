@@ -101,7 +101,7 @@ public class run {
         TabularDataReader tdr = rm.openFile(testfilepath + "msbobs_mamm.zip");
         //TabularDataReader tdr = rm.openFile(testfilepath + "hsu_wildlife_birds.zip");
         TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + testfilepath + "test.sqlite");
-        tdc.convert();
+        tdc.convert(true);
         tdr.closeFile();
     }
 }

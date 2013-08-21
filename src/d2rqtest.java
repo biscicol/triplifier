@@ -50,7 +50,7 @@ public class d2rqtest {
             TabularDataReader tdr = readerManager.openFile(inputfile,format);
             TabularDataConverter tdc = new TabularDataConverter(tdr, sqliteLocation);
 
-            tdc.convert();
+            tdc.convert(true);
             tdr.closeFile();
 
             Model model = new ModelD2RQ(FileUtils.toURL(D2RQmappingfile),FileUtils.langN3, "urn:x-biscicol:");

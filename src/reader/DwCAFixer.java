@@ -69,7 +69,24 @@ public class DwCAFixer
         
         return terms;
     }
-    
+
+       /**
+     * Simply rename occurrence_txt to maintable if a user chooses NOT to try and fix
+     * the DwC Archive.  This is useful in situations where we only want to look at the contents of
+     * a single table
+     *
+     * @param dbconn
+     * @throws SQLException
+     */
+    public static void doNotFixArchive(Connection dbconn) throws SQLException {
+        Statement stmt = dbconn.createStatement();
+        stmt.execute("BEGIN TRANSACTION");
+        String query = "ALTER TABLE \"occurrence_txt\" RENAME TO " +
+                "\"" + "maintable" + "\"";
+        stmt.executeUpdate(query);
+        stmt.execute("COMMIT");
+        stmt.close();
+    }
     /**
      * Attempts to "fix" Darwin Core archive data.  This method expects to get
      * an active connection to a SQLite database that contains the data for a

@@ -22,16 +22,21 @@ public class Connection {
 	/**
 	 * For construction from JSON.
 	 */
-	Connection() {}
+    public Connection() {}
 
 	/**
 	 * Create Connection to a sqlite file, where
 	 * database = file name, host = path
 	 */
-	Connection(File sqliteFile) {
+	public Connection(File sqliteFile) {
 		system = DBsystem.sqlite;
-		host = sqliteFile.getParent().replace("\\", "/");
+        try {
+		host = sqliteFile.getParent().replace("\\", "/" );
+        } catch (NullPointerException e) {
+            //host = sqliteFile.toString();
+        }
 		database = sqliteFile.getName();
+
 	}
 	
 	/**
@@ -60,7 +65,7 @@ public class Connection {
 	 * 
      * @return D2RQ Database.
 	 */
-	Database getD2RQdatabase() {
+	public Database getD2RQdatabase() {
 		Database database = new Database(ResourceFactory.createResource());
 		database.setJDBCDSN(getJdbcUrl());
 		database.setUsername(username);
@@ -90,7 +95,7 @@ public class Connection {
      * in local filesystem, throw exception if not.
      *
      */
-	void verifyFile() throws Exception {
+	public void verifyFile() throws Exception {
 		if (system.equals(DBsystem.sqlite) && !new File(host + File.separator + database).exists())
 			throw new Exception("Data Source file not available.");
 	}
