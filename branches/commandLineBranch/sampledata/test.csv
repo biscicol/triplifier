@@ -1,7 +1,0 @@
-
-header1,"header2",header3,header4
-data1,"quoted string",d1
-data2,"another ""quoted"" string",something_else
-
-data3,"quoted string with a comma ("","")",last value
-data4,row with a blank,,not blank

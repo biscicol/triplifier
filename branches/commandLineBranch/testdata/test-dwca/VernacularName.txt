@@ -1,7 +1,0 @@
-TaxonID	vernacularName	languageCode
-1559060	Common pilot whale	English
-1559060	Butskopf	German
-1559060	Blackfish	English
-1559060	Atlantic blackfish	English
-1559060	Drivingwhale	English
-544186	Dauphin	French
