@@ -41,8 +41,11 @@ public class triplify {
 
         // Add the options for the program.
         opts.addOption("s", "sqlite", false, "output SQLite files only");
-        opts.addOption("d", "dontFixDwCA", false, "don't attempt to fix DwCA's");
+        opts.addOption("d", "dontFixDwCA", false, "In cases where we are triplifying DwC Archives, " +
+                "don't attempt to them using the DwCFixer. This saves many cycles of compute time but " +
+                "the results are not as robust.");
         opts.addOption("h", "help", false, "print this help message and exit");
+        //opts.addOption("o", "processDirectory", true, "Read and write all files to this directory. Must be fully qualified");
 
         // Create the commands parser and parse the command line arguments.
         CommandLineParser clp = new GnuParser();
@@ -55,16 +58,22 @@ public class triplify {
         }
 
         // If help was requested, print the help message and exit.
-        if (cl.hasOption("h")) {
+        if (cl.hasOption("h") || cl.getArgs().length < 1) {
             helpf.printHelp("java triplify input_files", opts, true);
             return;
         }
+
 
         // If don't fix DwCA archives then don't try and fix them, speeds it up but may lead to problems
         if (cl.hasOption("d")) {
             System.out.println("Using option: dontFixDwCA");
             fixDwCA = false;
         }
+
+        String processDirectory = System.getProperty("user.dir") +  File.separatorChar;
+       // if (cl.hasOption("o")) {
+       //     processDirectory = cl.getOptionValue("o") + File.separatorChar;
+       // }
 
         // Create the ReaderManager and load the plugins.
         ReaderManager rm = new ReaderManager();
@@ -89,18 +98,19 @@ public class triplify {
 
         // Process each input file specified on the command line.
         for (int cnt = 0; cnt < fnames.length; cnt++) {
-            file = new File(fnames[cnt]);
+            String filename = processDirectory + fnames[cnt];
+            file = new File( filename);
 
-            tdr = rm.openFile(fnames[cnt]);
+            tdr = rm.openFile(filename);
             if (tdr == null) {
-                System.out.println("Error: Unable to open input file " + fnames[cnt] +
+                System.out.println("Error: Unable to open input file " + filename +
                         ".  Will continue trying to read any reamaining input files.");
                 continue;
             }
 
             // Create SQLite file
             System.out.println("Beginning SQlite creation & connection : " + DateTime.now());
-            String pathPrefix = System.getProperty("user.dir") + File.separator + file.getName();
+            String pathPrefix = processDirectory + file.getName();
             sqlitefile = new File(pathPrefix + ".sqlite");
             filecounter = 1;
             while (sqlitefile.exists())
@@ -109,22 +119,25 @@ public class triplify {
             tdc.convert(fixDwCA);
             tdr.closeFile();
 
-            // Create connection to SQLlite database
-            Connection connection = new Connection(sqlitefile);
-            Rest r = new Rest();
+            // Only run the next section if the user did not specify the "s" option
+            if (!cl.hasOption("s")) {
+                // Create connection to SQLlite database
+                Connection connection = new Connection(sqlitefile);
+                Rest r = new Rest();
 
-            // Construct the crudeSimplifier
-            System.out.println("Beginning simplifier instantiation: " + DateTime.now());
-            crudeSimplifier s = new crudeSimplifier(connection);
+                // Construct the crudeSimplifier
+                System.out.println("Beginning simplifier instantiation: " + DateTime.now());
+                crudeSimplifier s = new crudeSimplifier(connection);
 
-            // Create mapping file
-            System.out.println("Beginning mapping file creation : " + DateTime.now());
-            Mapping mapping = new Mapping(connection, s.join, s.entity, s.relation);
+                // Create mapping file
+                System.out.println("Beginning mapping file creation : " + DateTime.now());
+                Mapping mapping = new Mapping(connection, s.join, s.entity, s.relation);
 
-            // Triplify
-            System.out.println("Beginning triple file creation : " + DateTime.now());
-            String results = r.getTriples(file.getName(), mapping);
-            System.out.println("Done! see, " + results + ", ending time : " + DateTime.now());
+                // Triplify
+                System.out.println("Beginning triple file creation : " + DateTime.now());
+                String results = r.getTriples(file.getName(), mapping);
+                System.out.println("Done! see, " + results + ", ending time : " + DateTime.now());
+            }
         }
     }
 

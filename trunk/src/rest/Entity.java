@@ -1,6 +1,8 @@
 package rest;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -13,6 +15,23 @@ public class Entity {
     public String idPrefixColumn;
     public VocabularyItem rdfClass;
     public Set<Attribute> attributes;
+
+    public ArrayList extraConditions;
+    public String qualifier = null;
+
+
+    public Entity() {
+    }
+
+    /**
+     * Instantiate with a qualifier.  This constructor inserts a qualifier to make the classMap() unique
+     * in cases where the table & id are the same across entities.
+     *
+     * @param qualifier
+     */
+    public Entity(String qualifier) {
+        this.qualifier = qualifier;
+    }
 
     /**
      * Generate D2RQ Mapping Language representation of this Entity with Attributes.
@@ -27,6 +46,7 @@ public class Entity {
         pw.println("\td2rq:class <" + rdfClass.uri + ">;");
         // ensures non-null values
         pw.println("\td2rq:condition \"" + getColumn() + " <> ''\";");
+        pw.println(getExtraConditions());
 
         //	pw.println("\td2rq:classDefinitionLabel \"" + table + "\";");
         pw.println("\t.");
@@ -42,7 +62,10 @@ public class Entity {
      * @return D2RQ Mapping ClassMap name.
      */
     String classMap() {
-        return table + "_" + idColumn;
+        if (qualifier == null)
+            return table + "_" + idColumn;
+        else
+            return table + "_" + idColumn + "_" + qualifier;
     }
 
     /**
@@ -52,5 +75,29 @@ public class Entity {
      */
     public String getColumn() {
         return table + "." + idColumn;
+    }
+
+    /**
+     * Get extraConditions as a string to insert in d2rq definitions
+     *
+     * @return
+     */
+    public String getExtraConditions() {
+        if (extraConditions == null) {
+            return "";
+        }
+        Iterator it = extraConditions.iterator();
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        sb.append("\td2rq:condition \"");
+
+        while (it.hasNext()) {
+            if (!first)
+                sb.append(" OR ");
+            sb.append(table + "." + it.next() + " <> ''");
+            first = false;
+        }
+        sb.append("\"");
+        return sb.toString();
     }
 }
