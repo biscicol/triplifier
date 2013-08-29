@@ -1,4 +1,4 @@
-#summary information on using the Command-line triplifier
+#summary Information on using the Command-line triplifier
 
 = Command-Line Triplifier =
 
