@@ -1,0 +1,10 @@
+#Command-line triplifier
+= Command-Line Triplifier =
+
+To run the triplifier from the command-line, you can download a pre-compiled executable from the downloads folder in the svn repo at https://code.google.com/p/triplifier/source/browse/#svn%2Ftrunk%2Fdownloads
+
+Once you download and install the package on your system (available on either Mac or Unix), you just type "triplify" on the command prompt and help will be displayed.  
+
+Currently, all output files are written to the same directory as where the application lives.. i haven't been able to figure out how to reference this on the path and have output written out to a more sensible location.  
+
+More options on the command-line triplifier are coming!
