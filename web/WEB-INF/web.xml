@@ -38,5 +38,4 @@
 		<listener-class>rest.ContextListener</listener-class>
 	</listener>
 
-
 </web-app>

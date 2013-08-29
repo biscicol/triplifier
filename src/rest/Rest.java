@@ -16,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.joda.time.DateTime;
 import reader.ReaderManager;
 import reader.TabularDataConverter;
 import reader.plugins.TabularDataReader;
@@ -112,38 +113,6 @@ public class Rest {
     }
 
     /**
-     * Upload file, convert into sqlite database, return Mapping representation of tabular data.
-     *
-     * @param inputStream        File to be uploaded.
-     * @param contentDisposition Form-data content disposition header.
-     * @return Mapping representation of tabular data in the file.
-     */
-    @POST
-    @Path("/triplifyDirect")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Mapping triplifyDirect(
-            @FormDataParam("file") InputStream inputStream,
-            @FormDataParam("file") FormDataContentDisposition contentDisposition)
-            throws Exception {
-        String fileName = contentDisposition.getFileName();
-        File sqliteFile = createUniqueFile(fileName + ".sqlite", getSqlitePath());
-        if (fileName.endsWith(".sqlite")) {
-            writeFile(inputStream, sqliteFile);
-        } else {
-            File tempFile = File.createTempFile("upload", fileName);
-            writeFile(inputStream, tempFile);
-            ReaderManager rm = new ReaderManager();
-            rm.loadReaders();
-            TabularDataReader tdr = rm.openFile(tempFile.getPath());
-            TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + sqliteFile.getPath());
-            tdc.convert(true);
-            tdr.closeFile();
-        }
-        return inspect(new Connection(sqliteFile));
-    }
-
-    /**
      * Write InputStream to File.
      *
      * @param inputStream Input to read from.
@@ -207,7 +176,7 @@ public class Rest {
     }
 
     private String getMapping(Mapping mapping, Boolean verifyFile) throws Exception {
-        return getMapping("output",mapping, verifyFile);
+        return getMapping("output", mapping, verifyFile);
     }
 
     private String getMapping(String filenamePrefix, Mapping mapping, Boolean verifyFile) throws Exception {

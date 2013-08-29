@@ -32,3 +32,11 @@ sudo cp ./lib/postgresql-*.jdbc4.jar 	$CATALINA_HOME/lib
 sudo cp ./lib/sqlite-jdbc-*.jar		$CATALINA_HOME/lib
 sudo cp ./lib/sqljdbc4.jar		$CATALINA_HOME/lib
 
+
+## Running the command-line triplifier ##
+svn checkout http://triplifier.googlecode.com/svn/trunk/ triplifier-read-only
+cd triplifier-read-only/
+mkdir dist
+ant
+java -classpath .:./out/production/triplifier/:./lib/* triplify -h
+java -classpath .:./out/production/triplifier/:./lib/* triplify myDarwinCoreArchive.zip

@@ -67,6 +67,7 @@ public class Mapping {
         else
             relations = pRelations;
 
+        //System.out.println("relations size = " + pRelations.size());
         Database database = connection.getD2RQdatabase();
         DatabaseSchemaInspector schemaInspector = database.connectedDB().schemaInspector();
 
@@ -97,8 +98,10 @@ public class Mapping {
         for (Entity entity : entities) {
             entity.printD2RQ(pw, this);
         }
-        for (Relation relation : relations)
+        for (Relation relation : relations) {
             relation.printD2RQ(pw, this);
+        }
+
         // TODO: figure out why this throws an error when run from command-line?
         //dataseturi.printD2RQ(pw, this);
     }
@@ -126,14 +129,25 @@ public class Mapping {
      * @return Matching Entity or null if not found.
      */
     public Entity findEntity(String table, String idColumn) {
+        return findEntity(table,idColumn,null);
+    }
+
+    /**
+     * Find Entity defined by given table and idColumn.
+     *
+     * @param table    Table name.
+     * @param idColumn IdColumn name.
+     * @return Matching Entity or null if not found.
+     */
+    public Entity findEntity(String table, String idColumn, String qualifier) {
         for (Entity entity : entities) {
-            if (table.equals(entity.table) && idColumn.equals(entity.idColumn)) {
+            if (table.equals(entity.table) && idColumn.equals(entity.idColumn) && qualifier.equals(entity.qualifier)) {
                 return entity;
             }
         }
-
         return null;
     }
+
 
     /**
      * Sets the URI as a prefix to a column, or not, according to D2RQ conventions
