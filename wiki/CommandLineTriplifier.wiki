@@ -1,4 +1,5 @@
-#Command-line triplifier
+#summary information on using the Command-line triplifier
+
 = Command-Line Triplifier =
 
 To run the triplifier from the command-line, you can download a pre-compiled executable from the downloads folder in the svn repo at https://code.google.com/p/triplifier/source/browse/#svn%2Ftrunk%2Fdownloads
