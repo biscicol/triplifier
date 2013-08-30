@@ -4,8 +4,8 @@ import rest.*;
 import java.util.*;
 
 /**
- * A crude set of simplification rules to simplify DwCA for testing against, VN, Morphbank, etc.
- * For now, we're just focusing on the mainTable and taxon.
+ * A crude set of properties to simplify DwCA for testing against, VN, Morphbank, etc.
+ * For now, we're just focusing on the mainTable.
  * Ultimately this will need to be re-coded with more robust logic to handle DwCA as constructed by the simplifier
  * in the Javascript code that Brian Stucky wrote.
  */

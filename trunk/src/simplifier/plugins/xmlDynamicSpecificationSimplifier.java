@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Read an XML file to construct a simplifier --- STILL in development, need to figure out Apache Digester
+ * Read an XML file to construct a simplifier
+ * --- STILL in development, need to figure out Apache Digester
  * Getting this running should simplify the simplifier
+ * This may or may not go with triplify codebase... still testing it.
  */
 public class xmlDynamicSpecificationSimplifier {
     public xmlDynamicSpecificationSimplifier() throws IOException, SAXException {

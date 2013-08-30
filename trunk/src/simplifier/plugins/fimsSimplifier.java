@@ -5,7 +5,8 @@ import rest.VocabularyItem;
 import java.util.ArrayList;
 
 /**
- * Simplify the FIMS installation, as loaded from a spreadsheet
+ * Simplify the FIMS installation, as loaded from a spreadsheet...
+ * Currently, this class takes only a small portion of properties we would expect.
  */
 public class fimsSimplifier extends simplifier {
 

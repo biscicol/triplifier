@@ -12,10 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Establish a common method for connecting to SQLLite datasources specifically for simplifier.
- * <p/>
- * TODO: Lookup ARKs in a particular table
- * TODO: Think about how i can integrate the above components with a validation engine / parser
+ * Establish a common method for connecting to SQLLite datasources for various flavors of the simplifier.
  */
 public abstract class simplifier {
     protected HashSet<Entity> entity;
@@ -41,7 +38,6 @@ public abstract class simplifier {
 
     /**
      * initializeTerms is meant to be overridden
-     * TODO: initialize terms here can perhaps be generically defined by an XML script....
      */
     protected void initializeTerms() {
 
@@ -190,24 +186,8 @@ public abstract class simplifier {
     }
 
     /**
-     * setRelation
-     *
-     * @param subject
-     * @param predicate
-     * @param object
+     * Map column values to a URI
      */
-    protected void setRelation(String subject,
-                               String predicate,
-                               String object) {
-        Relation lRelation = new Relation();
-        // setting relation according to the text/delimited syntax since i'm going along with the javascript methods
-        // for handling this. Probably not the cleanest approach here
-        lRelation.subject = subject;
-        lRelation.predicate = predicate;
-        lRelation.object = object;
-        relation.add(lRelation);
-    }
-
     protected static class columnMap {
         private String columnKey;
         private String uriValue;
