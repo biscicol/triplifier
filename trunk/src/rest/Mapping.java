@@ -9,6 +9,7 @@ import de.fuberlin.wiwiss.d2rq.algebra.Attribute;
 import de.fuberlin.wiwiss.d2rq.algebra.RelationName;
 import de.fuberlin.wiwiss.d2rq.dbschema.DatabaseSchemaInspector;
 import de.fuberlin.wiwiss.d2rq.map.Database;
+import simplifier.plugins.simplifier;
 
 /**
  * Performs two major tasks:
@@ -23,7 +24,7 @@ public class Mapping {
     public Set<Join> joins;
     public Set<Entity> entities;
     public Set<Relation> relations;
-    public Dataseturi dataseturi = new Dataseturi();
+    public Dataseturi dataseturi;
 
     /**
      * For construction from JSON.
@@ -39,7 +40,7 @@ public class Mapping {
      * @param connection SQL database connection parameters.
      */
     public Mapping(Connection connection) {
-        this(connection, null, null, null);
+        this(connection, null);
     }
 
     /**
@@ -48,24 +49,32 @@ public class Mapping {
      *
      * @param connection SQL database connection parameters.
      */
-    public Mapping(Connection connection, HashSet<Join> pJoins, HashSet<Entity> pEntities, HashSet<Relation> pRelations) {
+    //public Mapping(Connection connection, HashSet<Join> pJoins, HashSet<Entity> pEntities, HashSet<Relation> pRelations) {
+    public Mapping(Connection connection, simplifier simplifier) {
         dateTime = DateFormat.getDateTimeInstance().format(new Date());
         this.connection = connection;
         schema = new TreeSet<DBtable>();
 
-        if (pJoins == null)
+        if (simplifier == null || simplifier.getJoin() == null)
             joins = new HashSet<Join>();
         else
-            joins = pJoins;
-        if (pEntities == null)
+            joins = simplifier.getJoin();
+
+        if (simplifier == null || simplifier.getEntity() == null)
             entities = new HashSet<Entity>();
         else
-            entities = pEntities;
+            entities = simplifier.getEntity();
 
-        if (pRelations == null)
+        if (simplifier == null || simplifier.getRelation() == null)
             relations = new HashSet<Relation>();
         else
-            relations = pRelations;
+            relations = simplifier.getRelation();
+
+        if (simplifier == null || simplifier.getDataseturi() == null) {
+            dataseturi = new Dataseturi();
+        } else {
+            dataseturi = simplifier.getDataseturi();
+        }
 
         //System.out.println("relations size = " + pRelations.size());
         Database database = connection.getD2RQdatabase();
@@ -103,7 +112,8 @@ public class Mapping {
         }
 
         // TODO: figure out why this throws an error when run from command-line?
-        //dataseturi.printD2RQ(pw, this);
+        if (dataseturi != null)
+            dataseturi.printD2RQ(pw, this);
     }
 
     /**
@@ -129,7 +139,7 @@ public class Mapping {
      * @return Matching Entity or null if not found.
      */
     public Entity findEntity(String table, String idColumn) {
-        return findEntity(table,idColumn,null);
+        return findEntity(table, idColumn, null);
     }
 
     /**
@@ -141,13 +151,19 @@ public class Mapping {
      */
     public Entity findEntity(String table, String idColumn, String qualifier) {
         for (Entity entity : entities) {
-            if (table.equals(entity.table) && idColumn.equals(entity.idColumn) && qualifier.equals(entity.qualifier)) {
-                return entity;
+            try {
+                if (table.equals(entity.table) && idColumn.equals(entity.idColumn) && qualifier.equals(entity.qualifier)) {
+                    return entity;
+                }
+            } catch (NullPointerException e) {
+                if (table.equals(entity.table) && idColumn.equals(entity.idColumn)) {
+                    return entity;
+                }
             }
+
         }
         return null;
     }
-
 
     /**
      * Sets the URI as a prefix to a column, or not, according to D2RQ conventions

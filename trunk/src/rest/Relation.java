@@ -38,12 +38,12 @@ public class Relation {
         objClmn = objArray[1];
         try {
             subjQualifier = subjArray[2];
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             subjQualifier = null;
         }
         try {
             objQualifier = objArray[2];
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             objQualifier = null;
         }
 
@@ -58,7 +58,7 @@ public class Relation {
         String subjClassMap = subjEntity.classMap();
         String objClassMap = objEntity.classMap();
 
-        System.out.println(subjTbl + "=" + objTbl + "+" + subjEntity.idPrefixColumn + "-" + objEntity.idPrefixColumn);
+        //System.out.println(subjTbl + "=" + objTbl + "+" + subjEntity.idPrefixColumn + "-" + objEntity.idPrefixColumn);
         if (subjTbl.equals(objTbl)) {
             pw.println("map:" + subjClassMap + "_" + objClassMap + "_rel" + " a d2rq:PropertyBridge;");
             pw.println("\td2rq:belongsToClassMap " + "map:" + subjClassMap + ";");
