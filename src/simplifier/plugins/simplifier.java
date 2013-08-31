@@ -24,8 +24,9 @@ public abstract class simplifier {
     protected Connection connection;
     protected DatabaseSchemaInspector schemaInspector;
     protected Database database;
+    protected boolean addPrefix;
 
-    public simplifier(Connection connection) {
+    public simplifier(Connection connection, boolean addPrefix) {
         this.connection = connection;
 
         database = connection.getD2RQdatabase();
@@ -34,6 +35,7 @@ public abstract class simplifier {
         join = new HashSet<Join>();
         relation = new HashSet<Relation>();
 
+        this.addPrefix = addPrefix;
     }
 
     /**
