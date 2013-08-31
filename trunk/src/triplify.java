@@ -45,6 +45,13 @@ public class triplify {
         //opts.addOption("o", "processDirectory", true, "Read and write all files to this directory. Must be fully qualified");
         opts.addOption("t", "simplifierType", true, "*Required {fims|idtest|ocr}");
 
+        opts.addOption("m", "mappingFile", true, "Provide a mapping file.  If this option is set it will ignore all other steps," +
+                "not create a SQLlite database but just go straight to triplification by reading the mapping file.");
+        opts.addOption("p", "prefixRemover", false, "Do not apply a system prefix.  Use this if you have awesome identifiers" +
+                "already in place.");
+
+
+
         // Create the commands parser and parse the command line arguments.
         CommandLineParser clp = new GnuParser();
         CommandLine cl;
@@ -56,8 +63,18 @@ public class triplify {
         }
 
         // If help was requested, print the help message and exit.
-        if (cl.hasOption("h") || cl.getArgs().length < 1) {
+        if (cl.hasOption("h") ||( cl.getArgs().length < 1 && cl.getOptions().length < 1)) {
             helpf.printHelp("java triplify input_files", opts, true);
+            return;
+        }
+
+        // input mapping file option
+        if (cl.hasOption("m")) {
+            try {
+            triplifyDirect triplifyDirect = new triplifyDirect(cl.getOptionValue("m"), cl.getOptionValue("m") + ".triples.n3");
+            } catch (Exception e) {
+                System.out.println("Exception occurred during processing: " + e.getMessage());
+            }
             return;
         }
 
