@@ -2,6 +2,7 @@ package simplifier.plugins;
 
 import rest.*;
 import rest.VocabularyItem;
+
 import java.util.ArrayList;
 
 /**
@@ -10,8 +11,8 @@ import java.util.ArrayList;
  */
 public class fimsSimplifier extends simplifier {
 
-    public fimsSimplifier(Connection connection) {
-        super(connection);
+    public fimsSimplifier(Connection connection, boolean addPrefix) {
+        super(connection, addPrefix);
         initializeTerms();
     }
 
@@ -19,8 +20,12 @@ public class fimsSimplifier extends simplifier {
         // IdentificationProcess
         ArrayList identificationProperties = new ArrayList();
         identificationProperties.add(new columnMap("IdentifiedBy", "dwc:identifiedBy"));
+        String prefix = "";
+        if (addPrefix) {
+            prefix = "ark:/21547/tempIdentification_";
+        }
         Entity identification = setEntity(
-                "ark:/21547/tempIdentification_",
+                prefix,
                 new VocabularyItem("identificationProcess", "http://purl.obolibrary.org/obo/bco_0000042"),
                 "Specimens",
                 "Specimen_Num_Collector",
@@ -29,11 +34,14 @@ public class fimsSimplifier extends simplifier {
         );
 
         // Tissue Attributes
+        if (addPrefix) {
+            prefix = "ark:/21547/tempTissue_";
+        }
         ArrayList tissueProperties = new ArrayList();
         tissueProperties.add(new columnMap("format_name96", "bsc:plate"));
         tissueProperties.add(new columnMap("well_number96", "bsc:well"));
         Entity tissue = setEntity(
-                "ark:/21547/tempTissue_",
+                prefix,
                 new VocabularyItem("tissue", "http://purl.obolibrary.org/obo/OBI_0100051"),
                 "Specimens",
                 "Specimen_Num_Collector",
@@ -42,12 +50,15 @@ public class fimsSimplifier extends simplifier {
         );
 
         // Specimen Attributes
+        if (addPrefix) {
+            prefix = "ark:/21547/tempSpecimen_";
+        }
         ArrayList specimenProperties = new ArrayList();
         specimenProperties.add(new columnMap("preservative", "bsc:preservative"));
         specimenProperties.add(new columnMap("Host", "dwc:host"));
         specimenProperties.add(new columnMap("relaxant", "bsc:relaxent"));
         Entity specimen = setEntity(
-                "ark:/21547/tempSpecimen_",
+                prefix,
                 new VocabularyItem("specimen", "http://purl.obolibrary.org/obo/OBI_0100051"),
                 "Specimens",
                 "Specimen_Num_Collector",
@@ -62,8 +73,11 @@ public class fimsSimplifier extends simplifier {
         // Taxon Attributes
         taxonProperties.add(new columnMap("SpecificEpithet", "dwc:scientificName"));
         taxonProperties.add(new columnMap("Phylum", "dwc:phylum"));
+        if (addPrefix) {
+            prefix = "ark:/21547/tempTaxon_";
+        }
         Entity taxon = setEntity(
-                "ark:/21547/tempTaxon_",
+                prefix,
                 new VocabularyItem("informationContentEntity", "http://purl.obolibrary.org/obo/IAO_0000030"),
                 "Specimens",
                 "Specimen_Num_Collector",

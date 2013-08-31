@@ -25,8 +25,12 @@ public class identifierTestsSimplifier extends simplifier {
         specimenProperties.add(new columnMap("associatedSequences", "dwc:associatedSequences"));
         specimenProperties.add(new columnMap("associatedOccurrences", "dwc:associatedOccurrences"));
         specimenProperties.add(new columnMap("otherCatalogNumbers", "dwc:otherCatalogNumbers"));
+        String prefix = "";
+        if (addPrefix) {
+             prefix = "urn:x-biscicol:maintable.occurrenceID_";
+        }
         setEntity(
-                "urn:x-biscicol:maintable.occurrenceID_",
+                prefix,
                 new VocabularyItem("mainTable", "dwc:Occurrence"),
                 "maintable",
                 "occurrenceID",
@@ -35,8 +39,8 @@ public class identifierTestsSimplifier extends simplifier {
 
     }
 
-    public identifierTestsSimplifier(Connection connection) {
-        super(connection);
+    public identifierTestsSimplifier(Connection connection, boolean  addPrefix) {
+        super(connection, addPrefix);
         initializeTerms();
     }
 

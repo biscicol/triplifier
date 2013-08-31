@@ -14,8 +14,8 @@ public class ocrSimplifier extends simplifier {
 
     protected String filename;
 
-    public ocrSimplifier(Connection connection, String lFilename) {
-        super(connection);
+    public ocrSimplifier(Connection connection, String lFilename, boolean addPrefix) {
+        super(connection, addPrefix);
         this.filename = lFilename;
         initializeTerms();
     }
@@ -46,8 +46,12 @@ public class ocrSimplifier extends simplifier {
         iceProperties.add(new columnMap("verbatimDateIdentified", "aocr:verbatimDateIdentified"));
         iceProperties.add(new columnMap("dateIdentified", "dwc:dateIdentified"));
 
+        String prefix = "";
+        if (addPrefix) {
+            prefix = "urn:x-biscicol:" + filename + ":";
+        }
         Entity ice = setEntity(
-                "urn:x-biscicol:" + filename+":",
+                prefix,
                 new VocabularyItem("informationContentEntity", "http://purl.obolibrary.org/obo/IAO_0000030"),
                 "table1",
                 "regionType",

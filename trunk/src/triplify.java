@@ -44,12 +44,12 @@ public class triplify {
                 "the results are not as robust.");
         //opts.addOption("o", "processDirectory", true, "Read and write all files to this directory. Must be fully qualified");
         opts.addOption("t", "simplifierType", true, "*Required {fims|idtest|ocr}");
-
         opts.addOption("m", "mappingFile", true, "Provide a mapping file.  If this option is set it will ignore all other steps," +
                 "not create a SQLlite database but just go straight to triplification by reading the mapping file.");
         opts.addOption("p", "prefixRemover", false, "Do not apply a system prefix.  Use this if you have awesome identifiers" +
-                "already in place.");
-
+                "already in place-- that is, they are resolvable, persistent, and especially you must ensure they are all " +
+                "properly formatted URIs.  If you do not add this option, the default is to use a system specific prefix." +
+                "");
 
 
         // Create the commands parser and parse the command line arguments.
@@ -63,7 +63,7 @@ public class triplify {
         }
 
         // If help was requested, print the help message and exit.
-        if (cl.hasOption("h") ||( cl.getArgs().length < 1 && cl.getOptions().length < 1)) {
+        if (cl.hasOption("h") || (cl.getArgs().length < 1 && cl.getOptions().length < 1)) {
             helpf.printHelp("java triplify input_files", opts, true);
             return;
         }
@@ -71,7 +71,7 @@ public class triplify {
         // input mapping file option
         if (cl.hasOption("m")) {
             try {
-            triplifyDirect triplifyDirect = new triplifyDirect(cl.getOptionValue("m"), cl.getOptionValue("m") + ".triples.n3");
+                triplifyDirect triplifyDirect = new triplifyDirect(cl.getOptionValue("m"), cl.getOptionValue("m") + ".triples.n3");
             } catch (Exception e) {
                 System.out.println("Exception occurred during processing: " + e.getMessage());
             }
@@ -81,6 +81,12 @@ public class triplify {
         if (!cl.hasOption("t")) {
             System.out.println("Must specify a simplifier type with the -t option");
             return;
+        }
+
+        // Remove or add prefix option.  Default i
+        boolean addPrefix = true;
+        if (cl.hasOption("p")) {
+            addPrefix = false;
         }
 
         // If don't fix DwCA archives then don't try and fix them, speeds it up but may lead to problems
@@ -147,13 +153,13 @@ public class triplify {
                 System.out.println("Beginning simplifier instantiation");
                 simplifier s = null;
                 if (cl.getOptionValue("t").equals("fims")) {
-                    s = new fimsSimplifier(connection);
+                    s = new fimsSimplifier(connection,addPrefix);
                 } else if (cl.getOptionValue("t").equals("idtest")) {
-                    s = new identifierTestsSimplifier(connection);
+                    s = new identifierTestsSimplifier(connection,addPrefix);
                 } else if (cl.getOptionValue("t").equals("ocr")) {
-                    s = new ocrSimplifier(connection,file.getName());
+                    s = new ocrSimplifier(connection, file.getName(),addPrefix);
                 } else {
-                     System.out.println(cl.getOptionValue("t") + " not a valid simplifier type");
+                    System.out.println(cl.getOptionValue("t") + " not a valid simplifier type");
                     return;
                 }
                 // Create mapping file
