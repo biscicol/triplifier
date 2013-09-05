@@ -1,4 +1,4 @@
-package rest;
+package settings;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,10 +9,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
 /**
- * SettingsManager provides a generic way to configure BiSciCol core classes
+ * settings.SettingsManager provides a generic way to configure BiSciCol core classes
  * from a properties file.  The basic idea is that any object that supports
- * the Configurable interface can be passed a SettingsManager, and it will then
- * use the SettingsManager to configure itself.  SettingsManager is implemented
+ * the Configurable interface can be passed a settings.SettingsManager, and it will then
+ * use the settings.SettingsManager to configure itself.  settings.SettingsManager is implemented
  * as a singleton to ensure that all BiSciCol objects use common configuration
  * information.
  */
@@ -33,13 +33,13 @@ public class SettingsManager
     }
 
     /**
-     * Get a reference to the global SettingsManager instance.  If this is the
-     * first request for a SettingsManager instance, then a new SettingsManager
+     * Get a reference to the global settings.SettingsManager instance.  If this is the
+     * first request for a settings.SettingsManager instance, then a new settings.SettingsManager
      * object will be created using the default properties file, which is
      * expected to be located in the "classes" directory of the project build
      * directory.
      *
-     * @return A reference to the global SettingsManager object.
+     * @return A reference to the global settings.SettingsManager object.
      */
     public static SettingsManager getInstance()
     {
@@ -47,17 +47,17 @@ public class SettingsManager
     }
 
     /**
-     * Get a reference to the global SettingsManager object, specifying a
+     * Get a reference to the global settings.SettingsManager object, specifying a
      * properties file to use.  If this is the first request for a
-     * SettignsManager instance, then a new SettingsManager object will be
+     * SettignsManager instance, then a new settings.SettingsManager object will be
      * created using the specified properties file.  Otherwise, the existing
-     * SettingsManager will be returned and the specified properties file is
+     * settings.SettingsManager will be returned and the specified properties file is
      * ignored.
      *
      * @param propsfile A properties file to use in initializing the
-     * SettingsManager.
+     * settings.SettingsManager.
      *
-     * @return A reference to the global SettingsManager object.
+     * @return A reference to the global settings.SettingsManager object.
      */
     public static SettingsManager getInstance(String propsfile)
     {
@@ -68,16 +68,16 @@ public class SettingsManager
     }
 
     /**
-     * Get the path of the properties file associated with this SettingsManager.
+     * Get the path of the properties file associated with this settings.SettingsManager.
      *
-     * @return The path of the properties file used by this SettingsManager.
+     * @return The path of the properties file used by this settings.SettingsManager.
      */
     public String getPropertiesFile() {
         return propsfile;
     }
 
     /**
-     * Specify a properties file for this SettingsManager to use.
+     * Specify a properties file for this settings.SettingsManager to use.
      *
      * @param propsfile The path to a properties file.
      */
@@ -86,8 +86,8 @@ public class SettingsManager
     }
 
     /**
-     * Attempt to load the properties file associated with this SettingsManager.
-     * This method must be called to properly initialize the SettingsManager
+     * Attempt to load the properties file associated with this settings.SettingsManager.
+     * This method must be called to properly initialize the settings.SettingsManager
      * before it can be used by Configurable classes.
      *
      * @throws java.io.FileNotFoundException

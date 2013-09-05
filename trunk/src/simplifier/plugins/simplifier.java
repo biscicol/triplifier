@@ -4,7 +4,7 @@ import de.fuberlin.wiwiss.d2rq.algebra.Attribute;
 import de.fuberlin.wiwiss.d2rq.algebra.RelationName;
 import de.fuberlin.wiwiss.d2rq.dbschema.DatabaseSchemaInspector;
 import de.fuberlin.wiwiss.d2rq.map.Database;
-import rest.*;
+import commander.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,7 +29,7 @@ public abstract class simplifier {
     public simplifier(Connection connection, boolean addPrefix) {
         this.connection = connection;
 
-        database = connection.getD2RQdatabase();
+        database = connection.d2rqDatabase;
         schemaInspector = database.connectedDB().schemaInspector();
         entity = new HashSet<Entity>();
         join = new HashSet<Join>();
@@ -67,11 +67,11 @@ public abstract class simplifier {
      * @param uri
      * @return
      */
-    protected rest.Attribute setAttributeItem(String column, String uri) {
+    protected commander.Attribute setAttributeItem(String column, String uri) {
         VocabularyItem vocabularyItem = new VocabularyItem();
         vocabularyItem.name = column;
         vocabularyItem.uri = uri;
-        rest.Attribute attribute = new rest.Attribute();
+        commander.Attribute attribute = new commander.Attribute();
         attribute.column = column;
         attribute.rdfProperty = vocabularyItem;
         return attribute;
@@ -85,8 +85,8 @@ public abstract class simplifier {
      * @return
      */
     //private HashSet<Attribute> setAttributes(String tablename, HashMap<String, String> mappedConcepts) {
-    protected HashSet<rest.Attribute> setAttributes(String tablename, ArrayList columnMapArrayList) {
-        HashSet<rest.Attribute> attributes = new HashSet<rest.Attribute>();
+    protected HashSet<commander.Attribute> setAttributes(String tablename, ArrayList columnMapArrayList) {
+        HashSet<commander.Attribute> attributes = new HashSet<commander.Attribute>();
 
         Iterator iteratorAvailableColumns = getColumns(tablename).iterator();
         //Iterator iteratorColumnMap = columnMapArrayList.iterator();

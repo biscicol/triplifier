@@ -1,6 +1,6 @@
 package simplifier.plugins;
 
-import rest.*;
+import commander.*;
 import java.util.*;
 
 /**

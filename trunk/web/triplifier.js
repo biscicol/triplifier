@@ -124,8 +124,8 @@ Triplifier.prototype.defineHelpMessages = function() {
 	// Triplify.
 	this.helpmgr.setHelpItem('triplify_help', '<p>Triplify is the fun part, because you finally get to see what your data looks like as RDF triples.  (That does sound fun, doesn\'t it?)</p>' +
 	'<p>You have several options here.  "Get Mapping" lets you download a <a href="http://d2rq.org/">D2RQ</a> mapping file that includes all of the technical details about how your source data maps to an RDF representation.  Unless you use D2RQ for other purposes or need to tweak the mapping by hand, you will probably not be interested in this.</p>' +
-	'<p>"Get Triples" lets you download an N3-format file of your entire data set as RDF triples.  If your goal was to convert your data to RDF, this is the button you want to click.</p>' +
-	'<p>We\'re still figuring out exactly what the last two buttons will do, but the general idea is that they will allow you to send your data directly to the BiSciCol system so that they become searchable and linkable with millions of other pieces of biological data.</p>');
+	'<p>"Get Triples" lets you download an N3-format file of your entire data set as RDF triples.  If your goal was to convert your data to RDF, this is the button you want to click.</p>');
+	//'<p>We\'re still figuring out exactly what the last two buttons will do, but the general idea is that they will allow you to send your data directly to the BiSciCol system so that they become searchable and linkable with millions of other pieces of biological data.</p>');
 }
 
 /**

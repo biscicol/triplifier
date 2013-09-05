@@ -32,6 +32,16 @@ sudo cp ./lib/postgresql-*.jdbc4.jar 	$CATALINA_HOME/lib
 sudo cp ./lib/sqlite-jdbc-*.jar		$CATALINA_HOME/lib
 sudo cp ./lib/sqljdbc4.jar		$CATALINA_HOME/lib
 
+OR, for glassfish:
+
+export $GLASSFISH/domain1/applications/triplifier/WEB-INF/lib
+sudo cp ./lib/mysql-connector-java-*-bin.jar $TOUTLIB
+sudo cp ./lib/ojdbc6.jar $TOUTLIB
+sudo cp ./lib/postgresql-*.jdbc4.jar $TOUTLIB
+sudo cp ./lib/sqlite-jdbc-*.jar $TOUTLIB
+sudo cp ./lib/sqljdbc4.jar $TOUTLIB;
+
+Once finished, then the servlet container will need to be restarted...
 
 ## Running the command-line triplifier ##
 svn checkout http://triplifier.googlecode.com/svn/trunk/ triplifier-read-only
