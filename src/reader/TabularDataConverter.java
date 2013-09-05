@@ -129,6 +129,12 @@ public final class TabularDataConverter {
     }
 
     /**
+     * Default convert does NOT fixDwCA
+     */
+    public void convert() throws SQLException {
+        convert(false);
+    }
+    /**
      * Reads the source data and converts it to tables in a Sqlite database.
      * Uses the database connection string provided in the constructor or in a
      * call to setDestination().  The name to use for the FIRST table in the

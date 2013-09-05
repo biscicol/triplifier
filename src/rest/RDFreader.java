@@ -3,13 +3,13 @@ package rest;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileUtils;
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import settings.SettingsManager;
 
 /**
  * Reads RDF file, extracts Vocabulary containing

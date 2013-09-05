@@ -1,9 +1,9 @@
 package simplifier.plugins;
 
-import rest.Connection;
-import rest.Dataseturi;
-import rest.Entity;
-import rest.VocabularyItem;
+import commander.Connection;
+import commander.Dataseturi;
+import commander.Entity;
+import commander.VocabularyItem;
 
 import java.util.ArrayList;
 

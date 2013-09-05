@@ -1,7 +1,7 @@
 package simplifier.plugins;
 
-import rest.*;
-import rest.VocabularyItem;
+import commander.*;
+import commander.VocabularyItem;
 
 import java.util.ArrayList;
 

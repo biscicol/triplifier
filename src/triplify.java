@@ -11,7 +11,7 @@ import org.apache.log4j.Level;
 import reader.ReaderManager;
 import reader.TabularDataConverter;
 import reader.plugins.TabularDataReader;
-import rest.*;
+import commander.*;
 
 import simplifier.plugins.fimsSimplifier;
 import simplifier.plugins.identifierTestsSimplifier;
@@ -50,7 +50,6 @@ public class triplify {
                 "already in place-- that is, they are resolvable, persistent, and especially you must ensure they are all " +
                 "properly formatted URIs.  If you do not add this option, the default is to use a system specific prefix." +
                 "");
-
 
         // Create the commands parser and parse the command line arguments.
         CommandLineParser clp = new GnuParser();
@@ -147,7 +146,7 @@ public class triplify {
             if (!cl.hasOption("s")) {
                 // Create connection to SQLlite database
                 Connection connection = new Connection(sqlitefile);
-                Rest r = new Rest();
+                Triplifier r = new Triplifier();
 
                 // Construct the type of simplifier
                 System.out.println("Beginning simplifier instantiation");
@@ -164,7 +163,7 @@ public class triplify {
                 }
                 // Create mapping file
                 System.out.println("Beginning mapping file creation");
-                Mapping mapping = new Mapping(connection, s);
+                commander.Mapping mapping = new commander.Mapping(connection, s);
 
                 // Triplify
                 System.out.println("Beginning triple file creation");
