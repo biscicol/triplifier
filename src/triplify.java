@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import de.fuberlin.wiwiss.d2rq.SystemLoader;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -13,6 +14,7 @@ import reader.TabularDataConverter;
 import reader.plugins.TabularDataReader;
 import commander.*;
 
+import settings.PathManager;
 import simplifier.plugins.fimsSimplifier;
 import simplifier.plugins.identifierTestsSimplifier;
 import simplifier.plugins.ocrSimplifier;
@@ -25,7 +27,8 @@ import simplifier.plugins.simplifier;
 public class triplify {
 
     public static void main(String[] args) throws Exception {
-        String processDirectory = System.getProperty("user.dir") + File.separatorChar;
+        File processDirectory = null;//System.getProperty("user.dir") + File.separatorChar;
+        PathManager pm = new PathManager();
 
         // D2RQ uses log4j... usually the DEBUG messages are annoying so here we can just get the ERROR Messages
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.ERROR);
@@ -42,7 +45,8 @@ public class triplify {
         opts.addOption("d", "dontFixDwCA", false, "In cases where we are triplifying DwC Archives, " +
                 "don't attempt to them using the DwCFixer. This saves many cycles of compute time but " +
                 "the results are not as robust.");
-        //opts.addOption("o", "processDirectory", true, "Read and write all files to this directory. Must be fully qualified");
+        opts.addOption("o", "outputDirectory", true, "Output all files to this directory. Default is to the use a directory " +
+                "called 'tripleOutput' which is a child of the application root");
         opts.addOption("t", "simplifierType", true, "*Required {fims|idtest|ocr}");
         opts.addOption("m", "mappingFile", true, "Provide a mapping file.  If this option is set it will ignore all other steps," +
                 "not create a SQLlite database but just go straight to triplification by reading the mapping file.");
@@ -94,9 +98,12 @@ public class triplify {
             fixDwCA = false;
         }
 
-        // if (cl.hasOption("o")) {
-        //     processDirectory = cl.getOptionValue("o") + File.separatorChar;
-        // }
+        // Set the processing directory
+         if (cl.hasOption("o")) {
+             processDirectory = pm.setDirectory(cl.getOptionValue("o") );
+         } else {
+             processDirectory = pm.setDirectory(System.getProperty("user.dir") + File.separator + "tripleOutput" );
+         }
 
         // Create the ReaderManager and load the plugins.
         ReaderManager rm = new ReaderManager();
@@ -121,24 +128,25 @@ public class triplify {
 
         // Process each input file specified on the command line.
         for (int cnt = 0; cnt < fnames.length; cnt++) {
-            String filename = processDirectory + fnames[cnt];
-            file = new File(filename);
-
-            tdr = rm.openFile(filename);
+            //String filename = processDirectory + fnames[cnt];
+            //file = new File(filename);
+            file = pm.setFile(fnames[cnt]);
+            tdr = rm.openFile(file.getAbsolutePath());
             if (tdr == null) {
-                System.out.println("Error: Unable to open input file " + filename +
+                System.out.println("Error: Unable to open input file " + file.getAbsolutePath() +
                         ".  Will continue trying to read any reamaining input files.");
                 continue;
             }
 
             // Create SQLite file
             System.out.println("Beginning SQlite creation & connection");
-            String pathPrefix = processDirectory + file.getName();
+            String pathPrefix = processDirectory + File.separator + file.getName();
             sqlitefile = new File(pathPrefix + ".sqlite");
             filecounter = 1;
             while (sqlitefile.exists())
                 sqlitefile = new File(pathPrefix + "_" + filecounter++ + ".sqlite");
-            tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + sqlitefile.getName());
+
+            tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + sqlitefile.getAbsolutePath());
             tdc.convert(fixDwCA);
             tdr.closeFile();
 
@@ -146,7 +154,7 @@ public class triplify {
             if (!cl.hasOption("s")) {
                 // Create connection to SQLlite database
                 Connection connection = new Connection(sqlitefile);
-                Triplifier r = new Triplifier();
+                Triplifier r = new Triplifier(processDirectory);
 
                 // Construct the type of simplifier
                 System.out.println("Beginning simplifier instantiation");
