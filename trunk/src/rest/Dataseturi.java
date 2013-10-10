@@ -1,3 +1,4 @@
+
 package rest;
 
 import javax.management.relation.RelationService;
@@ -22,7 +23,6 @@ public class Dataseturi {
      * @param pw PrintWriter used to write output to.
      */
     void printD2RQ(PrintWriter pw, Mapping mapping) {
-
         Set<Relation> relations = mapping.relations;
 
         // The commented-out code below began with the intention of inspecting
@@ -87,3 +87,4 @@ public class Dataseturi {
 
     }
 }
+

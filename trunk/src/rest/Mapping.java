@@ -48,7 +48,7 @@ public class Mapping {
 
         Database database = connection.getD2RQdatabase();
         DatabaseSchemaInspector schemaInspector = database.connectedDB().schemaInspector();
-//              System.out.println("tables: " + schemaInspector.listTableNames(null));
+//		System.out.println("tables: " + schemaInspector.listTableNames(null));
         DBtable table;
         for (RelationName relationName : schemaInspector.listTableNames(null)) {
             table = new DBtable(relationName.tableName(), new TreeSet<String>(), new HashSet<String>());

@@ -14,13 +14,14 @@ public class VocabularyItem implements Comparable<VocabularyItem> {
 	/**
 	 * For construction from JSON.
 	 */
-	 VocabularyItem() {}
+	VocabularyItem() {}
 
-	 VocabularyItem(String name, String uri) {
+	VocabularyItem(String name, String uri) {
 		this.name = name;
 		this.uri = uri;
 	}
 
+	@Override
 	public int compareTo(VocabularyItem vocabularyItem) {
 		return this.name.compareTo(vocabularyItem.name);
 	}
