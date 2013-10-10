@@ -26,13 +26,12 @@ import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
 import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
-import settings.SettingsManager;
 
 /**
- * Provides RESTful web services using Jersey JAX-RS implementation. 
- * Many of the public methods use Jackson Mapper to translate between 
+ * Provides RESTful web services using Jersey JAX-RS implementation.
+ * Many of the public methods use Jackson Mapper to translate between
  * JSON (received from/sent to the client) and Java objects.
- * Jersey POJOMappingFeature (entry in web.xml) allows to 
+ * Jersey POJOMappingFeature (entry in web.xml) allows to
  * achieve this without any special annotations of mapped Java classes,
  * sometimes argument-less constructor is needed. Exception handling
  * is achieved through a custom error page for error 500 (entry in web.xml),
@@ -99,7 +98,6 @@ public class Rest {
             ReaderManager rm = new ReaderManager();
             rm.loadReaders();
             TabularDataReader tdr = rm.openFile(tempFile.getPath());
-
             TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + sqliteFile.getPath());
             tdc.convert();
             tdr.closeFile();
@@ -181,7 +179,7 @@ public class Rest {
     }
 
     /**
-     * Generate RDF triples from given Mapping. 
+     * Generate RDF triples from given Mapping.
      * As intermediate step D2RQ Mapping Language is created.
      *
      * @param mapping Mapping to triplify.
@@ -195,7 +193,7 @@ public class Rest {
         System.gc();
         SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
-        Model model = new ModelD2RQ(FileUtils.toURL(context.getRealPath(getMapping(mapping, true))), 
+        Model model = new ModelD2RQ(FileUtils.toURL(context.getRealPath(getMapping(mapping, true))),
                         FileUtils.langN3, sm.retrieveValue("defaultURI","urn:x-biscicol:"));
 
         File tripleFile = createUniqueFile("triples.nt", getTriplesPath());
@@ -206,14 +204,14 @@ public class Rest {
     }
 
     /**
-     * Upload local RDF file, 
+     * Upload local RDF file,
      * place the file in vocabularies folder,
-     * extract vocabulary from the file. 
-     * 
+     * extract vocabulary from the file.
+     *
      * @param inputStream File to be uploaded.
      * @param contentDisposition Form-data content disposition header.
      * @return Vocabulary extracted from the uploaded file.
-     * @throws Exception 
+     * @throws Exception
      */
     @POST
     @Path("/uploadVocabulary")
@@ -224,17 +222,17 @@ public class Rest {
             @FormDataParam("file") FormDataContentDisposition contentDisposition) throws Exception {
         File file = createUniqueFile(contentDisposition.getFileName(), getVocabulariesPath());
         writeFile(inputStream, file);
-        return getVocabulary(file.getName());      
+        return getVocabulary(file.getName());
     }
-    
+
     /**
      * Upload RDF file from URL,
      * place the file in vocabularies folder,
-     * extract vocabulary from the file. 
-     * 
+     * extract vocabulary from the file.
+     *
      * @param urlString URL of file to be uploaded.
      * @return Vocabulary extracted from the uploaded file.
-     * @throws Exception 
+     * @throws Exception
      */
     @POST
     @Path("/uploadVocabulary")
@@ -244,7 +242,7 @@ public class Rest {
         // assume http if no protocol provided
         if (!urlString.contains("://"))
                 urlString = "http://" + urlString;
-    
+
         // open URLConnection
         URLConnection connection = new URL(urlString).openConnection();
         InputStream inputStream = connection.getInputStream();
@@ -255,7 +253,7 @@ public class Rest {
             int start = fileName.indexOf("filename=\"") + 10;
             int end = fileName.indexOf("\"", start);
             fileName = fileName.substring(start, end);
-        } 
+        }
         // if above fails, try to read filename from URL
         if (fileName == null || fileName.isEmpty())
             fileName = urlString.substring(urlString.lastIndexOf("/") + 1);
@@ -266,15 +264,15 @@ public class Rest {
 
         File file = createUniqueFile(fileName, getVocabulariesPath());
         writeFile(inputStream, file);
-        return getVocabulary(file.getName());      
+        return getVocabulary(file.getName());
     }
 
     /**
-     * Extract vocabulary from given file. 
-     * 
+     * Extract vocabulary from given file.
+     *
      * @param fileName Name of the RDF file in vocabularies folder.
      * @return Vocabulary extracted from the file.
-     * @throws Exception 
+     * @throws Exception
      */
     @POST
     @Path("/getVocabulary")
@@ -284,15 +282,15 @@ public class Rest {
         Vocabulary vocabulary= new RDFreader(fileName).getVocabulary();
         return vocabulary;
     }
-    
+
     /**
      * Return a Map of available RDF files defined in triplifiersettings.props:
      * "vocabularies", each with its "displayName" property,
-     * plus given user vocabulary files if they exist in vocabularies folder. 
-     * 
+     * plus given user vocabulary files if they exist in vocabularies folder.
+     *
      * @param userVocabularies Names of user vocabulary files.
      * @return Available vocabularies.
-     * @throws Exception 
+     * @throws Exception
      */
     @POST
     @Path("/getVocabularies")
@@ -300,11 +298,11 @@ public class Rest {
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, String> getVocabularies(List<String> userVocabularies) throws Exception {
         Map<String, String> vocabulariesMap = new LinkedHashMap<String, String>();
-        
+
         SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
         for (Entry<String, String> vocabularyEntry : sm.retrieveJsonMap("vocabularies").entrySet())
-                vocabulariesMap.put(vocabularyEntry.getKey(), 
+                vocabulariesMap.put(vocabularyEntry.getKey(),
                                 sm.retrieveJsonMap(vocabularyEntry.getValue()).get("displayName"));
 
         String vocabulariesPath = getVocabulariesPath();
@@ -317,7 +315,7 @@ public class Rest {
 
     /**
      * Download a file with a given filename and content.
-     * 
+     *
      * @param filename   Name of the file.
      * @param content    Content of the file.
      * @return Response with 'attachment' Content-Disposition header.
