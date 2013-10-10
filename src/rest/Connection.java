@@ -33,10 +33,10 @@ public class Connection {
                 host = sqliteFile.getParent().replace("\\", "/");
                 database = sqliteFile.getName();
         }
-        
+
         /**
          * Generate a JDBC URL specific to DBsystem.
-         * 
+         *
      * @return JDBC URL.
          */
         String getJdbcUrl() {
@@ -54,10 +54,10 @@ public class Connection {
                 }
                 return null;
         }
-        
+
         /**
          * Create D2RQ Database from the database connection.
-         * 
+         *
      * @return D2RQ Database.
          */
         Database getD2RQdatabase() {
@@ -67,7 +67,7 @@ public class Connection {
                 database.setPassword(password);
                 return database;
         }
-        
+
     /**
      * Generate D2RQ Mapping Language representation of this Connection.
      *
@@ -77,16 +77,16 @@ public class Connection {
                 pw.println("map:database a d2rq:Database;");
                 pw.println("\td2rq:jdbcDriver \"" + system.driver + "\";");
                 pw.println("\td2rq:jdbcDSN \"" + getJdbcUrl() + "\";");
-                if (username != null && !username.isEmpty()) 
+                if (username != null && !username.isEmpty())
                         pw.println("\td2rq:username \"" + username + "\";");
-                if (password != null && !password.isEmpty()) 
+                if (password != null && !password.isEmpty())
                         pw.println("\td2rq:password \"" + password + "\";");
                 pw.println("\td2rq:fetchSize \"" + (system == DBsystem.mysql ? Integer.MIN_VALUE : 500) + "\";");
                 pw.println("\t.");
         }
-        
+
     /**
-     * For SQLite DBsystems verify if the file exists 
+     * For SQLite DBsystems verify if the file exists
      * in local filesystem, throw exception if not.
      *
      */
@@ -94,5 +94,5 @@ public class Connection {
                 if (system.equals(DBsystem.sqlite) && !new File(host + File.separator + database).exists())
                         throw new Exception("Data Source file not available.");
         }
-        
+
 }
