@@ -26,6 +26,8 @@ import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
 import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
+import settings.SettingsManager;
+ 
 
 /**
  * Provides RESTful web services using Jersey JAX-RS implementation. 
