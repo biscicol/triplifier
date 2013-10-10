@@ -165,7 +165,6 @@ public class ReaderManager implements Iterable<TabularDataReader> {
 
                     return newreader;
                 } catch (Exception e) {
-                    e.printStackTrace();
                     return null;
                 }
             }

@@ -18,6 +18,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.joda.time.DateTime;
 
+
+
 /**
  * TabularDataReader for Excel-format spreadsheet files.  Both Excel 97-2003
  * format (*.xls) and Excel XML (*.xlsx) format files are supported.  The reader
@@ -102,7 +104,6 @@ public class ExcelReader implements TabularDataReader
     
     @Override
     public boolean openFile(String filepath) {
-        //System.out.println(filepath);
         FileInputStream is;
         
         try {
