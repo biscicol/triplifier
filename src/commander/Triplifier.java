@@ -4,7 +4,6 @@ import java.io.*;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileUtils;
-import com.sun.xml.internal.bind.v2.model.annotation.FieldLocatable;
 import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
 import settings.SettingsManager;
 

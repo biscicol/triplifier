@@ -147,7 +147,7 @@ public class triplify {
                 sqlitefile = new File(pathPrefix + "_" + filecounter++ + ".sqlite");
 
             tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + sqlitefile.getAbsolutePath());
-            tdc.convert(fixDwCA);
+            tdc.convert();
             tdr.closeFile();
 
             // Only run the next section if the user did not specify the "s" option
