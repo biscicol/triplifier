@@ -64,7 +64,8 @@ public class run {
     public static void main(String[] args) throws Exception {
         // Sets the path to the test files.
         //String testfilepath = "../triplifiersvn/testdata/";
-        String testfilepath = "../triplifiersvn/testdata/vertnet/";
+        //String testfilepath = "../triplifiersvn/testdata/vertnet/";
+        String testfilepath = "../triplifiersvn/testdata/";
                 
         //runReaders();
 
@@ -98,7 +99,8 @@ public class run {
         //TabularDataReader tdr = rm.openFile(testfilepath + "fishtest.zip");
         //TabularDataReader tdr = rm.openFile(testfilepath + "uafmc_fish.zip");
         //TabularDataReader tdr = rm.openFile(testfilepath + "uafmc_mammals.zip");
-        TabularDataReader tdr = rm.openFile(testfilepath + "msbobs_mamm.zip");
+        //TabularDataReader tdr = rm.openFile(testfilepath + "msbobs_mamm.zip");
+        TabularDataReader tdr = rm.openFile(testfilepath + "NY_00198993.zip");
         //TabularDataReader tdr = rm.openFile(testfilepath + "hsu_wildlife_birds.zip");
         TabularDataConverter tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + testfilepath + "test.sqlite");
         tdc.convert();
