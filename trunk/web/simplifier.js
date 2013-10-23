@@ -74,7 +74,9 @@ SimplifierFactory.prototype.getSimplifier = function(formatcode) {
 
 
 /**
- * A Simplifier for Darwin Core Archives.  This currently only supports single-table archives.
+ * A Simplifier for Darwin Core Archives.  This simplifier expects to receive data
+ * for a "re-normalized" DwC-A after processing by the Triplifier's server-side
+ * reader system.
  **/
 function DwCASimplifier() {
 }
