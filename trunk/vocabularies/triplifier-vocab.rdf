@@ -163,7 +163,7 @@ xmlns:dwc="http://rs.tdwg.org/dwc/terms/">
 	<rdfs:comment xml:lang="en-US">The full name, with authorship and date information if known, of the currently valid (zoological) or accepted (botanical) taxon.</rdfs:comment>
 	<dcterms:description xml:lang="en-US">Example: "Tamias minimus" valid name for "Eutamias minimus"</dcterms:description>
 	<rdfs:isDefinedBy rdf:resource="http://rs.tdwg.org/dwc/terms/"/>
-	<dcterms:issued>2008-11-19</dcterms:issued`>
+	<dcterms:issued>2008-11-19</dcterms:issued>
 	<dcterms:modified>2009-09-21</dcterms:modified>
 	<rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
 	<dcterms:hasVersion rdf:resource="http://rs.tdwg.org/dwc/terms/history/#acceptedNameUsage-2009-09-21"/>			
