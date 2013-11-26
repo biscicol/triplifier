@@ -15,10 +15,7 @@ import reader.plugins.TabularDataReader;
 import commander.*;
 
 import settings.PathManager;
-import simplifier.plugins.fimsSimplifier;
-import simplifier.plugins.identifierTestsSimplifier;
-import simplifier.plugins.ocrSimplifier;
-import simplifier.plugins.simplifier;
+import simplifier.plugins.*;
 
 
 /**
@@ -47,7 +44,7 @@ public class triplify {
                 "the results are not as robust.");
         opts.addOption("o", "outputDirectory", true, "Output all files to this directory. Default is to the use a directory " +
                 "called 'tripleOutput' which is a child of the application root");
-        opts.addOption("t", "simplifierType", true, "*Required {fims|idtest|ocr}");
+        opts.addOption("t", "simplifierType", true, "*Required {fims|idtest|ocr|genbank}");
         opts.addOption("m", "mappingFile", true, "Provide a mapping file.  If this option is set it will ignore all other steps," +
                 "not create a SQLlite database but just go straight to triplification by reading the mapping file.");
         opts.addOption("p", "prefixRemover", false, "Do not apply a system prefix.  Use this if you have awesome identifiers" +
@@ -99,11 +96,11 @@ public class triplify {
         }
 
         // Set the processing directory
-         if (cl.hasOption("o")) {
-             processDirectory = pm.setDirectory(cl.getOptionValue("o") );
-         } else {
-             processDirectory = pm.setDirectory(System.getProperty("user.dir") + File.separator + "tripleOutput" );
-         }
+        if (cl.hasOption("o")) {
+            processDirectory = pm.setDirectory(cl.getOptionValue("o"));
+        } else {
+            processDirectory = pm.setDirectory(System.getProperty("user.dir") + File.separator + "tripleOutput");
+        }
 
         // Create the ReaderManager and load the plugins.
         ReaderManager rm = new ReaderManager();
@@ -131,53 +128,69 @@ public class triplify {
             //String filename = processDirectory + fnames[cnt];
             //file = new File(filename);
             file = pm.setFile(fnames[cnt]);
-            tdr = rm.openFile(file.getAbsolutePath());
-            if (tdr == null) {
-                System.out.println("Error: Unable to open input file " + file.getAbsolutePath() +
-                        ".  Will continue trying to read any reamaining input files.");
-                continue;
+
+            // Handle genbank simplifier separately here.  We don't need alot of the other options for this case
+            if (cl.getOptionValue("t").equals("genbank")) {
+                // Create TTL output file
+                System.out.println("Beginning TTL creation for genbank simplifier");
+                String pathPrefix = processDirectory + File.separator + file.getName();
+                File genbankFile = new File(pathPrefix + ".ttl");
+                filecounter = 1;
+                while (genbankFile.exists())
+                    genbankFile = new File(pathPrefix + "_" + filecounter++ + ".ttl");
+                new genbankSimplifier(file, genbankFile);
+                return;
             }
-
-            // Create SQLite file
-            System.out.println("Beginning SQlite creation & connection");
-            String pathPrefix = processDirectory + File.separator + file.getName();
-            sqlitefile = new File(pathPrefix + ".sqlite");
-            filecounter = 1;
-            while (sqlitefile.exists())
-                sqlitefile = new File(pathPrefix + "_" + filecounter++ + ".sqlite");
-
-            tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + sqlitefile.getAbsolutePath());
-            tdc.convert();
-            tdr.closeFile();
-
-            // Only run the next section if the user did not specify the "s" option
-            if (!cl.hasOption("s")) {
-                // Create connection to SQLlite database
-                Connection connection = new Connection(sqlitefile);
-                Triplifier r = new Triplifier(processDirectory);
-
-                // Construct the type of simplifier
-                System.out.println("Beginning simplifier instantiation");
-                simplifier s = null;
-                if (cl.getOptionValue("t").equals("fims")) {
-                    s = new fimsSimplifier(connection,addPrefix);
-                } else if (cl.getOptionValue("t").equals("idtest")) {
-                    s = new identifierTestsSimplifier(connection,addPrefix);
-                } else if (cl.getOptionValue("t").equals("ocr")) {
-                    s = new ocrSimplifier(connection, file.getName(),addPrefix);
-                } else {
-                    System.out.println(cl.getOptionValue("t") + " not a valid simplifier type");
-                    return;
+            // all other cases/ simplifiers
+            else {
+                tdr = rm.openFile(file.getAbsolutePath());
+                if (tdr == null) {
+                    System.out.println("Error: Unable to open input file " + file.getAbsolutePath() +
+                            ".  Will continue trying to read any reamaining input files.");
+                    continue;
                 }
-                // Create mapping file
-                System.out.println("Beginning mapping file creation");
-                commander.Mapping mapping = new commander.Mapping(connection, s);
 
-                // Triplify
-                System.out.println("Beginning triple file creation");
+                // Create SQLite file
+                System.out.println("Beginning SQlite creation & connection");
+                String pathPrefix = processDirectory + File.separator + file.getName();
+                sqlitefile = new File(pathPrefix + ".sqlite");
+                filecounter = 1;
+                while (sqlitefile.exists())
+                    sqlitefile = new File(pathPrefix + "_" + filecounter++ + ".sqlite");
 
-                String results = r.getTriples(file.getName(), mapping);
-                System.out.println("Done! see, " + results);
+                tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + sqlitefile.getAbsolutePath());
+                tdc.convert();
+                tdr.closeFile();
+
+                // Only run the next section if the user did not specify the "s" option
+                if (!cl.hasOption("s")) {
+                    // Create connection to SQLlite database
+                    Connection connection = new Connection(sqlitefile);
+                    Triplifier r = new Triplifier(processDirectory);
+
+                    // Construct the type of simplifier
+                    System.out.println("Beginning simplifier instantiation");
+                    simplifier s = null;
+                    if (cl.getOptionValue("t").equals("fims")) {
+                        s = new fimsSimplifier(connection, addPrefix);
+                    } else if (cl.getOptionValue("t").equals("idtest")) {
+                        s = new identifierTestsSimplifier(connection, addPrefix);
+                    } else if (cl.getOptionValue("t").equals("ocr")) {
+                        s = new ocrSimplifier(connection, file.getName(), addPrefix);
+                    } else {
+                        System.out.println(cl.getOptionValue("t") + " not a valid simplifier type");
+                        return;
+                    }
+                    // Create mapping file
+                    System.out.println("Beginning mapping file creation");
+                    commander.Mapping mapping = new commander.Mapping(connection, s);
+
+                    // Triplify
+                    System.out.println("Beginning triple file creation");
+
+                    String results = r.getTriples(file.getName(), mapping);
+                    System.out.println("Done! see, " + results);
+                }
             }
         }
     }
