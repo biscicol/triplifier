@@ -123,6 +123,8 @@ public class triplify {
         File file, sqlitefile;
         int filecounter;
 
+
+
         // Process each input file specified on the command line.
         for (int cnt = 0; cnt < fnames.length; cnt++) {
             //String filename = processDirectory + fnames[cnt];
@@ -132,14 +134,16 @@ public class triplify {
             // Handle genbank simplifier separately here.  We don't need alot of the other options for this case
             if (cl.getOptionValue("t").equals("genbank")) {
                 // Create TTL output file
-                System.out.println("Beginning TTL creation for genbank simplifier");
                 String pathPrefix = processDirectory + File.separator + file.getName();
                 File genbankFile = new File(pathPrefix + ".ttl");
                 filecounter = 1;
                 while (genbankFile.exists())
                     genbankFile = new File(pathPrefix + "_" + filecounter++ + ".ttl");
+
+                System.out.println("Reading file " + file.getAbsolutePath());
                 new genbankSimplifier(file, genbankFile);
-                return;
+                System.out.println("  Generated output file " + genbankFile.getAbsolutePath());
+
             }
             // all other cases/ simplifiers
             else {

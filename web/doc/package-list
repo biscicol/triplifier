@@ -1,3 +1,7 @@
+
+commander
 reader
 reader.plugins
 rest
+settings
+simplifier.plugins
