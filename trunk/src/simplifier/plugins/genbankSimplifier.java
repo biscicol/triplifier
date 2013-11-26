@@ -132,7 +132,7 @@ public class genbankSimplifier {
     /**
      * Define the core genbank Record, consisting of subClasses GBsource and GBgene
      */
-    class GBrecord {
+    public class GBrecord {
         StringBuilder stringBuilder = new StringBuilder();
 
         String locus = null;
@@ -206,7 +206,7 @@ public class genbankSimplifier {
     /**
      * Define the source qualifier terms
      */
-    class GBsource {
+    public class GBsource {
         String specimen_voucher = null;
         String mol_type = null;
         String organism = null;
@@ -222,7 +222,7 @@ public class genbankSimplifier {
     /**
      * Define the gene qualifier terms
      */
-    class GBgene {
+    public class GBgene {
         String gene = null;
     }
 
