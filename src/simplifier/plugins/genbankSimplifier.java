@@ -1,5 +1,11 @@
 package simplifier.plugins;
 
+import org.apache.commons.cli.*;
+import org.apache.log4j.Level;
+import reader.TabularDataConverter;
+import reader.plugins.TabularDataReader;
+import settings.PathManager;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -234,10 +240,39 @@ public class genbankSimplifier {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        File dnaFile = new File("/Users/jdeck/Downloads/gbvrt25.seq");
-        //File dnaFile = new File("/Users/jdeck/Downloads/test.seq");
-        File outputFile = new File("/tmp/outputFile.txt");
+
+        org.apache.log4j.Logger.getRootLogger().setLevel(Level.ERROR);
+
+        Options opts = new Options();
+        HelpFormatter helpf = new HelpFormatter();
+
+        // Add the options for the program.
+        opts.addOption("h", "help", false, "print this help message and exit");
+        opts.addOption("i", "input", true, "input DNAFile");
+        opts.addOption("o", "output", true, "output file");
+
+        // Create the commands parser and parse the command line arguments.
+        CommandLineParser clp = new GnuParser();
+        CommandLine cl;
+        try {
+            cl = clp.parse(opts, args);
+        } catch (UnrecognizedOptionException e) {
+            System.out.println("Error: " + e.getMessage());
+            return;
+        }
+
+        // If help was requested, print the help message and exit.
+        if (cl.hasOption("h") || (cl.getArgs().length != 2)) {
+            helpf.printHelp("java genbankSimplifier ", opts, true);
+            return;
+        }
+
+          File dnaFile = new File(cl.getOptionValue("i"));
+        File outputFile = new File(cl.getOptionValue("o"));
         new genbankSimplifier(dnaFile, outputFile);
+
+
+
     }
 
 
