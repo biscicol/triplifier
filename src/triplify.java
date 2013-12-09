@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import de.fuberlin.wiwiss.d2rq.SystemLoader;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
