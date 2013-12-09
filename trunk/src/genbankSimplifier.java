@@ -1,10 +1,5 @@
-package simplifier.plugins;
-
 import org.apache.commons.cli.*;
 import org.apache.log4j.Level;
-import reader.TabularDataConverter;
-import reader.plugins.TabularDataReader;
-import settings.PathManager;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -23,6 +18,7 @@ public class genbankSimplifier {
 
     /**
      * Constructor here takes an inputFile and an outputFile
+     *
      * @param inputFile
      * @param outputFile
      * @throws IOException
@@ -262,17 +258,14 @@ public class genbankSimplifier {
         }
 
         // If help was requested, print the help message and exit.
-        if (cl.hasOption("h") || (cl.getArgs().length != 2)) {
+        if (cl.hasOption("h")) {
             helpf.printHelp("java genbankSimplifier ", opts, true);
             return;
         }
 
-          File dnaFile = new File(cl.getOptionValue("i"));
+        File dnaFile = new File(cl.getOptionValue("i"));
         File outputFile = new File(cl.getOptionValue("o"));
         new genbankSimplifier(dnaFile, outputFile);
-
-
-
     }
 
 
