@@ -159,6 +159,7 @@ public class genbankSimplifier {
                     "<iao:informationContentEntity>;\n");
 
             // Print source qualifiers
+            // to add: source.note, definition
             propertyPrinter("http://insdc.org/owl/specimen_voucher", gBsource.specimen_voucher);
             propertyPrinter("http://insdc.org/owl/mol_type", gBsource.mol_type);
             propertyPrinter("http://insdc.org/owl/lat_lon", gBsource.lat_lon);
