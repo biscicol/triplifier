@@ -55,10 +55,11 @@ public class Mapping {
         this.connection = connection;
         schema = new TreeSet<DBtable>();
 
-        if (simplifier == null || simplifier.getJoin() == null)
+        if (simplifier == null || simplifier.getJoin() == null) {
             joins = new HashSet<Join>();
-        else
+        } else      {
             joins = simplifier.getJoin();
+        }
 
         if (simplifier == null || simplifier.getEntity() == null)
             entities = new HashSet<Entity>();
@@ -108,6 +109,7 @@ public class Mapping {
             entity.printD2RQ(pw, this);
         }
         for (Relation relation : relations) {
+            //System.out.println("relateion = "+ relation.subject + " " + relation.predicate + " " + relation.object);
             relation.printD2RQ(pw, this);
         }
 
@@ -124,10 +126,12 @@ public class Mapping {
      * @return Matching Join or null if not found.
      */
      Join findJoin(String table1, String table2) {
-        for (Join join : joins)
+        for (Join join : joins)    {
+//System.out.println(join.primaryTable + " = " + join.foreignTable + "table1 = " + table1 + "/"+ table2);
             if (table1.equals(join.foreignTable) && table2.equals(join.primaryTable) ||
                     table1.equals(join.primaryTable) && table2.equals(join.foreignTable))
                 return join;
+        }
         return null;
     }
 

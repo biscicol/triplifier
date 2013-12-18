@@ -1,0 +1,415 @@
+GBVRT25.SEQ         Genetic Sequence Data Bank
+                         October 15 2013
+
+                NCBI-GenBank Flat File Release 198.0
+
+              Other Vertebrate Sequences (Part 25)
+
+   28971 loci,    20141515 bases, from    28971 reported sequences
+
+
+LOCUS       JN027336                 652 bp    DNA     linear   VRT 18-JUL-2011
+DEFINITION  Nocomis effusus voucher NAFF 3425 cytochrome oxidase subunit 1
+            (COI) gene, partial cds; mitochondrial.
+ACCESSION   JN027336
+VERSION     JN027336.1  GI:339770975
+KEYWORDS    BARCODE.
+SOURCE      mitochondrion Nocomis effusus
+  ORGANISM  Nocomis effusus
+            Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+            Actinopterygii; Neopterygii; Teleostei; Ostariophysi;
+            Cypriniformes; Cyprinidae; Nocomis.
+REFERENCE   1  (bases 1 to 652)
+  AUTHORS   April,J., Mayden,R.L., Hanner,R.H. and Bernatchez,L.
+  TITLE     Genetic calibration of species diversity among North America's
+            freshwater fishes
+  JOURNAL   Proc. Natl. Acad. Sci. U.S.A. 108 (26), 10602-10607 (2011)
+   PUBMED   21670289
+REFERENCE   2  (bases 1 to 652)
+  AUTHORS   April,J., Mayden,R.L., Hanner,R. and Bernatchez,L.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (26-MAY-2011) Institut de Biologie Integrative et des
+            Systemes (IBIS), Universite Laval, 1030 Avenue de la Medecine,
+            Quebec, Quebec G1V 0A6, Canada
+FEATURES             Location/Qualifiers
+     source          1..652
+                     /organism="Nocomis effusus"
+                     /organelle="mitochondrion"
+                     /mol_type="genomic DNA"
+                     /specimen_voucher="NAFF 3425"
+                     /db_xref="BOLD:BNAFA688-08.COI-5P"
+                     /db_xref="taxon:1042307"
+                     /country="USA: Tennessee, Montgomery, West Fork Red River
+                     at TN Hwy 236"
+                     /lat_lon="36.6257 N 87.3656 W"
+                     /collection_date="27-Apr-2001"
+                     /collected_by="DA Neely"
+                     /identified_by="D. A. Neely"
+                     /PCR_primers="fwd_seq:
+                     tgtaaaacgacggccagtcaaccaaccacaaagacattggcac, rev_seq:
+                     tgtaaaacgacggccagtcgactaatcataaagatatcggcac"
+                     /PCR_primers="fwd_seq:
+                     tgtaaaacgacggccagtcgactaatcataaagatatcggcac, rev_seq:
+                     caggaaacagctatgacacctcagggtgtccgaaraaycaraa"
+     gene            <1..>652
+                     /gene="COI"
+     CDS             <1..>652
+                     /gene="COI"
+                     /codon_start=2
+                     /transl_table=2
+                     /product="cytochrome oxidase subunit 1"
+                     /protein_id="AEK03960.1"
+                     /db_xref="GI:339770976"
+                     /translation="LYLVFGAWAGMVGTALSLLIRAELSQPGSLLGDDQIYNVIVTAH
+                     AFVMIFFMVMPILIGGFGNWLVPLMIGAPDMAFPRMNNMSFWLLPPSFLLLLASSGVE
+                     AGAGTGWTVYPPLAGNLAHAGASVDLTIFSLHLAGVSSILGAVNFITTIINMKPPAIS
+                     QYQTPLFVWAVLVTAVLLLLSLPVLAAGITMLLTDRNLNTTFFDPAGGGDPILYQHL"
+ORIGIN      
+        1 cctttatctt gtatttggtg cctgagccgg gatagtgggg accgctttaa gccttcttat
+       61 tcgagccgaa cttagccaac ccggatcact cctaggcgat gatcaaattt ataatgttat
+      121 tgttactgcc cacgccttcg taataatttt ctttatagta ataccaattc taattggtgg
+      181 gtttgggaat tgacttgtac ctctaatgat tggagcacca gacatagcat tcccacgaat
+      241 aaataacatg agcttttgac tcttgccccc atcattcctg ttgttgttgg cctcttctgg
+      301 tgttgaagct ggcgctggga cagggtggac tgtatacccc cctcttgcag gtaacctcgc
+      361 ccatgcagga gcatcagtag atcttacaat tttctctctt catttagcag gtgtgtcctc
+      421 aattttaggg gcagttaatt ttattactac aattattaat ataaaacccc cagccatctc
+      481 ccagtatcag acacccctct ttgtttgagc cgtacttgta actgctgttc ttctactact
+      541 atcattacct gtcctagctg ctggtattac aatacttctc actgatcgta acctaaatac
+      601 tacattcttt gaccccgcgg ggggnggaga cccaatctta tatcagcatt ta
+//
+LOCUS       JN027337                 651 bp    DNA     linear   VRT 18-JUL-2011
+DEFINITION  Nocomis effusus voucher NAFF 3424 cytochrome oxidase subunit 1
+            (COI) gene, partial cds; mitochondrial.
+ACCESSION   JN027337
+VERSION     JN027337.1  GI:339770977
+KEYWORDS    BARCODE.
+SOURCE      mitochondrion Nocomis effusus
+  ORGANISM  Nocomis effusus
+            Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+            Actinopterygii; Neopterygii; Teleostei; Ostariophysi;
+            Cypriniformes; Cyprinidae; Nocomis.
+REFERENCE   1  (bases 1 to 651)
+  AUTHORS   April,J., Mayden,R.L., Hanner,R.H. and Bernatchez,L.
+  TITLE     Genetic calibration of species diversity among North America's
+            freshwater fishes
+  JOURNAL   Proc. Natl. Acad. Sci. U.S.A. 108 (26), 10602-10607 (2011)
+   PUBMED   21670289
+REFERENCE   2  (bases 1 to 651)
+  AUTHORS   April,J., Mayden,R.L., Hanner,R. and Bernatchez,L.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (26-MAY-2011) Institut de Biologie Integrative et des
+            Systemes (IBIS), Universite Laval, 1030 Avenue de la Medecine,
+            Quebec, Quebec G1V 0A6, Canada
+FEATURES             Location/Qualifiers
+     source          1..651
+                     /organism="Nocomis effusus"
+                     /organelle="mitochondrion"
+                     /mol_type="genomic DNA"
+                     /specimen_voucher="NAFF 3424"
+                     /db_xref="BOLD:BNAFA687-08.COI-5P"
+                     /db_xref="taxon:1042307"
+                     /country="USA: Tennessee, Montgomery, West Fork Red River
+                     at TN Hwy 236"
+                     /lat_lon="36.6257 N 87.3656 W"
+                     /collection_date="27-Apr-2001"
+                     /collected_by="DA Neely"
+                     /identified_by="D. A. Neely"
+                     /PCR_primers="fwd_seq:
+                     tgtaaaacgacggccagtcaaccaaccacaaagacattggcac, rev_seq:
+                     tgtaaaacgacggccagtcgactaatcataaagatatcggcac"
+                     /PCR_primers="fwd_seq:
+                     tgtaaaacgacggccagtcgactaatcataaagatatcggcac, rev_seq:
+                     caggaaacagctatgacacctcagggtgtccgaaraaycaraa"
+     gene            <1..>651
+                     /gene="COI"
+     CDS             <1..>651
+                     /gene="COI"
+                     /codon_start=2
+                     /transl_table=2
+                     /product="cytochrome oxidase subunit 1"
+                     /protein_id="AEK03961.1"
+                     /db_xref="GI:339770978"
+                     /translation="LYLVFGAWAGMVGDALSLLIRAELSQPGSLLGDDQIYNVIVTAH
+                     AFVMIFFMVMPILIGGFGNWLVPLMIGAPDMAFPRMNNMSFWLLPPSFLLLLASSGVE
+                     AGAGTGWTVYPPLAGNLAHAGASVDLTIFSLHLAGVSSILGAVNFITTIINMKPPAIS
+                     QYQTPLFVWAVLVTAVLLLLSLPVPTAGITMLLTDRNLNTTFFDPAGGGDPILYQH"
+ORIGIN      
+        1 cctttatctt gtatttggtg cctgagccgg gatagtgggg gacgctttaa gccttcttat
+       61 tcgagcngaa cttagccaac ccggatcact cctaggcgat gatcaaattt ataatgttat
+      121 tgttactgcc cacgccttcg taataatttt ctttatagta ataccaattc taattggtgg
+      181 gtttgggaat tgacttgtac ctctaatgat tggagcacca gacatagcat tcccacgaat
+      241 aaataacatg agcttttgac tcttgccccc atcattcctg ttgttgttgg cctcttctgg
+      301 tgttgaagct ggcgctggga cagggtggac tgtatacccc cctcttgcag gtaacctcgc
+      361 ccatgcagga gcatcagtag atcttacaat tttctctctt catttagcag gtgtgtcctc
+      421 aattttaggg gcagttaatt ttattactac aattattaat ataaaacccc cagccatctc
+      481 ccagtatcag acacccctct ttgtttgagc cgtacttgta actgctgttc ttctactact
+      541 atcattacct gtccctactg ctggtattac aatacttctc actgatcgta acctaaatac
+      601 tacattcttt gaccccgcgg ggggaggaga cccaatctta tatcagcatt t
+//
+LOCUS       JN027338                 652 bp    DNA     linear   VRT 18-JUL-2011
+DEFINITION  Nocomis leptocephalus voucher NAFF 1852 cytochrome oxidase subunit
+            1 (COI) gene, partial cds; mitochondrial.
+ACCESSION   JN027338
+VERSION     JN027338.1  GI:339770979
+KEYWORDS    BARCODE.
+SOURCE      mitochondrion Nocomis leptocephalus (bluehead chub)
+  ORGANISM  Nocomis leptocephalus
+            Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+            Actinopterygii; Neopterygii; Teleostei; Ostariophysi;
+            Cypriniformes; Cyprinidae; Nocomis.
+REFERENCE   1  (bases 1 to 652)
+  AUTHORS   April,J., Mayden,R.L., Hanner,R.H. and Bernatchez,L.
+  TITLE     Genetic calibration of species diversity among North America's
+            freshwater fishes
+  JOURNAL   Proc. Natl. Acad. Sci. U.S.A. 108 (26), 10602-10607 (2011)
+   PUBMED   21670289
+REFERENCE   2  (bases 1 to 652)
+  AUTHORS   April,J., Mayden,R.L., Hanner,R. and Bernatchez,L.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (26-MAY-2011) Institut de Biologie Integrative et des
+            Systemes (IBIS), Universite Laval, 1030 Avenue de la Medecine,
+            Quebec, Quebec G1V 0A6, Canada
+FEATURES             Location/Qualifiers
+     source          1..652
+                     /organism="Nocomis leptocephalus"
+                     /organelle="mitochondrion"
+                     /mol_type="genomic DNA"
+                     /specimen_voucher="NAFF 1852"
+                     /db_xref="BOLD:RMAYC154-08.COI-5P"
+                     /db_xref="taxon:86916"
+                     /country="USA: Mississippi, Noxubee, Hashuqua Creek"
+                     /lat_lon="33.1347 N 88.6647 W"
+                     /PCR_primers="fwd_seq:
+                     tgtaaaacgacggccagtcaaccaaccacaaagacattggcac, rev_seq:
+                     tgtaaaacgacggccagtcgactaatcataaagatatcggcac"
+                     /PCR_primers="fwd_seq:
+                     tgtaaaacgacggccagtcgactaatcataaagatatcggcac, rev_seq:
+                     caggaaacagctatgacacctcagggtgtccgaaraaycaraa"
+     gene            <1..>652
+                     /gene="COI"
+     CDS             <1..>652
+                     /gene="COI"
+                     /codon_start=2
+                     /transl_table=2
+                     /product="cytochrome oxidase subunit 1"
+                     /protein_id="AEK03962.1"
+                     /db_xref="GI:339770980"
+                     /translation="LYLVFGAWAGMVGTALSLLIRAELSQPGSLLGDDQIYNVIVTAH
+                     AFVMIFFMVMPILIGGFGNWLVPLMIGAPDMAFPRMNNMSFWLLPPSFLLLLASSGVE
+                     AGAGTGWTVYPPLAGNLAHAGASVDLTIFSLHLAGVSSILGAVNFITTIINMKPPAIS
+                     QYQTPLFVWAVLVTAVLLLLSLPVLAAGITMLLTDRNLNTTFFDPAGGGDPILYQHL"
+ORIGIN      
+        1 cctctatctt gtatttggtg cctgagctgg aatagtagga accgctttaa gcctccttat
+       61 tcgagccgaa ctcagccaac ccggatcact cctaggtgac gatcagattt acaatgtaat
+      121 cgttaccgcc cacgccttcg taataatttt ctttatagta atgccaattc tgatcggcgg
+      181 gtttggaaac tggcttgtac ctctaataat tggtgcacca gacatggcat ttccacgaat
+      241 aaataatata agcttctgac tcctgccccc atcattcctg ttgctattag cctcttctgg
+      301 tgttgaggct ggagctggga caggttgaac cgtatatccc cctctcgcag ggaaccttgc
+      361 ccacgcagga gcatcagtag atcttacaat cttctctctt catttagcag gtgtatcatc
+      421 aattttagga gcagttaact ttattaccac aatcattaac atgaaacccc cagccatttc
+      481 ccaatatcaa acacccctct ttgtgtgagc cgtacttgta accgctgttc ttctacttct
+      541 atcgctacct gtcctggctg ctggtattac aatacttctc accgatcgta acctaaacac
+      601 cacattcttt gaccccgcag gtggaggaga cccaatcctg tatcaacacc ta
+//
+LOCUS       JN027339                 652 bp    DNA     linear   VRT 18-JUL-2011
+DEFINITION  Nocomis leptocephalus voucher NAFF 1851 cytochrome oxidase subunit
+            1 (COI) gene, partial cds; mitochondrial.
+ACCESSION   JN027339
+VERSION     JN027339.1  GI:339770981
+KEYWORDS    BARCODE.
+SOURCE      mitochondrion Nocomis leptocephalus (bluehead chub)
+  ORGANISM  Nocomis leptocephalus
+            Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+            Actinopterygii; Neopterygii; Teleostei; Ostariophysi;
+            Cypriniformes; Cyprinidae; Nocomis.
+REFERENCE   1  (bases 1 to 652)
+  AUTHORS   April,J., Mayden,R.L., Hanner,R.H. and Bernatchez,L.
+  TITLE     Genetic calibration of species diversity among North America's
+            freshwater fishes
+  JOURNAL   Proc. Natl. Acad. Sci. U.S.A. 108 (26), 10602-10607 (2011)
+   PUBMED   21670289
+REFERENCE   2  (bases 1 to 652)
+  AUTHORS   April,J., Mayden,R.L., Hanner,R. and Bernatchez,L.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (26-MAY-2011) Institut de Biologie Integrative et des
+            Systemes (IBIS), Universite Laval, 1030 Avenue de la Medecine,
+            Quebec, Quebec G1V 0A6, Canada
+FEATURES             Location/Qualifiers
+     source          1..652
+                     /organism="Nocomis leptocephalus"
+                     /organelle="mitochondrion"
+                     /mol_type="genomic DNA"
+                     /specimen_voucher="NAFF 1851"
+                     /db_xref="BOLD:RMAYC153-08.COI-5P"
+                     /db_xref="taxon:86916"
+                     /country="USA: Mississippi, Noxubee, Hashuqua Creek"
+                     /lat_lon="33.1347 N 88.6647 W"
+                     /PCR_primers="fwd_seq:
+                     tgtaaaacgacggccagtcaaccaaccacaaagacattggcac, rev_seq:
+                     tgtaaaacgacggccagtcgactaatcataaagatatcggcac"
+                     /PCR_primers="fwd_seq:
+                     tgtaaaacgacggccagtcgactaatcataaagatatcggcac, rev_seq:
+                     caggaaacagctatgacacctcagggtgtccgaaraaycaraa"
+     gene            <1..>652
+                     /gene="COI"
+     CDS             <1..>652
+                     /gene="COI"
+                     /codon_start=2
+                     /transl_table=2
+                     /product="cytochrome oxidase subunit 1"
+                     /protein_id="AEK03963.1"
+                     /db_xref="GI:339770982"
+                     /translation="LYLVFGAWAGMVGTALSLLIRAELSQPGSLLGDDQIYNVIVTAH
+                     AFVMIFFMVMPILIGGFGNWLVPLMIGAPDMAFPRMNNMSFWLLPPSFLLLLASSGVE
+                     AGAGTGWTVYPPLAGNLAHAGASVDLTIFSLHLAGVSSILGAVNFITTIINMKPPAIS
+                     QYQTPLFVWAVLVTAVLLLLSLPVLAAGITMLLTDRNLNTTFFDPAGGGDPILYQHL"
+ORIGIN      
+        1 cctctatctt gtatttggtg cctgagctgg aatagtagga accgctttaa gcctccttat
+       61 tcgagccgaa ctcagccaac ccggatcact cctaggtgac gatcagattt acaatgtaat
+      121 cgttaccgcc cacgccttcg taataatttt ctttatagta atgccaattc tgatcggcgg
+      181 gtttgggaac tggcttgtac ctctaataat tggtgcacca gacatggcat ttccacgaat
+      241 aaataatata agcttctgac tcctgccccc atcattcctg ttgctattag cctcttctgg
+      301 tgttgaggct ggagctggga caggttgaac cgtatatccc cctctcgcag ggaaccttgc
+      361 ccacgcagga gcatcagtag atcttacaat cttctctctt catttagcag gtgtatcatc
+      421 aattttagga gcagttaact ttattaccac aatcattaac atgaaacccc cagccatttc
+      481 ccaatatcaa acacccctct ttgtgtgagc cgtacttgta accgctgttc ttctacttct
+      541 atcgctacct gtcctggctg ctggtattac aatacttctc accgatcgta acctaaacac
+      601 cacattcttt gaccccgcag gtggaggaga cccaatcctg tatcaacacc ta
+//
+LOCUS       JN027340                 652 bp    DNA     linear   VRT 18-JUL-2011
+DEFINITION  Nocomis leptocephalus voucher NAFF 4149 cytochrome oxidase subunit
+            1 (COI) gene, partial cds; mitochondrial.
+ACCESSION   JN027340
+VERSION     JN027340.1  GI:339770983
+KEYWORDS    BARCODE.
+SOURCE      mitochondrion Nocomis leptocephalus (bluehead chub)
+  ORGANISM  Nocomis leptocephalus
+            Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+            Actinopterygii; Neopterygii; Teleostei; Ostariophysi;
+            Cypriniformes; Cyprinidae; Nocomis.
+REFERENCE   1  (bases 1 to 652)
+  AUTHORS   April,J., Mayden,R.L., Hanner,R.H. and Bernatchez,L.
+  TITLE     Genetic calibration of species diversity among North America's
+            freshwater fishes
+  JOURNAL   Proc. Natl. Acad. Sci. U.S.A. 108 (26), 10602-10607 (2011)
+   PUBMED   21670289
+REFERENCE   2  (bases 1 to 652)
+  AUTHORS   April,J., Mayden,R.L., Hanner,R. and Bernatchez,L.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (26-MAY-2011) Institut de Biologie Integrative et des
+            Systemes (IBIS), Universite Laval, 1030 Avenue de la Medecine,
+            Quebec, Quebec G1V 0A6, Canada
+FEATURES             Location/Qualifiers
+     source          1..652
+                     /organism="Nocomis leptocephalus"
+                     /organelle="mitochondrion"
+                     /mol_type="genomic DNA"
+                     /specimen_voucher="NAFF 4149"
+                     /db_xref="BOLD:BNAFC470-08.COI-5P"
+                     /db_xref="taxon:86916"
+                     /country="USA: Georgia, Madison/Oglethorpe, South Fork
+                     Broad River at unnamed road, 2.5 mi SE of Carlton"
+                     /lat_lon="34.0314 N 83.008 W"
+                     /collection_date="04-Apr-2003"
+                     /collected_by="NJ Lang"
+                     /identified_by="N. J. Lang"
+                     /PCR_primers="fwd_seq:
+                     tgtaaaacgacggccagtcaaccaaccacaaagacattggcac, rev_seq:
+                     tgtaaaacgacggccagtcgactaatcataaagatatcggcac"
+                     /PCR_primers="fwd_seq:
+                     tgtaaaacgacggccagtcgactaatcataaagatatcggcac, rev_seq:
+                     caggaaacagctatgacacctcagggtgtccgaaraaycaraa"
+     gene            <1..>652
+                     /gene="COI"
+     CDS             <1..>652
+                     /gene="COI"
+                     /codon_start=2
+                     /transl_table=2
+                     /product="cytochrome oxidase subunit 1"
+                     /protein_id="AEK03964.1"
+                     /db_xref="GI:339770984"
+                     /translation="LYLVFGAWAGMVGTALSLLIRAELSQPGSLLGDDQIYNVIVTAH
+                     AFVMIFFMVMPILIGGFGNWLVPLMIGAPDMAFPRMNNMSFWLLPPSFLLLLASSGVE
+                     AGAGTGWTVYPPLAGNLAHAGASVDLTIFSLHLAGVSSILGAVNFITTIINMKPPAIS
+                     QYQTPLFVWAVLVTAVLLLLSLPVLAAGITMLLTDRNLNTTFFDPAGGGDPILYQHL"
+ORIGIN      
+        1 cctttatctt gtatttggtg cctgagctgg aatagtcgga actgctttaa gcctccttat
+       61 tcgagccgaa ctaagccaac ccggatcact cctgggtgat gatcagattt acaatgtaat
+      121 cgttaccgcc cacgccttcg taataatttt ctttatagta atgccaattc taatcggcgg
+      181 gttcgggaac tggcttgtac ctctaataat tggtgcacca gatatggcat tcccacgaat
+      241 gaataatata agcttctgac tcctaccccc atcattcctg ttactgttag cctcttctgg
+      301 tgttgaggct ggggctggga caggttgaac cgtatatccc cccctcgcag gaaacctcgc
+      361 ccacgcagga gcatcagtag atcttacgat cttctctctt catttagcag gtgtatcatc
+      421 aattttaggc gcagttaact ttattaccac aatcattaac atgaagcccc cagccatttc
+      481 ccaatatcaa acacccctct ttgtatgagc cgtgctcgta accgctgttc ttctactcct
+      541 atcactgccc gtcctggctg ctggtattac aatacttctc accgatcgta acctaaacac
+      601 cacattcttc gaccccgcag gcggaggaga cccaatcctg taccaacacc ta
+//
+LOCUS       JN027341                 648 bp    DNA     linear   VRT 18-JUL-2011
+DEFINITION  Nocomis leptocephalus voucher NAFF 4148 cytochrome oxidase subunit
+            1 (COI) gene, partial cds; mitochondrial.
+ACCESSION   JN027341
+VERSION     JN027341.1  GI:339770985
+KEYWORDS    BARCODE.
+SOURCE      mitochondrion Nocomis leptocephalus (bluehead chub)
+  ORGANISM  Nocomis leptocephalus
+            Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+            Actinopterygii; Neopterygii; Teleostei; Ostariophysi;
+            Cypriniformes; Cyprinidae; Nocomis.
+REFERENCE   1  (bases 1 to 648)
+  AUTHORS   April,J., Mayden,R.L., Hanner,R.H. and Bernatchez,L.
+  TITLE     Genetic calibration of species diversity among North America's
+            freshwater fishes
+  JOURNAL   Proc. Natl. Acad. Sci. U.S.A. 108 (26), 10602-10607 (2011)
+   PUBMED   21670289
+REFERENCE   2  (bases 1 to 648)
+  AUTHORS   April,J., Mayden,R.L., Hanner,R. and Bernatchez,L.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (26-MAY-2011) Institut de Biologie Integrative et des
+            Systemes (IBIS), Universite Laval, 1030 Avenue de la Medecine,
+            Quebec, Quebec G1V 0A6, Canada
+FEATURES             Location/Qualifiers
+     source          1..648
+                     /organism="Nocomis leptocephalus"
+                     /organelle="mitochondrion"
+                     /mol_type="genomic DNA"
+                     /specimen_voucher="NAFF 4148"
+                     /db_xref="BOLD:BNAFC469-08.COI-5P"
+                     /db_xref="taxon:86916"
+                     /country="USA: Georgia, Madison/Oglethorpe, South Fork
+                     Broad River at unnamed road, 2.5 mi SE of Carlton"
+                     /lat_lon="34.0314 N 83.008 W"
+                     /collection_date="04-Apr-2003"
+                     /collected_by="NJ Lang"
+                     /identified_by="N. J. Lang"
+                     /PCR_primers="fwd_seq:
+                     tgtaaaacgacggccagtcaaccaaccacaaagacattggcac, rev_seq:
+                     tgtaaaacgacggccagtcgactaatcataaagatatcggcac"
+                     /PCR_primers="fwd_seq:
+                     tgtaaaacgacggccagtcgactaatcataaagatatcggcac, rev_seq:
+                     caggaaacagctatgacacctcagggtgtccgaaraaycaraa"
+     gene            <1..>648
+                     /gene="COI"
+     CDS             <1..>648
+                     /gene="COI"
+                     /codon_start=2
+                     /transl_table=2
+                     /product="cytochrome oxidase subunit 1"
+                     /protein_id="AEK03965.1"
+                     /db_xref="GI:339770986"
+                     /translation="LYLVFGAWAGMVGTALSLLIRAELSQPGSLLGDDQIYNVIVTAH
+                     AFVMIFFMVMPILIGGFGNWLVPLMIGAPDMAFPRMNNMSFWLLPPSFLLLLASSGVE
+                     AGAGTGWTVYPPLAGNLAHAGASVDLTIFSLHLAGVSSILGAVNFITTIINMKPPAIS
+                     QYQTPLFVWAVLVTAVLLLLSLPVLAAGITMLLTDRNLNTTFFDPAGGGDPIXYQ"
+ORIGIN      
+        1 cctttatctt gtatttggtg cctgagctgg aatagtggga actgctttaa gcctccttat
+       61 tcgagccgaa ctaagccaac ccggatcact cctgggtgat gatcagattt acaatgtaat
+      121 cgttaccgcc cacgccttcg taataatttt ctttatagta atgccaattc taatcggcgg
+      181 gttcgggaac tggcttgtac ctctaataat tggtgcacca gatatggcat tcccacgaat
+      241 gaataatata agcttctgac tcctaccccc atcattcctg ttactgttag cctcttctgg
+      301 tgttgaggct ggggctggga caggttgaac cgtatatccc cccctcgcag gaaacctcgc
+      361 ccacgcagga gcatcagtag atcttacgat cttctctctt catttagcag gtgtatcatc
+      421 aattttaggc gcagttaact ttattaccac aatcattaac atgaagcccc cagccatttc
+      481 ccaatatcaa acacccctct ttgtatgagc cgtgctcgta accgctgttc ttctactcct
+      541 atcactgccc gtcctggctg ctggtattac aatacttctc accgatcgta acctaaacac
+      601 cactttcttc gaccccgcag gcggaggaga cccaatcntg taccaaca
