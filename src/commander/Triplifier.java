@@ -60,7 +60,7 @@ public class Triplifier {
         return getOutputPath() + mapFile.getName();
     }
 
-    public String getTriples(String filenamePrefix, Mapping mapping) throws Exception {
+    public String getTriples(String filenamePrefix, Mapping mapping, String lang) throws Exception {
         System.gc();
         SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
@@ -69,9 +69,18 @@ public class Triplifier {
         model = new ModelD2RQ(FileUtils.toURL(getMapping(filenamePrefix, mapping, true)),
                 FileUtils.langN3, sm.retrieveValue("defaultURI", "urn:x-biscicol:"));
 
-        File tripleFile = createUniqueFile(filenamePrefix + ".triples.n3", getOutputPath());
+        String extension = "n3";
+        if (lang == null) {
+            lang = FileUtils.langNTriple;
+        }
+
+        if (lang.equals(FileUtils.langTurtle)) {
+            extension = "ttl";
+        }
+
+        File tripleFile = createUniqueFile(filenamePrefix + ".triples." + extension, getOutputPath());
         FileOutputStream fos = new FileOutputStream(tripleFile);
-        model.write(fos, FileUtils.langNTriple);
+        model.write(fos, lang);
         fos.close();
         return getOutputPath() + tripleFile.getName();
     }

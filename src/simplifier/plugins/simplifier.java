@@ -6,6 +6,7 @@ import de.fuberlin.wiwiss.d2rq.dbschema.DatabaseSchemaInspector;
 import de.fuberlin.wiwiss.d2rq.map.Database;
 import commander.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -38,13 +39,14 @@ public abstract class simplifier {
         this.addPrefix = addPrefix;
     }
 
-    /**
+
+
+      /**
      * initializeTerms is meant to be overridden
      */
-    protected void initializeTerms() {
+    protected void initializeTerms() throws Exception {
 
     }
-
     /**
      * Return an ArrayList of column names in a given tablename
      *
@@ -164,6 +166,10 @@ public abstract class simplifier {
             String primaryTable
     ) {
         Join lJoin = new Join();
+        lJoin.foreignColumn = foreignColumn;
+        lJoin.foreignTable = foreignTable;
+        lJoin.primaryColumn = primaryColumn;
+        lJoin.primaryTable = primaryTable;
         join.add(lJoin);
     }
 

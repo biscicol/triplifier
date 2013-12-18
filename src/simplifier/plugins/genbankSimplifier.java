@@ -1,3 +1,5 @@
+package simplifier.plugins;
+
 import org.apache.commons.cli.*;
 import org.apache.log4j.Level;
 
@@ -10,6 +12,9 @@ import java.util.List;
  * This is a brute-force method for reading Genbank files and writing triples.  It gets most of its content
  * from the source qualifiers and uses the following ontology for terms: https://github.com/tfuji/INSDC/blob/master/insdc.ttl
  * writing output to TTL
+ *
+ * NOTE that the genbankSimplifier DOES NOT extend simplifier as other plugins do in this directory.  This is because
+ * it was far easier to parse the file and construct triples directly for genbank formatted records.
  */
 public class genbankSimplifier {
 
@@ -60,6 +65,8 @@ public class genbankSimplifier {
                     gBrecord.gBsource.country = qualifierKey(line);
                 } else if (qualifierValue("db_xref", line)) {
                     gBrecord.gBsource.db_xref.add(qualifierKey(line));
+                } else if (qualifierValue("isolate", line)) {
+                    gBrecord.gBsource.isolate = qualifierKey(line);
                 }
 
                 // Gene Qualifier Section
@@ -72,6 +79,7 @@ public class genbankSimplifier {
             if (line.startsWith("LOCUS")) {
                 gBrecord.locus = line.substring(12, 24).trim();
             } else if (line.trim().startsWith("source")) {
+                //System.out.println("HERE");
                 source = true;
                 gene = false;
             } else if (line.trim().startsWith("gene")) {
@@ -82,6 +90,8 @@ public class genbankSimplifier {
                 source = false;
                 gBrecord.print(fileOutputStream);
                 gBrecord = new GBrecord();
+            } else if (line.startsWith("DEFINITION")) {
+                gBrecord.definition = getNextDefinitionLine(line);
             }
         }
 
@@ -100,6 +110,24 @@ public class genbankSimplifier {
     private String qualifierKey(String line) throws IOException {
         line = getNextQualifierLine(line);
         return line.split("\\=")[1].replaceAll("\"", "");
+    }
+
+    /**
+     * Loop qualifier lines until we reach the end.
+     * We use the fact that qualifier lines must end in a quote
+     *
+     * @param line
+     * @return
+     * @throws IOException
+     */
+    private String getNextDefinitionLine(String line) throws IOException {
+        String nextLine = "";
+        if (!line.startsWith("ACCESSION")) {
+            nextLine = bufferedReader.readLine().trim();
+            getNextDefinitionLine((nextLine));
+        }
+        String result = line + nextLine;
+        return result.replace("DEFINITION", "").trim();
     }
 
     /**
@@ -140,6 +168,7 @@ public class genbankSimplifier {
         String locus = null;
         GBsource gBsource;
         GBgene gBgene;
+        String definition;
 
         GBrecord() {
             gBgene = new GBgene();
@@ -162,6 +191,7 @@ public class genbankSimplifier {
 
             // Print source qualifiers
             // to add: source.note, definition
+            propertyPrinter("http://insdc.org/owl/definition", definition);
             propertyPrinter("http://insdc.org/owl/specimen_voucher", gBsource.specimen_voucher);
             propertyPrinter("http://insdc.org/owl/mol_type", gBsource.mol_type);
             propertyPrinter("http://insdc.org/owl/lat_lon", gBsource.lat_lon);
@@ -171,6 +201,7 @@ public class genbankSimplifier {
             propertyPrinter("http://insdc.org/owl/identified_by", gBsource.identified_by);
             propertyPrinter("http://insdc.org/owl/country", gBsource.country);
             propertyPrinter("http://insdc.org/owl/db_xref", gBsource.db_xref);
+            propertyPrinter("http://insdc.org/owl/isolate", gBsource.isolate);
 
             // Print gene qualifiers
             propertyPrinter("http://insdc.org/owl/gene", gBgene.gene);
@@ -217,6 +248,8 @@ public class genbankSimplifier {
         String collection_date = null;
         String identified_by = null;
         String country = null;
+        String isolate = null;
+
 
         List db_xref = new ArrayList();
         String lat_lon = null;
@@ -259,7 +292,7 @@ public class genbankSimplifier {
 
         // If help was requested, print the help message and exit.
         if (cl.hasOption("h")) {
-            helpf.printHelp("java genbankSimplifier ", opts, true);
+            helpf.printHelp("java simplifier.plugins.genbankSimplifier ", opts, true);
             return;
         }
 

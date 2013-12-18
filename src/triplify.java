@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import com.hp.hpl.jena.util.FileUtils;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -43,7 +44,8 @@ public class triplify {
                 "the results are not as robust.");
         opts.addOption("o", "outputDirectory", true, "Output all files to this directory. Default is to the use a directory " +
                 "called 'tripleOutput' which is a child of the application root");
-        opts.addOption("t", "simplifierType", true, "*Required {fims|idtest|ocr|genbank}");
+        opts.addOption("t", "simplifierType", true, "*Required {idtest|ocr|vertnet}");
+        opts.addOption("P", "projectCode", true, "*Required only for the VertNet simplifier");
         opts.addOption("m", "mappingFile", true, "Provide a mapping file.  If this option is set it will ignore all other steps," +
                 "not create a SQLlite database but just go straight to triplification by reading the mapping file.");
         opts.addOption("p", "prefixRemover", false, "Do not apply a system prefix.  Use this if you have awesome identifiers" +
@@ -81,6 +83,12 @@ public class triplify {
             System.out.println("Must specify a simplifier type with the -t option");
             return;
         }
+
+        if (cl.getOptionValue("t").equals("vertnet") && !(cl.hasOption("P"))) {
+             System.out.println("Simplifier type = vertnet requires option P (project_code) to be set");
+            return;
+        }
+
 
         // Remove or add prefix option.  Default i
         boolean addPrefix = true;
@@ -121,7 +129,6 @@ public class triplify {
         String[] fnames = cl.getArgs();
         File file, sqlitefile;
         int filecounter;
-
 
 
         // Process each input file specified on the command line.
@@ -174,12 +181,12 @@ public class triplify {
                     // Construct the type of simplifier
                     System.out.println("Beginning simplifier instantiation");
                     simplifier s = null;
-                    if (cl.getOptionValue("t").equals("fims")) {
-                        s = new fimsSimplifier(connection, addPrefix);
-                    } else if (cl.getOptionValue("t").equals("idtest")) {
+                    if (cl.getOptionValue("t").equals("idtest")) {
                         s = new identifierTestsSimplifier(connection, addPrefix);
                     } else if (cl.getOptionValue("t").equals("ocr")) {
                         s = new ocrSimplifier(connection, file.getName(), addPrefix);
+                    } else if (cl.getOptionValue("t").equals("vertnet")) {
+                        s = new vertnetSimplifier(connection, addPrefix, cl.getOptionValue("P"));
                     } else {
                         System.out.println(cl.getOptionValue("t") + " not a valid simplifier type");
                         return;
@@ -191,7 +198,7 @@ public class triplify {
                     // Triplify
                     System.out.println("Beginning triple file creation");
 
-                    String results = r.getTriples(file.getName(), mapping);
+                    String results = r.getTriples(file.getName(), mapping, FileUtils.langTurtle);
                     System.out.println("Done! see, " + results);
                 }
             }
