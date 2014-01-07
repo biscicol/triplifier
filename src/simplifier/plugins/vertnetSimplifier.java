@@ -4,6 +4,8 @@ import commander.Connection;
 import commander.VocabularyItem;
 import commander.*;
 import org.jsoup.Jsoup;
+import settings.deepRoots;
+import settings.deepRootsReader;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -16,8 +18,7 @@ import java.util.ArrayList;
  * in the Javascript code that Brian Stucky wrote.
  */
 public class vertnetSimplifier extends simplifier {
-
-    String project_code;
+     deepRoots dRoots;
     public void initializeTerms() throws Exception {
 
         // Specimens
@@ -36,7 +37,7 @@ public class vertnetSimplifier extends simplifier {
 
 
         Entity occurrence = setEntity(
-                getBCIDPrefix("Specimen"),
+                getPrefix("dwc:Occurrence"),
                 new VocabularyItem("mainTable", "dwc:Occurrence"),
                 "maintable",
                 "occurrenceID",
@@ -48,7 +49,7 @@ public class vertnetSimplifier extends simplifier {
         taxonProperties.add(new columnMap("taxonID", "dwc:taxonID"));
         taxonProperties.add(new columnMap("scientificName", "dwc:scientificName"));
         Entity taxon = setEntity(
-                getBCIDPrefix("Taxon"),
+                getPrefix("dwc:Taxon"),
                 new VocabularyItem("taxon", "dwc:Taxon"),
                 "taxon",
                 "id",
@@ -60,7 +61,7 @@ public class vertnetSimplifier extends simplifier {
         eventProperties.add(new columnMap("eventID", "dwc:eventID"));
         eventProperties.add(new columnMap("eventDate", "dwc:eventDate"));
         Entity event = setEntity(
-                getBCIDPrefix("Event"),
+                getPrefix("dwc:Event"),
                 new VocabularyItem("event", "dwc:Event"),
                 "event",
                 "id",
@@ -72,7 +73,7 @@ public class vertnetSimplifier extends simplifier {
         identificationProperties.add(new columnMap("identifiedBy", "dwc:identifiedBy"));
         identificationProperties.add(new columnMap("identificationID", "dwc:identificationID"));
         Entity identification = setEntity(
-                getBCIDPrefix("Identification"),
+                getPrefix("dwc:Identification"),
                 new VocabularyItem("identification", "dwc:Identification"),
                 "identification",
                 "id",
@@ -86,7 +87,7 @@ public class vertnetSimplifier extends simplifier {
         locationProperties.add(new columnMap("decimalLongitude", "dwc:decimalLongitude"));
         locationProperties.add(new columnMap("verbatimCoordinates", "dwc:verbatimCoordinates"));
         Entity location = setEntity(
-                getBCIDPrefix("Location"),
+                getPrefix("dcterms:Location"),
                 new VocabularyItem("location", "http://purl.org/dc/terms/Location"),
                 "location",
                 "id",
@@ -106,23 +107,8 @@ public class vertnetSimplifier extends simplifier {
         setRelation(occurrence, "<bsc:related_to>", taxon);
     }
 
-    /**
-     * Get the BCID Prefix
-     * @param type
-     * @return
-     * @throws IOException
-     */
-    private String getBCIDPrefix(String type) throws IOException {
-         String projectServiceString = "http://biscicol.org/id/projectService/" + project_code + "/" + type;
-        // Set a 10 second timeout on this connection
-        return Jsoup.connect(projectServiceString).timeout(10000).get().body().html();
-    }
-
-    public vertnetSimplifier(Connection connection, boolean addPrefix, String project_code) throws Exception {
-        super(connection, addPrefix);
-        this.project_code = project_code;
-
+    public vertnetSimplifier(Connection connection, boolean addPrefix, String url) throws Exception {
+        super(connection, addPrefix, url);
         initializeTerms();
     }
-
 }
