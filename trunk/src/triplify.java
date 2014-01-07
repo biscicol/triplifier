@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
 
 import com.hp.hpl.jena.util.FileUtils;
 import org.apache.commons.cli.CommandLine;
@@ -48,6 +49,8 @@ public class triplify {
         opts.addOption("P", "projectCode", true, "*Required only for the VertNet simplifier");
         opts.addOption("m", "mappingFile", true, "Provide a mapping file.  If this option is set it will ignore all other steps," +
                 "not create a SQLlite database but just go straight to triplification by reading the mapping file.");
+        opts.addOption("D", "deepRoot", true, "Provide a deepRoots File.  If this option is set it will use Deep Roots mapping from this " +
+                "file.");
         opts.addOption("p", "prefixRemover", false, "Do not apply a system prefix.  Use this if you have awesome identifiers" +
                 "already in place-- that is, they are resolvable, persistent, and especially you must ensure they are all " +
                 "properly formatted URIs.  If you do not add this option, the default is to use a system specific prefix." +
@@ -65,7 +68,7 @@ public class triplify {
 
         // If help was requested, print the help message and exit.
         if (cl.hasOption("h") || (cl.getArgs().length < 1 && cl.getOptions().length < 1)) {
-            helpf.printHelp("java triplify input_files", opts, true);
+            helpf.printHelp("triplify input_files", opts, true);
             return;
         }
 
@@ -84,11 +87,17 @@ public class triplify {
             return;
         }
 
-        if (cl.getOptionValue("t").equals("vertnet") && !(cl.hasOption("P"))) {
-             System.out.println("Simplifier type = vertnet requires option P (project_code) to be set");
+        if (cl.getOptionValue("t").equals("vertnet") && (!cl.hasOption("P") && !cl.hasOption("D"))) {
+            System.out.println("Simplifier type = vertnet requires either option P (project_code) or D (deepRoots) to be set");
             return;
         }
 
+
+        // TODO: handle, Project code fetching from deep root system
+        if (cl.hasOption("P")) {
+            System.out.println("NEED TO write in ability to fetch DEEP ROOT codes from BCID system.  For now, must set Deep Root JSON file manually here.");
+            return;
+        }
 
         // Remove or add prefix option.  Default i
         boolean addPrefix = true;
@@ -107,6 +116,13 @@ public class triplify {
             processDirectory = pm.setDirectory(cl.getOptionValue("o"));
         } else {
             processDirectory = pm.setDirectory(System.getProperty("user.dir") + File.separator + "tripleOutput");
+        }
+
+        String dRootURL = null;
+        if (cl.hasOption("D")) {
+            File dRootFile = new File(cl.getOptionValue("D"));
+            URL url = new URL("file:///" + dRootFile.getAbsolutePath());
+            dRootURL = url.toString();
         }
 
         // Create the ReaderManager and load the plugins.
@@ -182,11 +198,11 @@ public class triplify {
                     System.out.println("Beginning simplifier instantiation");
                     simplifier s = null;
                     if (cl.getOptionValue("t").equals("idtest")) {
-                        s = new identifierTestsSimplifier(connection, addPrefix);
+                        s = new identifierTestsSimplifier(connection, addPrefix, dRootURL);
                     } else if (cl.getOptionValue("t").equals("ocr")) {
-                        s = new ocrSimplifier(connection, file.getName(), addPrefix);
+                        s = new ocrSimplifier(connection, file.getName(), addPrefix, dRootURL);
                     } else if (cl.getOptionValue("t").equals("vertnet")) {
-                        s = new vertnetSimplifier(connection, addPrefix, cl.getOptionValue("P"));
+                        s = new vertnetSimplifier(connection, addPrefix, dRootURL);
                     } else {
                         System.out.println(cl.getOptionValue("t") + " not a valid simplifier type");
                         return;

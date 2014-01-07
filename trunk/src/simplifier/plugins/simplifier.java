@@ -5,8 +5,12 @@ import de.fuberlin.wiwiss.d2rq.algebra.RelationName;
 import de.fuberlin.wiwiss.d2rq.dbschema.DatabaseSchemaInspector;
 import de.fuberlin.wiwiss.d2rq.map.Database;
 import commander.*;
+import settings.deepRoots;
+import settings.deepRootsReader;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,13 +25,14 @@ public abstract class simplifier {
     protected HashSet<Relation> relation;
     protected Dataseturi dataseturi = new Dataseturi();
 
+    protected deepRoots dRoots;
 
     protected Connection connection;
     protected DatabaseSchemaInspector schemaInspector;
     protected Database database;
     protected boolean addPrefix;
 
-    public simplifier(Connection connection, boolean addPrefix) {
+    public simplifier(Connection connection, boolean addPrefix, String dRootsFile) throws IOException, URISyntaxException {
         this.connection = connection;
 
         database = connection.d2rqDatabase;
@@ -35,11 +40,10 @@ public abstract class simplifier {
         entity = new HashSet<Entity>();
         join = new HashSet<Join>();
         relation = new HashSet<Relation>();
+        dRoots = new deepRootsReader().createRootData(dRootsFile);
 
         this.addPrefix = addPrefix;
     }
-
-
 
       /**
      * initializeTerms is meant to be overridden
@@ -213,4 +217,15 @@ public abstract class simplifier {
             return uriValue;
         }
     }
+
+    /**
+     * Get the prefix associated with a particular concept.  A convenience method for hooking into the DeepRoots class.
+     * @param conceptAlias
+     * @return
+     * @throws Exception
+     */
+    protected String getPrefix(String conceptAlias) throws Exception {
+        return dRoots.lookupPrefix(conceptAlias);
+    }
+
 }

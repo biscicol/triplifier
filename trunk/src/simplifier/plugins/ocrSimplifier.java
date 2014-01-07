@@ -5,6 +5,8 @@ import commander.Dataseturi;
 import commander.Entity;
 import commander.VocabularyItem;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 /**
@@ -14,8 +16,8 @@ public class ocrSimplifier extends simplifier {
 
     protected String filename;
 
-    public ocrSimplifier(Connection connection, String lFilename, boolean addPrefix) {
-        super(connection, addPrefix);
+    public ocrSimplifier(Connection connection, String lFilename, boolean addPrefix, String url) throws IOException, URISyntaxException {
+        super(connection, addPrefix, url);
         this.filename = lFilename;
         initializeTerms();
     }

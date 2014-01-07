@@ -1,6 +1,9 @@
 package simplifier.plugins;
 
 import commander.*;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.*;
 
 /**
@@ -39,8 +42,8 @@ public class identifierTestsSimplifier extends simplifier {
 
     }
 
-    public identifierTestsSimplifier(Connection connection, boolean  addPrefix) {
-        super(connection, addPrefix);
+    public identifierTestsSimplifier(Connection connection, boolean  addPrefix, String url) throws IOException, URISyntaxException {
+        super(connection, addPrefix, url);
         initializeTerms();
     }
 
