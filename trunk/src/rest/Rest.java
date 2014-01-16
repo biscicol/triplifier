@@ -1,4 +1,4 @@
- package rest;
+package rest;
 
 import java.io.*;
 import java.net.URL;
@@ -198,9 +198,9 @@ public class Rest {
         Model model = new ModelD2RQ(FileUtils.toURL(context.getRealPath(getMapping(mapping, true))), 
         		FileUtils.langN3, sm.retrieveValue("defaultURI","urn:x-biscicol:"));
 
-        File tripleFile = createUniqueFile("triples.nt", getTriplesPath());
+        File tripleFile = createUniqueFile("triples.ttl", getTriplesPath());
         FileOutputStream fos = new FileOutputStream(tripleFile);
-        model.write(fos, FileUtils.langNTriple);
+        model.write(fos, FileUtils.langTurtle);
         fos.close();
         return triplesFolder + "/" + tripleFile.getName();
     }
