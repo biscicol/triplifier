@@ -60,8 +60,9 @@ function Triplifier() {
 	var self = this;
 	$("#getMapping").click(function() { self.triplify("rest/getMapping", "downloadFile"); });
 	$("#getTriples").click(function() { self.triplify("rest/getTriples", "downloadFile"); });
-	$("#sendToBiSciCol").click(function() { self.triplify("rest/getTriples", "sendToBiSciCol"); });
-	// The Publish Component here is meant to assign a DOI to the triplified dataset, and store on server
+	// This was originally for sending the RDF directly to BiSciCol, but is disabled for now.
+	//$("#sendToBiSciCol").click(function() { self.triplify("rest/getTriples", "sendToBiSciCol"); });
+	// The Publish Component here is meant to assign a DOI to the triplified dataset, and store on server.
 	//$("#publishDataset").click(function() { triplify("rest/getTriples", sendToBiSciCol); });
 
 	$("#vocabularies, #status, #overlay, #vocabularyUpload").hide();
