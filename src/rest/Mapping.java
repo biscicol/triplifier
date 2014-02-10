@@ -78,17 +78,67 @@ public class Mapping {
     }
 
     /**
-     * Find Join between table1 and table2.
+     * Find the database table join(s) that connect table1 and table2.  This
+     * method first checks for a single join that connects table1 and table2.
+     * If such a join is found, it is returned as the result.  If a single join
+     * cannot be found, the method then checks if table1 and table2 can be
+     * connected by two joins to an intermediate table (e.g., many-to-many
+     * relationships are typically set up this way).
      *
      * @param table1 Table name.
      * @param table2 Table name.
-     * @return Matching Join or null if not found.
+     * @return An array with the joins that connect the two tables; null if no
+     * satisfactory joins could be found.
      */
-    Join findJoin(String table1, String table2) {
-        for (Join join : joins)
+    Join[] findJoins(String table1, String table2) {
+        Join[] mjoins;
+        Join join1;
+
+        // First check for a single join that connects table1 and table2.
+        join1 = findSingleJoin(table1, table2);
+        if (join1 != null) {
+            mjoins = new Join[1];
+            mjoins[0] = join1;
+
+            return mjoins;
+        }
+
+        // No single join matched, so see if two joins can connect table1 and
+        // table2 via an intermediate table.
+        join1 = null;
+        for (Join join : joins) {
+            if (table1.equals(join.foreignTable)) {
+                join1 = findSingleJoin(join.primaryTable, table2);
+            } else if (table1.equals(join.primaryTable)) {
+                join1 = findSingleJoin(join.foreignTable, table2);
+            }
+
+            if (join1 != null) {
+                mjoins = new Join[2];
+                mjoins[0] = join;
+                mjoins[1] = join1;
+                return mjoins;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Searches for a single join that connects table1 and table2.
+     * 
+     * @param table1 table name
+     * @param table2 table name
+     * @return The matching join or null if none could be found.
+     */
+    private Join findSingleJoin(String table1, String table2) {
+        for (Join join : joins) {
             if (table1.equals(join.foreignTable) && table2.equals(join.primaryTable) ||
-                    table1.equals(join.primaryTable) && table2.equals(join.foreignTable))
+                    table1.equals(join.primaryTable) && table2.equals(join.foreignTable)) {
                 return join;
+            }
+        }
+        
         return null;
     }
 
