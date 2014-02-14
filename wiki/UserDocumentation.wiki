@@ -42,11 +42,20 @@ Note this Darwin Core Archive has been parsed into five tables, and the field na
 
 If any of the tables in your source data should be connected through joins, you can define the joins here. The "foreign key" in one table should match the "primary key" in another table. 
 
+*  In the example below, maintable is joined to all the other tables through identifiers for Darwin Core classes.
+
 http://triplifier.googlecode.com/svn/trunk/web/photos/joins.jpg
 
 
-==Entities==
+==Concepts==
 
+This section links identifiers in your data with a well-known representation of reality (“concept”). Identifiers are unique and represent physical material, digital representatives of physical material (such as photographs), processes, or metadata. Concepts are defined through a standardized vocabulary. You can think of concepts as indicating what "kind" of information your identifiers represent.
+
+The Triplifier utilizes Darwin Core concepts. The simple Darwin Core includes six core classes or concepts: Occurrence, Event, Location, GeologicalContext, Identification, and Taxon. Occurrence is information pertaining to evidence of occurence in nature, in a collection or dataset, such as physical specimens. Event describes the information related to actions (e.g. collecting) during a specific time and at a particular spot. Location is information describing spatial region or named place. GeologicalContext refers to information about location and time for fossil (and modern) material such as stratigraphy. Identification refers to information about how taxonomic designations were made. Taxon refers to the information pertaining to taxon names, usage and concepts. If your data is not already in Darwin Core format, you will need to choose which identifiers in your dataset map to which Darwin Core concepts.
+
+http://triplifier.googlecode.com/svn/trunk/web/photos/concepts.jpg
+
+== Attributes ==
 *Add Entity:* Associate uploaded data with Darwin Core classes. 
 
 _Available classes_:
