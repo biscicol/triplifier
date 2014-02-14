@@ -53,26 +53,17 @@ This section links identifiers in your data with a well-known representation of 
 
 The Triplifier utilizes Darwin Core concepts. The simple Darwin Core includes six core classes or concepts: Occurrence, Event, Location, GeologicalContext, Identification, and Taxon. Occurrence is information pertaining to evidence of occurence in nature, in a collection or dataset, such as physical specimens. Event describes the information related to actions (e.g. collecting) during a specific time and at a particular spot. Location is information describing spatial region or named place. GeologicalContext refers to information about location and time for fossil (and modern) material such as stratigraphy. Identification refers to information about how taxonomic designations were made. Taxon refers to the information pertaining to taxon names, usage and concepts. If your data is not already in Darwin Core format, you will need to choose which identifiers in your dataset map to which Darwin Core concepts.
 
+*  In the example below, we see the table name, identifiers, and Darwin Core class terms referenced for a Darwin Core archive.
+
 http://triplifier.googlecode.com/svn/trunk/web/photos/concepts.jpg
 
 == Attributes ==
-*Add Entity:* Associate uploaded data with Darwin Core classes. 
 
-_Available classes_:
-dwc:Event
-dwc:Identification
-dwc:Occurrence
+Attributes provide information about the concepts you defined in step 3. For example, if you defined an "Occurence" concept for physical specimens, then you might define attributes that describe each specimen's sex, life stage, and when it was collected. In general, attributes attach properties, or metadata, to concepts.
 
-http://triplifier.googlecode.com/svn/trunk/web/photos/3%20entities.png
+In the Triplifier, attributes are Darwin Core terms that describe Darwin Core classes or concepts. The current, ratified Darwin Core has 159 total terms. As with concepts, if your data is not already in Darwin Core format, you will need to decide how the columns in your data map to Darwin Core terms. This can be challenging, and we refer you to http://rs.tdwg.org/dwc/terms/ for a full list of terms. You do not need to map every column in your data to a Darwin Core term. Columns that you do not map will simply "pass through" the system and not be triplified.
 
-*Add Attribute:* Assign predicates to selected table columns.
-
-_Available attributes_:
-dcterms:modified
-geo:lat
-geo:lon
-
-http://triplifier.googlecode.com/svn/trunk/web/photos/3%20attributes.png
+http://triplifier.googlecode.com/svn/trunk/web/photos/attributes.jpg
 
 
 ==Relations==
