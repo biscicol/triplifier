@@ -66,17 +66,16 @@ In the Triplifier, attributes are Darwin Core terms that describe Darwin Core cl
 http://triplifier.googlecode.com/svn/trunk/web/photos/attributes.jpg
 
 
-==Relations==
+==Concept Relations==
 
-Add relationships between Subject entities and Object entities. 
+Concept relations are key to make the Semantic Web and linked data work. Concept relations define how the different concepts in your data are connected to one another.
 
-_Available relations_:
-bsc:leadsTo
-bsc:comesFrom
+The Triplifier allows four different relationships between concepts to be expressed: derives_from, depends_on, related_to, and alias_of. The first three are by far the most commonly used. What do these terms mean? Briefly, derives_from indicates that one thing was derived from another (e.g., a tissue sample derives_from a specimen), depends_on indicates that one thing could not exist without another (e.g., an identification depends_on a particular specimen), related_to indicates a non-dependent relationship (e.g., a specimen is related_to a taxon), and alias_of indicates that two things are really the same thing.
 
-http://triplifier.googlecode.com/svn/trunk/web/photos/4%20relations.png
+* The example shown below is for a Darwin Core Archive, which only ever uses two concept relations, "related_to" and "depends_on".
 
-*Relations to be updated soon.
+http://triplifier.googlecode.com/svn/trunk/web/photos/conceptrelate.jpg
+
 
 
 ==Triplify!==
