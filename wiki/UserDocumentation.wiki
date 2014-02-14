@@ -35,12 +35,14 @@ Auto-generate project for -choose format- currently only allows Darwin Core Arch
 
 http://triplifier.googlecode.com/svn/trunk/web/photos/datasource2.jpg
 
+Note this Darwin Core Archive has been parsed into five tables, and the field names are listed for each table. 
+
 
 ==Joins==
 
-Identify foreign and primary keys of imported data.
+If any of the tables in your source data should be connected through joins, you can define the joins here. The "foreign key" in one table should match the "primary key" in another table. 
 
-http://triplifier.googlecode.com/svn/trunk/web/photos/2%20joins.png
+http://triplifier.googlecode.com/svn/trunk/web/photos/joins.jpg
 
 
 ==Entities==
