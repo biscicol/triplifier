@@ -80,23 +80,14 @@ http://triplifier.googlecode.com/svn/trunk/web/photos/conceptrelate.jpg
 
 ==Triplify!==
 
-Three options: Get Mapping, Get Triples and Send To !BiSciCol
-*Note: must allow popups to get mapping and triples.
+Triplify is the fun part, because you finally get to see what your data looks like as RDF triples. (That does sound fun, doesn't it?)
 
-http://triplifier.googlecode.com/svn/trunk/web/photos/5%20triplify.png
+You have several options here. 
 
-*Get Mapping*
+"Get Mapping" lets you download a D2RQ mapping file that includes all of the technical details about how your source data maps to an RDF representation. Unless you use D2RQ for other purposes or need to tweak the mapping by hand, you will probably not be interested in this. However, these mapping files can also be used with the command-line version of the Triplifier and so might be useful to you in that context.
 
-Returns mapping file of inputted data.
+"Get Triples" lets you download a Turtle-format file of your entire data set as RDF triples. If your goal was to convert your data to RDF, this is the button you want to click.
 
-http://triplifier.googlecode.com/svn/trunk/web/photos/5%20mapping%20file.png
+http://triplifier.googlecode.com/svn/trunk/web/photos/triplify.jpg
 
-*Get Triples*
-
-Returns triples from inputted data.
-
-http://triplifier.googlecode.com/svn/trunk/web/photos/5%20triples.png
-
-*Send To BiSciCol*
-
-Sends a copy of the triple output to the !BiSciCol server. Data does not get sent to any public repository or permanently become a part of the !BiSciCol system. However, a publishing method for triples is being designed.
+ 
