@@ -1,7 +1,7 @@
 #labels Featured,Phase-Design
 = Introduction =
 
-The Triplifier is part of the [http://biscicol.blogspot.com BiSciCol] project. The goal of the Triplifier is to provide an easy way to convert just about any structured data into RDF triples so the data can be shared with the [http://www.biscicol.org BiSciCol] system. 
+The Triplifier is part of the [http://biscicol.blogspot.com BiSciCol] project. The goal of the Triplifier is to provide a way to convert just about any structured biocollections data into RDF triples.  It is particularly convenient for those working with [http://en.wikipedia.org/wiki/Darwin_Core_Archive Darwin Core Archives].  These archives are very common formats for Darwin Core encoded datasets.  Automated generation of triples relates instances of Darwin Core classes to each other using just two object properties, "related_to" and "depends_on". More details on the very simple way we captured relations between Darwin Core classes for automated generation can be found [http://biscicol.blogspot.com/2013/03/biscicol-triples-and-darwin-core.html here]
 
 
 = Documentation =
