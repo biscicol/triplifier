@@ -90,4 +90,8 @@ You have several options here.
 
 http://triplifier.googlecode.com/svn/trunk/web/photos/triplify.jpg
 
+== What to do next ==
+
+Once you download triples, you may want to create a local datastore where you can perform queries, or where you can visualize relationships.  Some great tools are listed [http://notes.3kbo.com/visual here] for further exploration.
+
  
