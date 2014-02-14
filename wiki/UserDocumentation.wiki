@@ -8,7 +8,7 @@ The Triplifier is part of the [http://biscicol.blogspot.com BiSciCol] project. T
 
 ==Select Project==
 
-The configuration settings for each session may be saved as a project using the import and export functions. Projects are saved as .trp files and may be sent to other computers to be imported.
+he configuration settings for each session are saved in your browser's local storage and may be shared with others using the import and export functions.   The export function creates a *.trp file which can be imported into different browsers using the import function.
 
 http://triplifier.googlecode.com/svn/trunk/web/photos/Project.jpg
 
@@ -29,7 +29,7 @@ Files in the following formats are currently supported:  CSV, Excel spreadsheets
 
 We do not support direct uploads of SQL text files.  Instead, we support connecting directly to a SQL database (see Database connection above). 
 
-Auto-generate project for -choose format- currently only allows Darwin Core Archive format.  These types of files (typically with extension .zip) are autoprocessed and all contents filled out.  
+If you check the “auto-generate” box and select a format (which currently only supports Darwin Core Archives) then the entire form will be populated based on the triplifier’s understanding of Darwin Core Archives. 
 
 *Sample of a successful data source upload or connection:
 
@@ -61,7 +61,7 @@ http://triplifier.googlecode.com/svn/trunk/web/photos/concepts.jpg
 
 Attributes provide information about the concepts you defined in step 3. For example, if you defined an "Occurence" concept for physical specimens, then you might define attributes that describe each specimen's sex, life stage, and when it was collected. In general, attributes attach properties, or metadata, to concepts.
 
-In the Triplifier, attributes are Darwin Core terms that describe Darwin Core classes or concepts. The current, ratified Darwin Core has 159 total terms. As with concepts, if your data is not already in Darwin Core format, you will need to decide how the columns in your data map to Darwin Core terms. This can be challenging, and we refer you to http://rs.tdwg.org/dwc/terms/ for a full list of terms. You do not need to map every column in your data to a Darwin Core term. Columns that you do not map will simply "pass through" the system and not be triplified.
+In the Triplifier, attributes are Darwin Core terms that describe Darwin Core classes or concepts. The current, ratified Darwin Core has 159 total terms. As with concepts, if your data is not already in Darwin Core format, you will need to decide how the columns in your data map to Darwin Core terms. This can be challenging, and we refer you to [http://rs.tdwg.org/dwc/terms/ a list of Darwin Core terms] for a full list of terms. You do not need to map every column in your data to a Darwin Core term. Columns that you do not map will simply "pass through" the system and not be triplified.
 
 http://triplifier.googlecode.com/svn/trunk/web/photos/attributes.jpg
 
@@ -70,7 +70,7 @@ http://triplifier.googlecode.com/svn/trunk/web/photos/attributes.jpg
 
 Concept relations are key to make the Semantic Web and linked data work. Concept relations define how the different concepts in your data are connected to one another.
 
-The Triplifier allows four different relationships between concepts to be expressed: derives_from, depends_on, related_to, and alias_of. The first three are by far the most commonly used. What do these terms mean? Briefly, derives_from indicates that one thing was derived from another (e.g., a tissue sample derives_from a specimen), depends_on indicates that one thing could not exist without another (e.g., an identification depends_on a particular specimen), related_to indicates a non-dependent relationship (e.g., a specimen is related_to a taxon), and alias_of indicates that two things are really the same thing.
+The Triplifier allows four different relationships between concepts to be expressed: derives_from, depends_on, related_to, and alias_of.  These terms were developed as part of the BiSciCol project - [http://biscicol.org/terms/index.html more information here]. The first three are by far the most commonly used. What do these terms mean? Briefly, derives_from indicates that one thing was derived from another (e.g., a tissue sample derives_from a specimen), depends_on indicates that one thing could not exist without another (e.g., an identification depends_on a particular specimen), related_to indicates a non-dependent relationship (e.g., a specimen is related_to a taxon), and alias_of indicates that two things are really the same thing.
 
 * The example shown below is for a Darwin Core Archive, which only ever uses two concept relations, "related_to" and "depends_on".
 
