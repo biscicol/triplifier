@@ -1,7 +1,7 @@
 #labels Featured,Phase-Design
 = Introduction =
 
-The Triplifier is part of the [http://biscicol.blogspot.com BiSciCol] project. The goal of the Triplifier is to provide a way to convert just about any structured biocollections data into RDF triples.  It is particularly convenient for those working with [http://en.wikipedia.org/wiki/Darwin_Core_Archive Darwin Core Archives].  These archives are very common formats for Darwin Core encoded datasets.  Automated generation of triples relates instances of Darwin Core classes to each other using just two object properties, "related_to" and "depends_on". More details on the very simple way we captured relations between Darwin Core classes for automated generation can be found [http://biscicol.blogspot.com/2013/03/biscicol-triples-and-darwin-core.html here]
+The Triplifier is part of the [http://biscicol.blogspot.com BiSciCol] project. The goal of the Triplifier is to provide a way to convert just about any structured biocollections data into RDF triples.  It is particularly convenient for those working with [http://en.wikipedia.org/wiki/Darwin_Core_Archive Darwin Core Archives].  These archives are very common formats for Darwin Core encoded datasets.  Automated generation of triples relates instances of Darwin Core classes to each other using just two object properties, "related_to" and "depends_on". More details on the very simple way we captured relations between Darwin Core classes for automated generation can be found [http://biscicol.blogspot.com/2013/03/biscicol-triples-and-darwin-core.html here].
 
 
 = Documentation =
@@ -10,12 +10,14 @@ The Triplifier is part of the [http://biscicol.blogspot.com BiSciCol] project. T
 
 The configuration settings for each session may be saved as a project using the import and export functions. Projects are saved as .trp files and may be sent to other computers to be imported.
 
+http://triplifier.googlecode.com/svn/trunk/web/photos/Project.jpg
+
 ==Data Source==
 
 
 Two options for data source: Database connection or File upload.
 
-http://triplifier.googlecode.com/svn/trunk/web/photos/1.png
+http://triplifier.googlecode.com/svn/trunk/web/photos/Datasource.jpg
 
 *Database connection*
 
@@ -27,11 +29,11 @@ Files in the following formats are currently supported:  CSV, Excel spreadsheets
 
 We do not support direct uploads of SQL text files.  Instead, we support connecting directly to a SQL database (see Database connection above). 
 
-Uploaded files are hosted on the Triplifier server.
+Auto-generate project for -choose format- currently only allows Darwin Core Archive format.  These types of files (typically with extension .zip) are autoprocessed and all contents filled out.  
 
 *Sample of a successful data source upload or connection:
 
-http://triplifier.googlecode.com/svn/trunk/web/photos/1%20data%20source%20table.png
+http://triplifier.googlecode.com/svn/trunk/web/photos/datasource2.jpg
 
 
 ==Joins==
