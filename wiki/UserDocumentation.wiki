@@ -92,7 +92,7 @@ http://triplifier.googlecode.com/svn/trunk/web/photos/triplify.jpg
 
 == What to do next ==
 
-Once you generate your triples, you have several options with how to proceed.
+Once you generate your triples, you have a couple of options with how to proceed.
 
 If you want to visualize a single triplified dataset, and it is smaller than 20 records, you can use simple graph visualization tools.  A good online tool is the [http://www.w3.org/RDF/Validator/ W3C RDF validator], which you will first need to convert your data to RDF/XML format using the [http://www.rdfabout.com/demo/validator/ RDF Validator and Convertor].   Another tool that you can use that runs on the client side is [http://graphviz.org/ GraphViz]. Your Turtle-format output will need to be converted to GraphViz's DOT format using the [http://librdf.org/raptor/ Raptor Syntax Library].  
 
