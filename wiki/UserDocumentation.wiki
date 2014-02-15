@@ -92,6 +92,12 @@ http://triplifier.googlecode.com/svn/trunk/web/photos/triplify.jpg
 
 == What to do next ==
 
-Once you download triples, you may want to create a local datastore where you can perform queries, or where you can visualize relationships.  Some great tools are listed [http://notes.3kbo.com/visual here] for further exploration.
+Once you generate your triples, you have several options with how to proceed.
+
+If you want to visualize a single triplified dataset, and it is smaller than 20 records, you can use simple graph visualization tools.  A good online tool is the [http://www.w3.org/RDF/Validator/ W3C RDF validator], which you will first need to convert your data to RDF/XML format using the [http://www.rdfabout.com/demo/validator/ RDF Validator and Convertor].   Another tool that you can use that runs on the client side is [http://graphviz.org/ GraphViz]. Your Turtle-format output will need to be converted to GraphViz's *.dot format using the [http://librdf.org/raptor/ Raptor Syntax Library].  
+
+If you have a large dataset, or querying across a number of different triplified datasets, you will want to create a local datastore where you can load all of your triplified data and run graph-based queries.  Popular engines for working with RDF data are [http://virtuoso.openlinksw.com/ Virtuoso], [http://franz.com/agraph/allegrograph/ AllegroGraph], [http://www.openrdf.org/ OpenRDF Sesame], or Jena's [http://jena.apache.org/documentation/serving_data/ Fuseki].  All of these systems run [http://www.w3.org/TR/rdf-sparql-query/ SPARQL], and can run queries that can be coupled with other semantic data stores such as [http://dbpedia.org/‎ DBpedia]. 
+
+More great tools are listed [http://notes.3kbo.com/visual here] for further exploration.
 
  
