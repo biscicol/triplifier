@@ -29,6 +29,8 @@ import dbmap.Connection;
 import dbmap.Mapping;
 import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
 import settings.SettingsManager;
+import vocabulary.RDFreader;
+import vocabulary.Vocabulary;
  
 
 /**
@@ -226,7 +228,7 @@ public class Rest {
             @FormDataParam("file") FormDataContentDisposition contentDisposition) throws Exception {
     	File file = createUniqueFile(contentDisposition.getFileName(), getVocabulariesPath());
         writeFile(inputStream, file);
-        return getVocabulary(file.getName());      
+        return getVocabulary(file.getCanonicalPath());
     }
     
     /**
@@ -268,7 +270,7 @@ public class Rest {
 
     	File file = createUniqueFile(fileName, getVocabulariesPath());
         writeFile(inputStream, file);
-        return getVocabulary(file.getName());      
+        return getVocabulary(file.getCanonicalPath());
     }
 
     /**
@@ -283,7 +285,7 @@ public class Rest {
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     public Vocabulary getVocabulary(String fileName) throws Exception {
-        Vocabulary vocabulary= new RDFreader(fileName).getVocabulary();
+        Vocabulary vocabulary= new RDFreader(getVocabulariesPath() + "/" + fileName).getVocabulary();
         return vocabulary;
     }
     

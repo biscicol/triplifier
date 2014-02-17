@@ -1,7 +1,7 @@
 package dbmap;
 
 import java.io.PrintWriter;
-import rest.VocabularyItem;
+import vocabulary.VocabularyItem;
 
 /**
  * Represents a RDF literal property created from a database table.

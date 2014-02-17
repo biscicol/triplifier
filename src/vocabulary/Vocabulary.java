@@ -1,4 +1,4 @@
-package rest;
+package vocabulary;
 
 import java.util.Set;
 
