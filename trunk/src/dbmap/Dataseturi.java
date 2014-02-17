@@ -1,5 +1,4 @@
-
-package rest;
+package dbmap;
 
 import javax.management.relation.RelationService;
 import java.io.PrintWriter;

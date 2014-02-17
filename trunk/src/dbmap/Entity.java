@@ -1,7 +1,8 @@
-package rest;
+package dbmap;
 
 import java.io.PrintWriter;
 import java.util.Set;
+import rest.VocabularyItem;
 
 /**
  * Represents a RDF resource created from a database table.
@@ -51,7 +52,7 @@ public class Entity
      * Get the table.column notation
      * @return
      */
-    public String getColumn() {
+    String getColumn() {
         return table + "." + idColumn;
     }
 }

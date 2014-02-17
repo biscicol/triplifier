@@ -246,6 +246,12 @@ Triplifier.prototype.triplify = function(url, successFn) {
 	var dataseturi = {};
 	dataseturi.name = this.dSsection.getDataSourceName();
 
+	alert(JSON.stringify({
+		    connection: this.mainproject.connection,
+		    joins: this.mainproject.joins,
+		    entities: this.mainproject.getCombinedEntitiesAndAttributes(),
+		    relations: this.mainproject.relations,
+		    dataseturi:dataseturi}));
 	var self = this;
 	$.ajax({
 		url: url,

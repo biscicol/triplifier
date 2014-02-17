@@ -1,4 +1,4 @@
-package rest;
+package dbmap;
 
 /**
  * Enumerates supported database systems with their JDBC drivers.
@@ -11,7 +11,7 @@ public enum DBsystem {
 	oracle ("oracle.jdbc.OracleDriver"), 
 	sqlserver ("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 	
-	final String driver;
+	public final String driver;
 	
 	DBsystem(String driver) {
 		this.driver = driver;
