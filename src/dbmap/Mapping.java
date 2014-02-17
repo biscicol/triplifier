@@ -1,4 +1,4 @@
-package rest;
+package dbmap;
 
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -38,7 +38,7 @@ public class Mapping {
      *
      * @param connection SQL database connection parameters.
      */
-    Mapping(Connection connection) {
+    public Mapping(Connection connection) {
         dateTime = DateFormat.getDateTimeInstance().format(new Date());
         this.connection = connection;
         schema = new TreeSet<DBtable>();
@@ -67,7 +67,7 @@ public class Mapping {
      *
      * @param pw PrintWriter used to write output to.
      */
-    void printD2RQ(PrintWriter pw) throws SQLException {
+    public void printD2RQ(PrintWriter pw) throws SQLException {
         printPrefixes(pw);
         connection.printD2RQ(pw);
         for (Entity entity : entities)
@@ -90,7 +90,7 @@ public class Mapping {
      * @return An array with the joins that connect the two tables; null if no
      * satisfactory joins could be found.
      */
-    Join[] findJoins(String table1, String table2) {
+    public Join[] findJoins(String table1, String table2) {
         Join[] mjoins;
         Join join1;
 
@@ -149,7 +149,7 @@ public class Mapping {
      * @param idColumn IdColumn name.
      * @return Matching Entity or null if not found.
      */
-    Entity findEntity(String table, String idColumn) {
+    public Entity findEntity(String table, String idColumn) {
         for (Entity entity : entities)
             if (table.equals(entity.table) && idColumn.equals(entity.idColumn))
                 return entity;

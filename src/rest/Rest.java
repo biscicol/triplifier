@@ -25,6 +25,8 @@ import com.hp.hpl.jena.util.FileUtils;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
+import dbmap.Connection;
+import dbmap.Mapping;
 import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
 import settings.SettingsManager;
  
@@ -164,7 +166,7 @@ public class Rest {
      */
     @POST
     @Path("/getMapping")
-    @Consumes(MediaType.APPLICATION_JSON)
+    //@Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public String getMapping(Mapping mapping) throws Exception {
     	return getMapping(mapping, false);

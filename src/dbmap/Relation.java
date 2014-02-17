@@ -1,4 +1,4 @@
-package rest;
+package dbmap;
 
 import java.io.PrintWriter;
 

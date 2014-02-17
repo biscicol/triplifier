@@ -1,4 +1,4 @@
-package rest;
+package dbmap;
 
 /**
  * Represents a relational join between two database tables.
