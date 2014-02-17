@@ -45,8 +45,7 @@ public class Relation {
             pw.println("\td2rq:condition \"" + objEntity.getColumn() + " <> ''\";");
             pw.println("\t.");
         } else {
-            // We do not have a direct join between the two tables, so we need
-            // to see if they can be connected via an intermediate table.
+            // See if we can connect the tables via one or more joins.
             Join[] joins = mapping.findJoins(subjTbl, objTbl);
             if (joins == null)
                 return;
