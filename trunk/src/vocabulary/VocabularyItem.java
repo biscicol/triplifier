@@ -1,4 +1,4 @@
-package rest;
+package vocabulary;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 

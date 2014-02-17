@@ -2,7 +2,7 @@ package dbmap;
 
 import java.io.PrintWriter;
 import java.util.Set;
-import rest.VocabularyItem;
+import vocabulary.VocabularyItem;
 
 /**
  * Represents a RDF resource created from a database table.

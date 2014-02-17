@@ -1,8 +1,9 @@
-package rest;
+package vocabulary;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileUtils;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -36,9 +37,12 @@ public class RDFreader {
      * "vocabularies" - specific vocabulary settings are used, 
      * otherwise - "defaultVocabulary" settings are used. 
      */
-    public RDFreader(String fileName) throws Exception {
+    public RDFreader(String filepath) throws Exception {
         SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
+        
+        File filein = new File(filepath);
+    	fileName = filein.getName();
         
         String vocabulary = sm.retrieveJsonMap("vocabularies").get(fileName);
         Map<String, String> settings = sm.retrieveJsonMap(vocabulary != null ? vocabulary : "defaultVocabulary");
@@ -53,11 +57,9 @@ public class RDFreader {
         domainProperty = createProperty(spec.get("domain"));
         //System.out.println(Rest.getVocabulariesPath());
         rangeProperty = createProperty(spec.get("range"));
-        
-        String fileUrl = FileUtils.toURL(Rest.getVocabulariesPath() + "/" + fileName);
-        model.read(fileUrl);
-        
-    	this.fileName = fileName;
+
+        String fileUrl = FileUtils.toURL(filepath);
+        model.read(fileUrl);        
     }
     
     private RDFNode createResource(String name) {
