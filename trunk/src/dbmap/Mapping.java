@@ -90,7 +90,7 @@ public class Mapping {
      * @return An array with the joins that connect the two tables; null if no
      * satisfactory joins could be found.
      */
-    public Join[] findJoins(String table1, String table2) {
+    Join[] findJoins(String table1, String table2) {
         Join[] mjoins;
         Join join1;
 
@@ -149,7 +149,7 @@ public class Mapping {
      * @param idColumn IdColumn name.
      * @return Matching Entity or null if not found.
      */
-    public Entity findEntity(String table, String idColumn) {
+    Entity findEntity(String table, String idColumn) {
         for (Entity entity : entities)
             if (table.equals(entity.table) && idColumn.equals(entity.idColumn))
                 return entity;
@@ -161,7 +161,7 @@ public class Mapping {
      * @param entity
      * @return
      */
-    public String getColumnPrefix(Entity entity) {
+    String getColumnPrefix(Entity entity) {
         String result = "";
         
         if (entity.idPrefixColumn.equalsIgnoreCase("") || entity.idPrefixColumn == null) {
