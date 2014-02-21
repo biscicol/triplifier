@@ -4,11 +4,11 @@ import de.fuberlin.wiwiss.d2rq.algebra.Attribute;
 import de.fuberlin.wiwiss.d2rq.algebra.RelationName;
 import de.fuberlin.wiwiss.d2rq.dbschema.DatabaseSchemaInspector;
 import de.fuberlin.wiwiss.d2rq.map.Database;
-import commander.*;
+import dbmap.*;
 import settings.deepRoots;
 import settings.deepRootsReader;
+import vocabulary.VocabularyItem;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public abstract class simplifier {
     public simplifier(Connection connection, boolean addPrefix, String dRootsFile) throws IOException, URISyntaxException {
         this.connection = connection;
 
-        database = connection.d2rqDatabase;
+        database = connection.getD2RQdatabase();
         schemaInspector = database.connectedDB().schemaInspector();
         entity = new HashSet<Entity>();
         join = new HashSet<Join>();
@@ -45,12 +45,13 @@ public abstract class simplifier {
         this.addPrefix = addPrefix;
     }
 
-      /**
+    /**
      * initializeTerms is meant to be overridden
      */
     protected void initializeTerms() throws Exception {
 
     }
+
     /**
      * Return an ArrayList of column names in a given tablename
      *
@@ -73,11 +74,11 @@ public abstract class simplifier {
      * @param uri
      * @return
      */
-    protected commander.Attribute setAttributeItem(String column, String uri) {
+    protected dbmap.Attribute setAttributeItem(String column, String uri) {
         VocabularyItem vocabularyItem = new VocabularyItem();
         vocabularyItem.name = column;
         vocabularyItem.uri = uri;
-        commander.Attribute attribute = new commander.Attribute();
+        dbmap.Attribute attribute = new dbmap.Attribute();
         attribute.column = column;
         attribute.rdfProperty = vocabularyItem;
         return attribute;
@@ -91,8 +92,8 @@ public abstract class simplifier {
      * @return
      */
     //private HashSet<Attribute> setAttributes(String tablename, HashMap<String, String> mappedConcepts) {
-    protected HashSet<commander.Attribute> setAttributes(String tablename, ArrayList columnMapArrayList) {
-        HashSet<commander.Attribute> attributes = new HashSet<commander.Attribute>();
+    protected HashSet<dbmap.Attribute> setAttributes(String tablename, ArrayList columnMapArrayList) {
+        HashSet<dbmap.Attribute> attributes = new HashSet<dbmap.Attribute>();
 
         Iterator iteratorAvailableColumns = getColumns(tablename).iterator();
         //Iterator iteratorColumnMap = columnMapArrayList.iterator();
@@ -133,6 +134,15 @@ public abstract class simplifier {
         return dataseturi;
     }
 
+    public dbmap.Mapping getMapping(Connection connection) {
+        dbmap.Mapping mapping = new dbmap.Mapping(connection);
+        mapping.entities = this.getEntity();
+        mapping.joins = this.getJoin();
+        mapping.relations = this.getRelation();
+        mapping.dataseturi = this.getDataseturi();
+        return mapping;
+    }
+
     /**
      * Create Entity, so calling functions can work with the actual Entity (e.g., putting them into relations)
      */
@@ -145,13 +155,14 @@ public abstract class simplifier {
             ArrayList attributes) {
 
         // Entity
-        Entity lEntity = new Entity(vocabularyItem.name);
+        // Entity lEntity = new Entity(vocabularyItem.name);
+        Entity lEntity = new Entity();
         lEntity.idColumn = idColumn;
         lEntity.table = tableName;
         lEntity.rdfClass = vocabularyItem;
         lEntity.idPrefixColumn = prefix;
         // Extra Conditions
-        lEntity.extraConditions = extraConditions;
+        // lEntity.extraConditions = extraConditions;
         // Attributes
         if (attributes != null)
             lEntity.attributes = setAttributes(tableName, attributes);
@@ -220,6 +231,7 @@ public abstract class simplifier {
 
     /**
      * Get the prefix associated with a particular concept.  A convenience method for hooking into the DeepRoots class.
+     *
      * @param conceptAlias
      * @return
      * @throws Exception

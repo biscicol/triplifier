@@ -74,7 +74,8 @@ public class Mapping {
             entity.printD2RQ(pw, this);
         for (Relation relation : relations)
             relation.printD2RQ(pw, this);
-        dataseturi.printD2RQ(pw, this);
+        if (dataseturi != null)
+            dataseturi.printD2RQ(pw, this);
     }
 
     /**
