@@ -1,5 +1,6 @@
 package simplifier.plugins;
 
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import de.fuberlin.wiwiss.d2rq.algebra.Attribute;
 import de.fuberlin.wiwiss.d2rq.algebra.RelationName;
 import de.fuberlin.wiwiss.d2rq.dbschema.DatabaseSchemaInspector;
@@ -35,7 +36,7 @@ public abstract class simplifier {
     public simplifier(Connection connection, boolean addPrefix, String dRootsFile) throws IOException, URISyntaxException {
         this.connection = connection;
 
-        database = connection.getD2RQdatabase();
+        database = getD2RQdatabase(connection);
         schemaInspector = database.connectedDB().schemaInspector();
         entity = new HashSet<Entity>();
         join = new HashSet<Join>();
@@ -46,6 +47,39 @@ public abstract class simplifier {
         this.addPrefix = addPrefix;
     }
 
+     /**
+     * Create D2RQ Database from the database connection.
+     *
+     * @return D2RQ Database.
+     */
+    Database getD2RQdatabase(Connection connection) {
+        Database database = new Database(ResourceFactory.createResource());
+        database.setJDBCDSN(getJdbcUrl(connection));
+        database.setUsername(connection.username);
+        database.setPassword(connection.password);
+        return database;
+    }
+
+      /**
+     * Generate a JDBC URL specific to DBsystem.
+     *
+     * @return JDBC URL.
+     */
+    String getJdbcUrl(Connection connection) {
+        switch (connection.system) {
+            case mysql:
+                return "jdbc:mysql://" + connection.host + "/" + database;
+            case postgresql:
+                return "jdbc:postgresql://" + connection.host + "/" + database;
+            case oracle:
+                return "jdbc:oracle:thin:@" + connection.host + ":" + database;
+            case sqlserver:
+                return "jdbc:sqlserver://" + connection.host + ";databaseName=" + database;
+            case sqlite:
+                return "jdbc:sqlite:" + connection.host + "/" + database;
+        }
+        return null;
+    }
     /**
      * initializeTerms is meant to be overridden
      */
