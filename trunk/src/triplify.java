@@ -14,13 +14,21 @@ import reader.ReaderManager;
 import reader.TabularDataConverter;
 import reader.plugins.TabularDataReader;
 import dbmap.*;
-
 import settings.PathManager;
 import simplifier.plugins.*;
 
 
 /**
- * Provides a command-line tool for using the triplifier.
+ * A command-line tool for using the triplifier.
+ *
+ * This tool is in active development and is provided here as a demonstration for interacting with the triplifier at a
+ * low level.
+ *
+ * We reccomend writing a simplifier plugin and inserting in the simplifier.plugins package and extending the simplifier
+ * abstract class.  You can see how this works by looking at the dwcSimplifier class.
+ *
+ * The genbankSimplifier does NOT extend the simplifier abstract class and shows a method where triples can be constructed
+ * using brute-force methods.
  */
 public class triplify {
 
@@ -45,13 +53,12 @@ public class triplify {
                 "the results are not as robust.");
         opts.addOption("o", "outputDirectory", true, "Output all files to this directory. Default is to the use a directory " +
                 "called 'tripleOutput' which is a child of the application root");
-        opts.addOption("t", "simplifierType", true, "*Required {idtest|ocr|vertnet}");
-        opts.addOption("P", "projectCode", true, "*Required only for the VertNet simplifier");
+        opts.addOption("t", "simplifierType", true, "*Required {genbank|dwc}");
         opts.addOption("m", "mappingFile", true, "Provide a mapping file.  If this option is set it will ignore all other steps," +
                 "not create a SQLlite database but just go straight to triplification by reading the mapping file.");
         opts.addOption("D", "deepRoot", true, "Provide a deepRoots File.  If this option is set it will use Deep Roots mapping from this " +
                 "file.");
-        opts.addOption("p", "prefixRemover", false, "Do not apply a system prefix.  Use this if you have awesome identifiers" +
+        opts.addOption("p", "prefixNotNecessary", false, "Do not apply a system prefix.  Use this if you have persistent identifiers" +
                 "already in place-- that is, they are resolvable, persistent, and especially you must ensure they are all " +
                 "properly formatted URIs.  If you do not add this option, the default is to use a system specific prefix." +
                 "");
@@ -87,17 +94,6 @@ public class triplify {
             return;
         }
 
-        if (cl.getOptionValue("t").equals("vertnet") && (!cl.hasOption("P") && !cl.hasOption("D"))) {
-            System.out.println("Simplifier type = vertnet requires either option P (project_code) or D (deepRoots) to be set");
-            return;
-        }
-
-
-        // TODO: handle, Project code fetching from deep root system
-        if (cl.hasOption("P")) {
-            System.out.println("NEED TO write in ability to fetch DEEP ROOT codes from BCID system.  For now, must set Deep Root JSON file manually here.");
-            return;
-        }
 
         // Remove or add prefix option.  Default i
         boolean addPrefix = true;
@@ -194,25 +190,24 @@ public class triplify {
                     Connection connection = new Connection(sqlitefile);
                     Triplifier r = new Triplifier(processDirectory);
 
-                    // Construct the type of simplifier
+                    // Construct the simplifier
                     System.out.println("Beginning simplifier instantiation");
                     simplifier s = null;
-                    if (cl.getOptionValue("t").equals("idtest")) {
-                        s = new identifierTestsSimplifier(connection, addPrefix, dRootURL);
-                    } else if (cl.getOptionValue("t").equals("vertnet")) {
-                        s = new vertnetSimplifier(connection, addPrefix, dRootURL);
+                    if (cl.getOptionValue("t").equals("vertnet")) {
+                        s = new dwcSimplifier(connection, addPrefix, dRootURL);
                     } else {
                         System.out.println(cl.getOptionValue("t") + " not a valid simplifier type");
                         return;
                     }
+
                     // Create mapping file
                     System.out.println("Beginning mapping file creation");
                     dbmap.Mapping mapping = s.getMapping(connection);
 
                     // Triplify
                     System.out.println("Beginning triple file creation");
-
                     String results = r.getTriples(file.getName(), mapping, FileUtils.langTurtle);
+
                     System.out.println("Done! see, " + results);
                 }
             }

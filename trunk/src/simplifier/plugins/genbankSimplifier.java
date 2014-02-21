@@ -16,7 +16,7 @@ import java.util.List;
  * NOTE that the genbankSimplifier DOES NOT extend simplifier as other plugins do in this directory.  This is because
  * it was far easier to parse the file and construct triples directly for genbank formatted records.
  */
-public class genbankSimplifier {
+public class genbankSimplifier  {
 
     BufferedReader bufferedReader;
     FileOutputStream fileOutputStream;
