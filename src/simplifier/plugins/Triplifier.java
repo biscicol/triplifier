@@ -2,6 +2,7 @@ package simplifier.plugins;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileUtils;
+import com.sun.jersey.core.util.ThrowHelper;
 import dbmap.Mapping;
 import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
 import settings.SettingsManager;
@@ -83,7 +84,13 @@ public class Triplifier {
 
         File tripleFile = createUniqueFile(filenamePrefix + ".triples." + extension, getOutputPath());
         FileOutputStream fos = new FileOutputStream(tripleFile);
-        model.write(fos, lang);
+        try {
+            model.write(fos, lang);
+        } catch (Exception e) {
+           System.out.println("ERROR! There was an issue writing file.  This can happen if not all of your file's identifiers are not" +
+                   "well formed URIs and you chose to NOT assign prefixes.");
+            throw new Exception("File writing exception",e);
+        }
         fos.close();
         return getOutputPath() + tripleFile.getName();
     }

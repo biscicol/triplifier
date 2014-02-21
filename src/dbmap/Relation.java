@@ -35,7 +35,7 @@ public class Relation {
         String subjClassMap = subjEntity.classMap(),
                 objClassMap = objEntity.classMap();
 
-        System.out.println("subj table: " + subjTbl + "; obj table: " + objTbl);
+        //System.out.println("subj table: " + subjTbl + "; obj table: " + objTbl);
         //System.out.println("subj prefix: " + subjEntity.idPrefixColumn + "; obj prefix: " + objEntity.idPrefixColumn);
         if (subjTbl.equals(objTbl)) {
             pw.println("map:" + subjClassMap + "_" + objClassMap + "_rel" + " a d2rq:PropertyBridge;");

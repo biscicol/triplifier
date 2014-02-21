@@ -40,7 +40,8 @@ public abstract class simplifier {
         entity = new HashSet<Entity>();
         join = new HashSet<Join>();
         relation = new HashSet<Relation>();
-        dRoots = new deepRootsReader().createRootData(dRootsFile);
+        if (dRootsFile != null)
+            dRoots = new deepRootsReader().createRootData(dRootsFile);
 
         this.addPrefix = addPrefix;
     }
@@ -230,14 +231,23 @@ public abstract class simplifier {
     }
 
     /**
-     * Get the prefix associated with a particular concept.  A convenience method for hooking into the DeepRoots class.
+     * Get the prefix associated with a particular concept.  A convenience method for hooking into the DeepRoots class,
+     * providing a default prefix, or none at all.
      *
      * @param conceptAlias
      * @return
      * @throws Exception
      */
     protected String getPrefix(String conceptAlias) throws Exception {
-        return dRoots.lookupPrefix(conceptAlias);
+        if (dRoots != null)
+            return dRoots.lookupPrefix(conceptAlias);
+        else {
+            if (!addPrefix)
+                return "";
+            else
+                return "urn:x-biscicol:" + conceptAlias + ":";
+
+        }
     }
 
 }
