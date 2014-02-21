@@ -63,7 +63,7 @@ public class Connection
      * 
      * @return D2RQ Database.
      */
-    Database getD2RQdatabase() {
+    public Database getD2RQdatabase() {
         Database database = new Database(ResourceFactory.createResource());
         database.setJDBCDSN(getJdbcUrl());
         database.setUsername(username);

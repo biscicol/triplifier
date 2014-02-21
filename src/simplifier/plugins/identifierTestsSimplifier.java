@@ -1,6 +1,7 @@
 package simplifier.plugins;
 
-import commander.*;
+import dbmap.*;
+import vocabulary.VocabularyItem;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

@@ -13,7 +13,7 @@ import org.apache.log4j.Level;
 import reader.ReaderManager;
 import reader.TabularDataConverter;
 import reader.plugins.TabularDataReader;
-import commander.*;
+import dbmap.*;
 
 import settings.PathManager;
 import simplifier.plugins.*;
@@ -199,8 +199,6 @@ public class triplify {
                     simplifier s = null;
                     if (cl.getOptionValue("t").equals("idtest")) {
                         s = new identifierTestsSimplifier(connection, addPrefix, dRootURL);
-                    } else if (cl.getOptionValue("t").equals("ocr")) {
-                        s = new ocrSimplifier(connection, file.getName(), addPrefix, dRootURL);
                     } else if (cl.getOptionValue("t").equals("vertnet")) {
                         s = new vertnetSimplifier(connection, addPrefix, dRootURL);
                     } else {
@@ -209,7 +207,7 @@ public class triplify {
                     }
                     // Create mapping file
                     System.out.println("Beginning mapping file creation");
-                    commander.Mapping mapping = new commander.Mapping(connection, s);
+                    dbmap.Mapping mapping = s.getMapping(connection);
 
                     // Triplify
                     System.out.println("Beginning triple file creation");

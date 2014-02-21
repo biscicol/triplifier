@@ -1,21 +1,14 @@
 package simplifier.plugins;
 
-import commander.Connection;
-import commander.VocabularyItem;
-import commander.*;
-import org.jsoup.Jsoup;
+import dbmap.*;
 import settings.deepRoots;
-import settings.deepRootsReader;
+import vocabulary.VocabularyItem;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 /**
  * A crude set of properties to simplify DwCA for testing against, VN, Morphbank, etc.
  * For now, we're just focusing on the mainTable.
- * Ultimately this will need to be re-coded with more robust logic to handle DwCA as constructed by the simplifier
- * in the Javascript code that Brian Stucky wrote.
  */
 public class vertnetSimplifier extends simplifier {
      deepRoots dRoots;
@@ -34,7 +27,6 @@ public class vertnetSimplifier extends simplifier {
         specimenProperties.add(new columnMap("associatedOccurrences", "dwc:associatedOccurrences"));
         specimenProperties.add(new columnMap("otherCatalogNumbers", "dwc:otherCatalogNumbers"));
         specimenProperties.add(new columnMap("recordedBy", "dwc:recordedBy"));
-
 
         Entity occurrence = setEntity(
                 getPrefix("dwc:Occurrence"),
