@@ -48,17 +48,23 @@ public class PathManager {
         }
         // no output path specified
         else {
-            fullPath = System.getProperty("user.dir") + File.separator;
+            //fullPath = System.getProperty("user.dir") + File.separator;
+            fullPath = System.getProperty("user.dir");
         }
-
+          System.out.println(fullPath);
         File theDir = new File(fullPath);
         // if the directory does not exist, create it
         if (!theDir.exists()) {
+            theDir.mkdirs();
+            // NOTE: the following should work but for some reason the return result is always false when a directory
+            // is being created.  I was not able to track down the bug, so for now, we have to bypass this check.
+            /*
             boolean result = theDir.mkdirs();
 
             if (result) {
                 throw new FileNotFoundException("Unable to create directory " + theDir.getAbsolutePath());
             }
+            */
         }
         return theDir;
     }

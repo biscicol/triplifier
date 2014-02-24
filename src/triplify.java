@@ -20,13 +20,13 @@ import simplifier.plugins.*;
 
 /**
  * A command-line tool for using the triplifier.
- *
+ * <p/>
  * This tool is in active development and is provided here as a demonstration for interacting with the triplifier at a
  * low level.
- *
+ * <p/>
  * We reccomend writing a simplifier plugin and inserting in the simplifier.plugins package and extending the simplifier
  * abstract class.  You can see how this works by looking at the dwcSimplifier class.
- *
+ * <p/>
  * The genbankSimplifier does NOT extend the simplifier abstract class and shows a method where triples can be constructed
  * using brute-force methods.
  */
@@ -193,7 +193,10 @@ public class triplify {
                     // Construct the simplifier
                     System.out.println("Beginning simplifier instantiation");
                     simplifier s = null;
-                    if (cl.getOptionValue("t").equals("vertnet")) {
+                    if (
+                            cl.getOptionValue("t").equals("dwc") ||
+                            cl.getOptionValue("t").equals("genbank")
+                            ) {
                         s = new dwcSimplifier(connection, addPrefix, dRootURL);
                     } else {
                         System.out.println(cl.getOptionValue("t") + " not a valid simplifier type");
