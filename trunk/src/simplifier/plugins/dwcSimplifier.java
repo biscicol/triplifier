@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 /**
  * A crude set of properties to simplify DwCA for testing against, VN, Morphbank, etc.
- * For now, we're just focusing on the mainTable.
+ *
  */
 public class dwcSimplifier extends simplifier {
      deepRoots dRoots;

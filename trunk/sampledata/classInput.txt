@@ -1,0 +1,64 @@
+id	occurrenceID	identificationID	taxonID	eventID	locationID	geologicalContextID
+1	urn:o_1					
+2		urn:i_2				
+3	urn:o_3	urn:i_3				
+4			urn:t_4			
+5	urn:o_5		urn:t_5			
+6		urn:i_6	urn:t_6			
+7	urn:o_7	urn:i_7	urn:t_7			
+8				urn:e_8		
+9	urn:o_9			urn:e_9		
+10		urn:i_10		urn:e_10		
+11	urn:o_11	urn:i_11		urn:e_11		
+12			urn:t_12	urn:e_12		
+13	urn:o_13		urn:t_13	urn:e_13		
+14		urn:i_14	urn:t_14	urn:e_14		
+15	urn:o_15	urn:i_15	urn:t_15	urn:e_15		
+16					urn:l_16	
+17	urn:o_17				urn:l_17	
+18		urn:i_18			urn:l_18	
+19	urn:o_19	urn:i_19			urn:l_19	
+20			urn:t_20		urn:l_20	
+21	urn:o_21		urn:t_21		urn:l_21	
+22		urn:i_22	urn:t_22		urn:l_22	
+23	urn:o_23	urn:i_23	urn:t_23		urn:l_23	
+24				urn:e_24	urn:l_24	
+25	urn:o_25			urn:e_25	urn:l_25	
+26		urn:i_26		urn:e_26	urn:l_26	
+27	urn:o_27	urn:i_27		urn:e_27	urn:l_27	
+28			urn:t_28	urn:e_28	urn:l_28	
+29	urn:o_29		urn:t_29	urn:e_29	urn:l_29	
+30		urn:i_30	urn:t_30	urn:e_30	urn:l_30	
+31	urn:o_31	urn:i_31	urn:t_31	urn:e_31	urn:l_31	
+32						urn:g_32
+33	urn:o_33					urn:g_33
+34		urn:i_34				urn:g_34
+35	urn:o_35	urn:i_35				urn:g_35
+36			urn:t_36			urn:g_36
+37	urn:o_37		urn:t_37			urn:g_37
+38		urn:i_38	urn:t_38			urn:g_38
+39	urn:o_39	urn:i_39	urn:t_39			urn:g_39
+40				urn:e_40		urn:g_40
+41	urn:o_41			urn:e_41		urn:g_41
+42		urn:i_42		urn:e_42		urn:g_42
+43	urn:o_43	urn:i_43		urn:e_43		urn:g_43
+44			urn:t_44	urn:e_44		urn:g_44
+45	urn:o_45		urn:t_45	urn:e_45		urn:g_45
+46		urn:i_46	urn:t_46	urn:e_46		urn:g_46
+47	urn:o_47	urn:i_47	urn:t_47	urn:e_47		urn:g_47
+48					urn:l_48	urn:g_48
+49	urn:o_49				urn:l_49	urn:g_49
+50		urn:i_50			urn:l_50	urn:g_50
+51	urn:o_51	urn:i_51			urn:l_51	urn:g_51
+52			urn:t_52		urn:l_52	urn:g_52
+53	urn:o_53		urn:t_53		urn:l_53	urn:g_53
+54		urn:i_54	urn:t_54		urn:l_54	urn:g_54
+55	urn:o_55	urn:i_55	urn:t_55		urn:l_55	urn:g_55
+56				urn:e_56	urn:l_56	urn:g_56
+57	urn:o_57			urn:e_57	urn:l_57	urn:g_57
+58		urn:i_58		urn:e_58	urn:l_58	urn:g_58
+59	urn:o_59	urn:i_59		urn:e_59	urn:l_59	urn:g_59
+60			urn:t_60	urn:e_60	urn:l_60	urn:g_60
+61	urn:o_61		urn:t_61	urn:e_61	urn:l_61	urn:g_61
+62		urn:i_62	urn:t_62	urn:e_62	urn:l_62	urn:g_62
+63	urn:o_63	urn:i_63	urn:t_63	urn:e_63	urn:l_63	urn:g_63
