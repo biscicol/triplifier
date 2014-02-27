@@ -18,23 +18,23 @@ import java.util.Collection;
 
 /**
  * The following tests are structured to test files that are output from the triplifier User Interface.
- *
+ * <p/>
  * Here is how to run the tests:
- *
+ * <p/>
  * 1) Two input files are passed as input to the triplifier:
- *     classInput.txt
- *     propertyInput.txt
- *
+ * classInput.txt
+ * propertyInput.txt
+ * <p/>
  * 2) Select "auto-generate project for 'Darwin Core Archive'"
- *
+ * <p/>
  * 3) In the Concepts section, be sure to select 'yes' for Unique ID's.  The default is no.  In order to structure
  * the tests accurately, we need to reference the same identifiers on the input file as the output file and the best
  * way to do this is to use the same identifiers that were passed in.
- *
+ * <p/>
  * 4) Triplify the files and name the output as:
- *      classOutputUserInterface.ttl
- *      propertyOutputUserInterface.ttl
- *
+ * classOutputUserInterface.ttl
+ * propertyOutputUserInterface.ttl
+ * <p/>
  * 5) Run the tests, which compares the above output files to the two files in the sampledata directory called
  * classMeasuringStick.n3 and propertyMeasuringStick.n3
  *
@@ -52,7 +52,11 @@ public class dwcValidatorTest {
     private static String classOutputFileName;
     private static String propertyOutputFileName;
 
-
+    /**
+     * Construct the models used for the tests
+     *
+     * @throws IOException
+     */
     @BeforeClass
     public static void setUpClass() throws IOException {
         // Set logging output level
@@ -86,6 +90,13 @@ public class dwcValidatorTest {
         propertyOutput.read(baseuri + propertyOutputFileName, "urn:", FileUtils.langTurtle);
     }
 
+    /**
+     * Test the expression of relationships between classes by looking for "expected" output from the
+     * classMeasuringStick model against a model that is created by reading output from the triplifier
+     * user interface
+     *
+     * @throws Exception
+     */
     @Test
     public void classTest() throws Exception {
         String unMatchedTriples = "";
@@ -115,6 +126,13 @@ public class dwcValidatorTest {
 
     }
 
+    /**
+     * Test the expression of property expressions by looking for "expected" output from the
+     * propertyMeasuringStick model against a model that is created by reading output from the triplifier
+     * user interface
+     *
+     * @throws Exception
+     */
     @Test
     public void propertyTest() throws Exception {
         String unMatchedTriples = "";
@@ -122,9 +140,9 @@ public class dwcValidatorTest {
         StmtIterator msIter = propertyMeasuringStick.listStatements();
         while (msIter.hasNext()) {
             Statement msStmt = msIter.nextStatement();
-            // TODO: find a more formal way to filter out properties we don't want to test
+            // TODO: find a more formal way to filter out properties we don't need to test
             if (!msStmt.getPredicate().toString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#type") &&
-                  !msStmt.getPredicate().toString().equals("http://www.w3.org/2000/01/rdf-schema#subPropertyOf")  ) {
+                    !msStmt.getPredicate().toString().equals("http://www.w3.org/2000/01/rdf-schema#subPropertyOf")) {
                 StmtIterator poIter = propertyOutput.listStatements();
                 boolean match = false;
                 while (poIter.hasNext()) {
