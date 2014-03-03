@@ -1,4 +1,4 @@
-id	occurrenceID	identificationID	taxonID	eventID	locationID	geologicalContextID
+id	occurrenceID	identificationID	taxonID	eventID	locationID	geologicalcontextID
 1	urn:o_1					
 2		urn:i_2				
 3	urn:o_3	urn:i_3				
