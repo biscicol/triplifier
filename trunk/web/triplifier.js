@@ -350,7 +350,7 @@ function alertError(xhr, status, error) {
 }
 
 /**
- * Searches for an element in an array with a specified property that has given value.
+ * Searches for an element in an array with a specified property that has a given value.
  * Can optionally also require that a second property has a specific value.
  **/
 function indexOf(array, property, value, property2, value2) { 
