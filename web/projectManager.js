@@ -123,6 +123,7 @@ Project.prototype.setProperty = function(propname, newval, dontnotify) {
 
 	// update all possible relations
 	this.allrels = this.findAllPossibleRelations();
+	console.log(this.allrels)
 
 	if (dontnotify) {
 		this.unregisterObserver(dontnotify);
@@ -264,7 +265,7 @@ Project.prototype.getAttributesByEntity = function(entityname) {
 
 /**
  * Determine whether a given attribute is still valid.  If the entity it references still
- * exist in the project, true is returned.  False otherwise.
+ * exists in the project, true is returned.  False otherwise.
  **/
 Project.prototype.isAttributeValid = function(attribute) {
 	var entname;
@@ -337,8 +338,9 @@ Project.prototype.getCombinedEntitiesAndAttributes = function() {
  * is a list, where each element of the list is an object with two properties: "subject",
  * which specifies the subject of the relation, and "objects", which is a list of all
  * possible objects that could be related to that subject.  A relation is only possible if
- * the subject and object are in the same database table or in separate tables that are
- * part of a join.  The structure of the returned object is as follows.
+ * the subject and object are 1) in the same database table, or 2) in separate tables that
+ * are part of a join, or 3) in separate tables that can be connected by two joins (i.e.,
+ * with an intermediate table).  The structure of the returned object is as follows.
  *
  * {
  * 	count: relations_cnt,
@@ -359,20 +361,18 @@ Project.prototype.findAllPossibleRelations = function() {
 	var allRelationsTotal = 0;
 	var self = this;
 
-	$.each(this.entities, function(i, subMp) {
+	$.each(this.entities, function(i, subent) {
 		var objects = [];
-		$.each(self.entities, function(j, objMp) {
-			// see if these two entities are in the same table or in joined tables
-			if (i != j && (subMp.table == objMp.table 
-				|| indexOf(self.joins, "foreignTable", subMp.table, "primaryTable", objMp.table) >= 0 
-				|| indexOf(self.joins, "foreignTable", objMp.table, "primaryTable", subMp.table) >= 0)) {
-				objects.push(objMp.table + "." + objMp.idColumn);
+		$.each(self.entities, function(j, objent) {
+			// See if these two entities can be connected with a relation.
+			if (i != j && self.isRelationPossible(subent, objent)) {
+				objects.push(objent.table + "." + objent.idColumn);
 				allRelationsTotal += .5; // each relation has inverse relation, but we'll allow only one per pair
 			}
 		});
 
 		if (objects.length)
-			allRelations.push({subject:subMp.table + "." + subMp.idColumn, objects:objects});
+			allRelations.push({subject:subent.table + "." + subent.idColumn, objects:objects});
 
 	});
 
@@ -383,6 +383,55 @@ Project.prototype.findAllPossibleRelations = function() {
 	//alert(allRelations[0].subject + ' -> ' + allRelations[0].objects[0]);
 
 	return retval;
+}
+
+/**
+ * Searches for a join that connects the two tables.  The order of the tables in
+ * the join does not matter.
+ *
+ * Returns the index of the join if a match is found; -1 otherwise.
+ **/
+Project.prototype.findJoin = function(table1, table2) {
+	for (var i = 0; i < this.joins.length; i++) {
+		if ((this.joins[i].foreignTable == table1 && this.joins[i].primaryTable == table2) ||
+			(this.joins[i].foreignTable == table2 && this.joins[i].primaryTable == table1))
+			return i;
+	}
+
+	return -1;
+}
+
+/**
+ * Determines whether two entities can be connected by a relationship.  Returns
+ * true if either the subject and object are 1) in the same database table, or
+ * 2) in separate tables that are part of a join, or 3) in separate tables that
+ * can be connected by two joins (i.e., with an intermediate table).  Returns
+ * false otherwise.
+ **/
+Project.prototype.isRelationPossible = function(ent1, ent2) {
+	// First check if the entities are in the same table.
+	if (ent1.table == ent2.table)
+		return true;
+
+	// Next, check if they are connected with a single join.
+	for (var i = 0; i < this.joins.length; i++) {
+		if (this.findJoin(ent1.table, ent2.table) >= 0)
+			return true;
+	}
+
+	// Finally, check if they can be connected with two joins via an
+	// intermediate table.
+	for (var i = 0; i < this.joins.length; i++) {
+		if (this.joins[i].foreignTable == ent1.table) {
+			if (this.findJoin(this.joins[i].primaryTable, ent2.table) >= 0)
+				return true;
+		} else if (this.joins[i].primaryTable == ent1.table) {
+			if (this.findJoin(this.joins[i].foreignTable, ent2.table) >= 0)
+				return true;
+		}
+	}
+
+	return false;
 }
 
 /**
