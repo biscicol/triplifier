@@ -93,14 +93,21 @@ public class dwcValidatorTest {
     /**
      * Test the expression of relationships between classes by looking for "expected" output from the
      * classMeasuringStick model against a model that is created by reading output from the triplifier
-     * user interface
+     * user interface.  The classMeasuringStick model contains "inferred" occurrences, designated by an
+     * uppercase "O" that indicate no Occurrence was expressed in the model but some other class was that
+     * indicates some implied occurrence.  This is a tricky concept.  In some cases occurrences certainly
+     * be implied (such as data expressing only an Identification & a Taxon) and in other cases may not
+     * be suitable at all (such as data expressing only a Taxon).  In any case, for the purposes of the
+     * tests run in the class, we ignore any supposed "inferred" Occurrence relationships.
+     *
      *
      * @throws Exception
      */
     @Test
-    public void classTest() throws Exception {
+    public void classNoInferredOccurrencesTest() throws Exception {
         String unMatchedTriples = "";
         StmtIterator msIter = classMeasuringStick.listStatements();
+
         while (msIter.hasNext()) {
             Statement msStmt = msIter.nextStatement();
             StmtIterator poIter = classOutput.listStatements();
@@ -111,9 +118,14 @@ public class dwcValidatorTest {
                     match = true;
                 }
             }
-            // If a match is not found then set this statement.
-            if (!match) {
-                unMatchedTriples += msStmt.getSubject() + " " + msStmt.getPredicate().toString() + " " + msStmt.getObject().toString() + " .\n";
+            // For this test, do NOT look at the inferred Occurrence, which contains an uppercase "O" in either the
+            // subject or the object
+            if (!msStmt.getSubject().toString().contains("O") &&
+                    !msStmt.getObject().toString().contains("O")) {
+                // If a match is not found then set this statement.
+                if (!match) {
+                    unMatchedTriples += msStmt.getSubject() + " " + msStmt.getPredicate().toString() + " " + msStmt.getObject().toString() + " .\n";
+                }
             }
         }
         // Output assertion with message of results
@@ -136,7 +148,6 @@ public class dwcValidatorTest {
     @Test
     public void propertyTest() throws Exception {
         String unMatchedTriples = "";
-
 
 
         StmtIterator msIter = propertyMeasuringStick.listStatements();
