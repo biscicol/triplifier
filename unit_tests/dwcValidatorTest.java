@@ -118,7 +118,7 @@ public class dwcValidatorTest {
         }
         // Output assertion with message of results
         if (!unMatchedTriples.equals(""))
-            assertTrue("The following triples ARE in MeasuringStick but NOT in " + classOutputFileName + ":\n" + unMatchedTriples
+            assertTrue("\nThe following triples ARE in classMeasuringStick but NOT in " + classOutputFileName + ":\n" + unMatchedTriples
                     , false);
         else
             assertTrue(true);
@@ -136,6 +136,8 @@ public class dwcValidatorTest {
     @Test
     public void propertyTest() throws Exception {
         String unMatchedTriples = "";
+
+
 
         StmtIterator msIter = propertyMeasuringStick.listStatements();
         while (msIter.hasNext()) {
@@ -159,7 +161,7 @@ public class dwcValidatorTest {
         }
         // Output assertion with message of results
         if (!unMatchedTriples.equals(""))
-            assertTrue("The following triples ARE in MeasuringStick but NOT in " + propertyOutputFileName + ":\n" + unMatchedTriples
+            assertTrue("\nThe following triples ARE in propertyMeasuringStick but NOT in " + propertyOutputFileName + ":\n" + unMatchedTriples
                     , false);
         else
             assertTrue(true);
