@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
  */
 public class ReaderTest {
     // Set this to the location of the test data.
-    protected String testdatadir = "../triplifiersvn/testdata";
+    protected String testdatadir = "testdata";
             
     /**
      * Test the data from a reader plugin against an expected set of data and

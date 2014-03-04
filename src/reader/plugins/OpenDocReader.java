@@ -109,7 +109,10 @@ public class OpenDocReader implements TabularDataReader
 
     @Override
     public boolean hasNextTable() {
-        return currsheet < sprdsheet.getSheetCount();
+        if (sprdsheet == null)
+            return false;
+        else
+            return currsheet < sprdsheet.getSheetCount();
     }
     
     @Override
