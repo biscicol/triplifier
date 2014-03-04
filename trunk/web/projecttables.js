@@ -324,7 +324,7 @@ AttributesTable.prototype.populateTableRowOptions = function(tr, isedit) {
 	$.each(this.project.entities, function(i, entity) {
 		var entname = entity.table + '.' + entity.idColumn;
 		if (attribute.entity == entname) {
-			// This the entity of the attribute being edited.
+			// This is the entity of the attribute being edited.
 			ob.addOption(entname, "entity-Idx='" + i + "'");
 		} else {
 			var attribs = self.project.getAttributesByEntity(entname);

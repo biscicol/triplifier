@@ -155,11 +155,12 @@ public class RDFreader {
     	SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
 
-        RDFreader or = new RDFreader("triplifier-vocab.rdf");
+        RDFreader or = new RDFreader("vocabularies/triplifier-vocab.rdf");
         
 //        System.out.println(or.getProperties());
 //        System.out.println(or.getClasses());
         
+        //or.getVocabulary();
     	new ObjectMapper().writeValue(System.out, or.getVocabulary());
     }
 }
