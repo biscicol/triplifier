@@ -1,3 +1,9 @@
+The files in this directory are for formal and informal testing of core Triplifier
+functionality.  The files test.* are used for the unit tests of the input data
+reader system.  The files *MeasuringStick.n3 are used by the unit tests for the
+Triplifer output.
+
+
 The file dwca-all_classes.zip is a DwC archive that includes all 6 core classes with
 1 or more terms for each class.  The file dwca-4_classes.zip is the same as the
 previous file, except the classes Identification and Event have been removed, along

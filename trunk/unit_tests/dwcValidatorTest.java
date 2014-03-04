@@ -71,7 +71,7 @@ public class dwcValidatorTest {
 
         // The base URI for all input and output for these tests
         baseuri = System.getProperty("user.dir");
-        baseuri = "file://" + baseuri + "/sampledata/";
+        baseuri = "file://" + baseuri + "/testdata/";
 
         // A model for the class tests. The MeasuringStick is the output that we expect
         classMeasuringStick = ModelFactory.createOntologyModel(OntModelSpec.OWL_LITE_MEM_RULES_INF);
