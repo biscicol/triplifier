@@ -63,10 +63,11 @@ datasets with three records each, representing all six core DwC classes.  The fi
 two records are nearly identical and allow confirmation that each occurrence gets its
 own identification instance, but other class instances are shared between the occurrences.
 The last record contains no Identification or Event instance and allows confirmation
-that the ontology is interpreted properly.  The file dwca-mixed_classes-IDs.zip already
-has proper IDs and does not require re-normalization, while the file dwca-mixed_classes-no_IDs.zip
-does not have any ID columns and requires re-normalization.  The classes and terms
-included in these files are as follows.
+that the ontology is interpreted properly and that no empty class instances are created.
+The file dwca-mixed_classes-IDs.zip already has proper IDs and does not require
+re-normalization, while the file dwca-mixed_classes-no_IDs.zip does not have any ID
+columns and requires re-normalization.  The classes and terms included in these files are
+as follows.
 
 
 Taxon
@@ -94,10 +95,11 @@ Event
 
 Identification
     <field index="14" term="http://rs.tdwg.org/dwc/terms/identifiedBy"/>
+    <field index="15" term="http://rs.tdwg.org/dwc/terms/dateIdentified"/>
 
 GeologicalContext
-    <field index="15" term="http://rs.tdwg.org/dwc/terms/latestEpochOrHighestSeries"/>
+    <field index="16" term="http://rs.tdwg.org/dwc/terms/latestEpochOrHighestSeries"/>
 
 record-level terms that should be dropped
-    <field index="16" term="http://rs.tdwg.org/dwc/terms/informationWithheld"/>
+    <field index="17" term="http://rs.tdwg.org/dwc/terms/informationWithheld"/>
 

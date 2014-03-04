@@ -170,7 +170,8 @@ public final class TabularDataConverter
         // "fixer" interface, but since we are only planning to do it for DwC
         // archives, the implementation is, for now, format-specific.
         if (source.getFormatString().equals("DwCA")) {
-            DwCAFixer.fixArchive(conn);
+            DwCAFixer dwcafixer = new DwCAFixer();
+            dwcafixer.fixArchive(conn);
         }
         
         conn.close();
