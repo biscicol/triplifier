@@ -30,7 +30,7 @@ public class Entity
         //	pw.println("\td2rq:uriPattern \"" + table + "/@@" + table + "." + idColumn + "|urlify@@\";");
         pw.println("\td2rq:class <" + rdfClass.uri + ">;");
         // ensures non-null values
-        pw.println("\td2rq:condition \"" + getColumn() + " <> ''\";");
+        pw.println("\td2rq:condition \"" + getColumn() + " IS NOT NULL AND " + getColumn() + " <> ''\";");
 
         //	pw.println("\td2rq:classDefinitionLabel \"" + table + "\";");
         pw.println("\t.");

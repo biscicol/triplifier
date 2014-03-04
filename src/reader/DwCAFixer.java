@@ -9,8 +9,12 @@ import java.util.HashMap;
 
 
 /**
- * Attempts to "fix" Darwin Core archive data by inferring any missing ID
- * columns.
+ * Attempts to "fix" Darwin Core archive data by inferring the DwC concepts that
+ * are actually present in the data, adding any missing ID columns, and
+ * normalizing the data so that each concept is in its own table with instance-
+ * level data redundancy removed.  The only exceptions are Identification
+ * instances, which are not normalized.  Instead, every Occurrence instance gets
+ * its own Identification instance.
  */
 public class DwCAFixer
 {
@@ -84,7 +88,7 @@ public class DwCAFixer
      * @param dbconn A connection to a SQLite database for a DwC archive.
      * @throws SQLException 
      */
-    public static void fixArchive(Connection dbconn) throws SQLException {
+    public void fixArchive(Connection dbconn) throws SQLException {
         Statement stmt = dbconn.createStatement();
         // A list for tracking which terms are present in the source data.
         ArrayList<String> includedterms = new ArrayList<String>();
@@ -93,8 +97,6 @@ public class DwCAFixer
         ArrayList<String> deletecolumns = new ArrayList<String>();
         // A string for building SQL queries.
         String query;
-        // The name of the current newly-created table.
-        String newtablename;
         
         // Get the table name from the database, and verify that there is only
         // one table.
@@ -148,8 +150,8 @@ public class DwCAFixer
                 IDcolpopulated = rs.next();
             }
             
-            // Check if we found terms for the current conceptID and if there is
-            // already a populated ID column for it.
+            // If we found terms for the current conceptID and there is not
+            // already a populated ID column for it, process this concept.
             if (!includedterms.isEmpty() && !(hasIDcolumn && IDcolpopulated)) {
                 System.out.println("Fixing missing or empty \"" + conceptID + "\" column.");
                 
@@ -164,86 +166,34 @@ public class DwCAFixer
                     stmt.executeUpdate(query);
                 }
                 
-                // Create a new table to select all distinct values into.
-                //System.out.println("USING TEMPORARY TABLE!!!!!!");
-                //System.out.println("NOT USING TEMPORARY TABLE!!!!!!");
-                newtablename = conceptID.replace("ID", "");
-                query = "CREATE TABLE '" + newtablename + "' "
-                        + "(id INTEGER PRIMARY KEY";
-                for (String term : includedterms) {
-                    query += ", '" + term + "'";
-                    // Keep track of the columns we are relocating so that they
-                    // can be deleted from the main table later.
-                    deletecolumns.add(term);
+                // We need to handle Identification differently than the other
+                // concepts.  Each Occurrence gets its own Identification
+                // instance, so we don't normalize the Identification data.
+                // For all other concepts, we create a new, normalized table.
+                if (conceptID.equals("identificationID")) {
+                    createIdentificationIDs(stmt, tablename, includedterms);
+                } else {
+                    createConceptTable(stmt, conceptID, tablename, includedterms, deletecolumns);
                 }
-                query += ")";
-                //System.out.println(query);
-                stmt.executeUpdate(query);
-                
-                // Populate the new table with all distinct combinations
-                // of the concept term values and generate integer IDs for each
-                // distinct "instance."
-                int cnt = 0;
-                String collist = "";
-                for (String term : includedterms) {
-                    if (cnt > 0)
-                        collist += ", ";
-                    collist += "\"" + term + "\"";
-                    cnt++;
-                }
-                query = "INSERT INTO \"" + newtablename + "\" (" + collist +
-                        ") SELECT DISTINCT " + collist
-                        + " FROM \"" + tablename + "\"";
-                //System.out.println(query);
-                stmt.executeUpdate(query);
-                
-                // Check if there is an empty row in the new table (this will
-                // happen if one or more of the original data records contained
-                // all blank values for the concept attributes).  If so, delete
-                // it from the table to ensure that an empty instance is not
-                // created during the translation to RDF.
-                query = "DELETE FROM \"" + newtablename + "\" WHERE ";
-                cnt = 0;
-                for (String term : includedterms) {
-                    if (cnt > 0)
-                        query += " AND ";
-                    query += "\"" + term + "\"=''";
-                    cnt++;
-                }
-                //System.out.println(query);
-                stmt.executeUpdate(query);
-                
-                // Finally, copy the ID numbers to the appropriate ID column of
-                // the matching rows in the source data table.
-                String subquery = "SELECT id FROM \"" + newtablename + "\" WHERE ";
-                cnt = 0;
-                for (String term : includedterms) {
-                    if (cnt > 0)
-                        subquery += " AND ";
-                    subquery += "\"" + newtablename + "\".\"" + term + "\"="
-                            + "\"" + tablename + "\".\"" + term + "\"";
-                    cnt++;
-                }
-                query = "UPDATE \"" + tablename + "\" SET \""
-                        + conceptID + "\" = (" + subquery + ")";
-                //System.out.println(query);
-                stmt.executeUpdate(query);
                 
                 stmt.execute("COMMIT");
             }
         }
         
-        IDcolpopulated = true;
+        // Check if the occurrenceID column is already populated.  If not, add
+        // it to the list of columns to delete so that we can re-create it as
+        // an autoincrement column.
+        boolean occurrenceIDpopltd = true;
         if (colnames.contains("occurrenceID")) {
             // See if the occurrenceID column for this table is populated.
             query = "SELECT \"occurrenceID\" FROM \"" + tablename + "\""
                     + " WHERE \"occurrenceID\" != '' LIMIT 1";
             rs = stmt.executeQuery(query);
-            IDcolpopulated = rs.next();
+            occurrenceIDpopltd = rs.next();
             
             // If occurrenceID is not populated, add it to the list of columns
             // to delete.
-            if (!IDcolpopulated)
+            if (!occurrenceIDpopltd)
                 deletecolumns.add("occurrenceID");
         }
         
@@ -266,7 +216,7 @@ public class DwCAFixer
             cnt++;
         }
         String newcollist = savedcollist;
-        if (!IDcolpopulated) {
+        if (!occurrenceIDpopltd) {
             // If occurrenceID was not populated, create a new auto-increment
             // column for it.
             newcollist = "\"occurrenceID\" INTEGER PRIMARY KEY, " + newcollist;
@@ -292,7 +242,136 @@ public class DwCAFixer
         stmt.executeUpdate(query);
         
         stmt.execute("COMMIT");
-
+        
         stmt.close();
+    }
+    
+    /**
+     * Creates a normalized table for the attribute data for a DwC concept.
+     * 
+     * @param stmt The Statement object to use for running the SQL statements.
+     * @param conceptID The name of the conceptID for the DwC concept.
+     * @param tablename The name of the DB table for the original data.
+     * @param includedterms The DwC terms for this concept that are in the data.
+     * @param deletecolumns A list of columns to delete from the original table.
+     * @throws SQLException 
+     */
+    private void createConceptTable(Statement stmt, String conceptID,
+            String tablename, ArrayList<String> includedterms,
+            ArrayList<String> deletecolumns) throws SQLException {
+        // The name of the newly-created table.
+        String newtablename;
+
+        // Create a new table to select all distinct values into.
+        //System.out.println("USING TEMPORARY TABLE!!!!!!");
+        //System.out.println("NOT USING TEMPORARY TABLE!!!!!!");
+        newtablename = conceptID.replace("ID", "");
+        String query = "CREATE TABLE '" + newtablename + "' "
+                + "(id INTEGER PRIMARY KEY";
+        for (String term : includedterms) {
+            query += ", '" + term + "'";
+            // Keep track of the columns we are relocating so that they
+            // can be deleted from the main table later.
+            deletecolumns.add(term);
+        }
+        query += ")";
+        //System.out.println(query);
+        stmt.executeUpdate(query);
+
+        // Populate the new table with all distinct combinations
+        // of the concept term values and generate integer IDs for each
+        // distinct "instance."
+        int cnt = 0;
+        String collist = "";
+        for (String term : includedterms) {
+            if (cnt > 0) {
+                collist += ", ";
+            }
+            collist += "\"" + term + "\"";
+            cnt++;
+        }
+        query = "INSERT INTO \"" + newtablename + "\" (" + collist
+                + ") SELECT DISTINCT " + collist
+                + " FROM \"" + tablename + "\"";
+        //System.out.println(query);
+        stmt.executeUpdate(query);
+
+        // Check if there is an empty row in the new table (this will
+        // happen if one or more of the original data records contained
+        // all blank values for the concept attributes).  If so, delete
+        // it from the table to ensure that an empty instance is not
+        // created during the translation to RDF.
+        query = "DELETE FROM \"" + newtablename + "\" WHERE ";
+        cnt = 0;
+        for (String term : includedterms) {
+            if (cnt > 0) {
+                query += " AND ";
+            }
+            query += "\"" + term + "\"=''";
+            cnt++;
+        }
+        //System.out.println(query);
+        stmt.executeUpdate(query);
+
+        // Finally, copy the ID numbers to the appropriate ID column of
+        // the matching rows in the source data table.
+        String subquery = "SELECT id FROM \"" + newtablename + "\" WHERE ";
+        cnt = 0;
+        for (String term : includedterms) {
+            if (cnt > 0) {
+                subquery += " AND ";
+            }
+            subquery += "\"" + newtablename + "\".\"" + term + "\"="
+                    + "\"" + tablename + "\".\"" + term + "\"";
+            cnt++;
+        }
+        query = "UPDATE \"" + tablename + "\" SET \""
+                + conceptID + "\" = (" + subquery + ")";
+        //System.out.println(query);
+        stmt.executeUpdate(query);
+    }
+    
+    /**
+     * Creates Identification instance IDs for each Occurrence, provided
+     * identification attributes data actually exist for the Occurrence.
+     * 
+     * @param stmt The Statement object to use for running the SQL statements.
+     * @param tablename The name of the DB table for the original data.
+     * @param includedterms The DwC terms for this concept that are in the data.
+     */
+    private void createIdentificationIDs(Statement stmt, String tablename,
+            ArrayList<String> includedterms) throws SQLException {
+        // Use the internal ROWID as the unique identification instance
+        // identifier for each DwC occurrence record.  Only set the identifier
+        // for rows that actually have identification data.
+        // First, build a logical statement to check if at least one of the
+        // included identification attributes has a value.
+        String valcheck, query;
+        valcheck = "";
+        int cnt = 0;
+        for (String term : includedterms) {
+            if (cnt > 0) {
+                valcheck += " OR ";
+            }
+            valcheck += "\"" + term + "\"!=''";
+            cnt++;
+        }
+        
+        // Construct and run the main update statement.  Note that ROWID is
+        // explicitly cast to a text value.  Without this, D2RQ chokes on the
+        // identificationID values and does not handle them properly.  This
+        // makes no sense at all and seems to be a bug in D2RQ.  Casting to a
+        // text value was the easiest way I found to work around it.
+        query = "UPDATE \"" + tablename +
+                "\" SET \"identificationID\" = CAST(ROWID AS TEXT) WHERE " + valcheck;
+        //System.out.println(query);
+        stmt.executeUpdate(query);
+        
+        // The next UPDATE statement is another hack to deal with a D2RQ bug.
+        // Without explicitly setting the values of empty (NULL) cells to empty
+        // strings (''), D2RQ completely crashes when generating the RDF.
+        query = "UPDATE \"" + tablename +
+                "\" SET \"identificationID\" = '' WHERE \"identificationID\" IS NULL";
+        stmt.executeUpdate(query);
     }
 }
