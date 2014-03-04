@@ -1,6 +1,5 @@
 package reader.plugins;
 
-import java.util.NoSuchElementException;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,10 +42,10 @@ public class CSVReaderTest extends ReaderTest {
     @Test
     public void testTestFile() {
         // test a valid file
-        assertTrue(reader.testFile("testdata/test.csv"));
+        assertTrue(reader.testFile(testdatadir + "/test.csv"));
         
         // test an invalid file
-        assertFalse(reader.testFile("testdata/test.ods"));
+        assertFalse(reader.testFile(testdatadir + "/test.ods"));
     }
 
     /**
@@ -55,10 +54,10 @@ public class CSVReaderTest extends ReaderTest {
     @Test
     public void testOpenFile() {
         // test a valid file
-        assertTrue(reader.openFile("testdata/test.csv"));
+        assertTrue(reader.openFile(testdatadir + "/test.csv"));
         
         // test a file that does not exist
-        assertFalse(reader.openFile("testdata/nonexistant_file.csv"));
+        assertFalse(reader.openFile(testdatadir + "/nonexistant_file.csv"));
     }
 
     /**
@@ -81,6 +80,6 @@ public class CSVReaderTest extends ReaderTest {
         // the expected table names
         String[] exp_tnames = {"table1"};
         
-        testReadData(reader, "testdata/test.csv", exp_data, exp_tnames);
+        testReadData(reader, testdatadir + "/test.csv", exp_data, exp_tnames);
     }    
 }

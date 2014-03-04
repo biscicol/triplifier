@@ -9,6 +9,9 @@ import static org.junit.Assert.*;
  * Meant to be subclassed and not run directly.
  */
 public class ReaderTest {
+    // Set this to the location of the test data.
+    protected String testdatadir = "../triplifiersvn/testdata";
+            
     /**
      * Test the data from a reader plugin against an expected set of data and
      * data source table names.  This is intended for use by child classes in
@@ -77,12 +80,14 @@ public class ReaderTest {
                 row = tdreader.tableGetNextRow();
                 
                 exp_row = exp_data[tablecnt][rowcnt];
-            
+                //System.out.println("table " + tablecnt + ", row " + rowcnt);
                 // verify that the expected number of row elements were returned
                 assertEquals(exp_row.length, row.length);
             
                 // check each row element
                 for (int col = 0; col < row.length; col++) {
+                    //System.out.println(exp_row[col]);
+                    //System.out.println(row[col]);
                     assertEquals(exp_row[col], row[col]);
                 }
             }

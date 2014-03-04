@@ -43,11 +43,11 @@ public class ExcelReaderTest extends ReaderTest {
     @Test
     public void testTestFile() {
         // test valid files
-        assertTrue(reader.testFile("testdata/test.xls"));
-        assertTrue(reader.testFile("testdata/test.xlsx"));
+        assertTrue(reader.testFile(testdatadir + "/test.xls"));
+        assertTrue(reader.testFile(testdatadir + "/test.xlsx"));
         
         // test an invalid file
-        assertFalse(reader.testFile("testdata/test.ods"));
+        assertFalse(reader.testFile(testdatadir + "/test.ods"));
     }
 
     /**
@@ -56,15 +56,16 @@ public class ExcelReaderTest extends ReaderTest {
     @Test
     public void testOpenFile() {
         // test a valid file
-        assertTrue(reader.openFile("testdata/test.xls"));
+        assertTrue(reader.openFile(testdatadir + "/test.xls"));
         
         // test a file that does not exist
-        assertFalse(reader.openFile("testdata/nonexistant_file.xls"));
+        assertFalse(reader.openFile(testdatadir + "/nonexistant_file.xls"));
     }
 
     /**
      * Tests the data reading methods of ExcelReader.  Because these methods work
-     * together, they are all treated within a single test.
+     * together, they are all treated within a single test.  Both a .xls and a
+     * .xlsx file are tested.
      */
     @Test
     public void testReadData() {
@@ -72,14 +73,14 @@ public class ExcelReaderTest extends ReaderTest {
         String[][][] exp_data = {
             {
                 {"header1", "header2", "header3", "header4"},
-                {"data1", "quoted string", "d1"},
-                {"data2", "another \"quoted\" string", "something_else"},
-                {"data3", "quoted string with a comma (\",\")", "last value"},
+                {"data1", "quoted string", "d1", ""},
+                {"data2", "another \"quoted\" string", "something_else", ""},
+                {"data3", "quoted string with a comma (\",\")", "last value", ""},
                 {"data4", "row with a float and an integer", "1.2346", "256.0"},
-                {"data5", "row with a boolean", "TRUE"},
-                {"data6", "row with a formula", "AVERAGE(2,4,8,16,32,64,128)"},
+                {"data5", "row with a boolean formula", "true", ""},
+                {"data6", "row with formulas", "21.0", "string cat"},
                 {"data7", "row with a blank", "", "not blank"},
-                {"data8", "row with two dates", "2012-01-01T00:00:00.000-06:00", "2012-02-14T02:14:00.000-06:00"}
+                {"data8", "row with two dates", "2012-01-01T00:00:00.000-07:00", "2012-02-14T02:14:00.000-07:00"}
             },
             {
                 {"column 1", "column 2", "last column"},
@@ -96,6 +97,7 @@ public class ExcelReaderTest extends ReaderTest {
         // the expected table names
         String[] exp_tnames = {"Sheet1", "2ndsheet", "2 of 3"};
         
-        testReadData(reader, "testdata/test.xls", exp_data, exp_tnames);
+        testReadData(reader, testdatadir + "/test.xls", exp_data, exp_tnames);
+        testReadData(reader, testdatadir + "/test.xlsx", exp_data, exp_tnames);
     }    
 }

@@ -15,6 +15,9 @@ public class ReaderManagerTest {
     
     // a hashset for keeping a list of the default reader types
     private HashSet<String> rformats;
+    
+    // Set this to the location of the test data.
+    private String testdatadir = "testdata";
             
     @Before
     public void setUp() {
@@ -31,7 +34,7 @@ public class ReaderManagerTest {
         // Specify the default reader plugin types.
         rformats = new HashSet<String>();
         rformats.add("ODF");
-        rformats.add("DWCA");
+        rformats.add("DwCA");
         rformats.add("CSV");
         rformats.add("EXCEL");
     }
@@ -98,23 +101,23 @@ public class ReaderManagerTest {
         TabularDataReader reader;
 
         // Test each test file to verify that it is opened properly.
-        reader = rm.openFile("testdata/test.csv");
+        reader = rm.openFile(testdatadir + "/test.csv");
         assertEquals("CSV", reader.getFormatString());
         
-        reader = rm.openFile("testdata/test.ods");
+        reader = rm.openFile(testdatadir + "/test.ods");
         assertEquals("ODF", reader.getFormatString());
         
-        reader = rm.openFile("testdata/test.xls");
+        reader = rm.openFile(testdatadir + "/test.xls");
         assertEquals("EXCEL", reader.getFormatString());
         
-        reader = rm.openFile("testdata/test.xlsx");
+        reader = rm.openFile(testdatadir + "/test.xlsx");
         assertEquals("EXCEL", reader.getFormatString());
         
-        reader = rm.openFile("testdata/test-dwca");
-        assertEquals("DWCA", reader.getFormatString());
+        reader = rm.openFile(testdatadir + "/test-dwca");
+        assertEquals("DwCA", reader.getFormatString());
         
-        reader = rm.openFile("testdata/test.zip");
-        assertEquals("DWCA", reader.getFormatString());
+        reader = rm.openFile(testdatadir + "/test.zip");
+        assertEquals("DwCA", reader.getFormatString());
     }
 
     /**
@@ -125,12 +128,12 @@ public class ReaderManagerTest {
         TabularDataReader reader;
         
         // First try to open a file by specifying the correct format.
-        reader = rm.openFile("testdata/test.csv", "CSV");
+        reader = rm.openFile(testdatadir + "/test.csv", "CSV");
         assertEquals("CSV", reader.getFormatString());
         
         // Now, verify that we can force it to use a specific plugin even if
         // the file format is wrong.
-        reader = rm.openFile("testdata/test.ods", "CSV");
+        reader = rm.openFile(testdatadir + "/test.ods", "CSV");
         assertEquals("CSV", reader.getFormatString());
     }
 }
