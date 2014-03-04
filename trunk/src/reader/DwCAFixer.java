@@ -197,6 +197,22 @@ public class DwCAFixer
                 //System.out.println(query);
                 stmt.executeUpdate(query);
                 
+                // Check if there is an empty row in the new table (this will
+                // happen if one or more of the original data records contained
+                // all blank values for the concept attributes).  If so, delete
+                // it from the table to ensure that an empty instance is not
+                // created during the translation to RDF.
+                query = "DELETE FROM \"" + newtablename + "\" WHERE ";
+                cnt = 0;
+                for (String term : includedterms) {
+                    if (cnt > 0)
+                        query += " AND ";
+                    query += "\"" + term + "\"=''";
+                    cnt++;
+                }
+                //System.out.println(query);
+                stmt.executeUpdate(query);
+                
                 // Finally, copy the ID numbers to the appropriate ID column of
                 // the matching rows in the source data table.
                 String subquery = "SELECT id FROM \"" + newtablename + "\" WHERE ";
