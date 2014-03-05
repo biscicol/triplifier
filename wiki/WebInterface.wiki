@@ -6,13 +6,13 @@ The Web-based interface consists of seven separate panels that are used to provi
 
 From start to finish, creating a Triplifier project from scratch and generating the final RDF output will generally follow the following seven steps.  Note that you will often be able to skip at least some of these configuration steps, and if you have data in the Darwin Core-Archive format, you will usually be able to simply upload your data and then download the RDF triples (i.e., go from step 2 directly to step 7).
 
- # [WebInterface#Create_or_select_a_project Create or select a project]
- # [WebInterface#Provide_a_data_source Provide a data source]
- # [WebInterface#Define_table_joins Define table joins]
- # [WebInterface#Define_concepts Define concepts]
- # [WebInterface#Assign_attributes_to_concepts Assign attributes to concepts]
- # [WebInterface#Define_concept_relations Define concept relations]
- # [WebInterface#Triplify! Triplify!]
+ # [WebInterface#1._Create_or_select_a_project Create or select a project]
+ # [WebInterface#2._Provide_a_data_source Provide a data source]
+ # [WebInterface#3._Define_table_joins Define table joins]
+ # [WebInterface#4._Define_concepts Define concepts]
+ # [WebInterface#5._Assign_attributes_to_concepts Assign attributes to concepts]
+ # [WebInterface#6._Define_concept_relations Define concept relations]
+ # [WebInterface#7._Triplify! Triplify!]
 
 
 
