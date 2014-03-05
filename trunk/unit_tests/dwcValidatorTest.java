@@ -100,7 +100,6 @@ public class dwcValidatorTest {
      * be suitable at all (such as data expressing only a Taxon).  In any case, for the purposes of the
      * tests run in the class, we ignore any supposed "inferred" Occurrence relationships.
      *
-     *
      * @throws Exception
      */
     @Test
@@ -134,8 +133,110 @@ public class dwcValidatorTest {
                     , false);
         else
             assertTrue(true);
+    }
 
+    /**
+     * This test is the REVERSE of classNoInferredOccurrencesTest, looking at the output file and finds triples
+     * that are NOT in the classMeasuringStickFile.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void reverseClassNoInferredOccurrencesTest() throws Exception {
+        String unMatchedTriples = "";
+        StmtIterator msIter = classOutput.listStatements();
 
+        while (msIter.hasNext()) {
+            Statement msStmt = msIter.nextStatement();
+            StmtIterator poIter = classMeasuringStick.listStatements();
+            boolean match = false;
+            while (poIter.hasNext()) {
+                Statement outputStmt = poIter.nextStatement();
+                if (outputStmt.equals(msStmt)) {
+                    match = true;
+                }
+            }
+            // For this test, we ignore the following cases:
+            // 1. do NOT look at the inferred Occurrence (which contains an uppercase "O")
+            // 2. predicates equal to type, subClassOf, equivalentClass since they're not declared in the measuringStick file
+            // 3. classInput.txt here since this is a file designation that has a naming style and not directly related to DwC triplification
+            if (!msStmt.getSubject().toString().contains("O") &&
+                    !msStmt.getObject().toString().contains("O") &&
+                    !msStmt.getPredicate().toString().contains("http://www.w3.org/1999/02/22-rdf-syntax-ns#type") &&
+                    !msStmt.getPredicate().toString().contains("http://www.w3.org/2000/01/rdf-schema#subClassOf") &&
+                    !msStmt.getPredicate().toString().contains("http://www.w3.org/2002/07/owl#equivalentClass") &&
+                    !msStmt.getSubject().toString().contains("classInput.txt")
+                    ) {
+                // If a match is not found then set this statement.
+                if (!match) {
+                    unMatchedTriples += msStmt.getSubject() + " " + msStmt.getPredicate().toString() + " " + msStmt.getObject().toString() + " .\n";
+                }
+            }
+        }
+        // Output assertion with message of results
+        if (!unMatchedTriples.equals(""))
+            assertTrue("\nThe following triples ARE " + classOutputFileName + " but NOT in classMeasuringStick.n3:\n" + unMatchedTriples
+                    , false);
+        else
+            assertTrue(true);
+    }
+
+    /**
+     * Look for empty elements in the the propertyOutputFile
+     * @throws Exception
+     */
+    @Test
+    public void emptyElementsInPropertyFile() throws Exception {
+        String output = "";
+
+        StmtIterator msIter = propertyOutput.listStatements();
+        while (msIter.hasNext()) {
+            Statement msStmt = msIter.nextStatement();
+            if (msStmt.getSubject().toString().equals("") ||
+                    msStmt.getPredicate().toString().equals("") ||
+                    msStmt.getObject().toString().equals("") ||
+                    msStmt.getSubject().toString().equals("urn:") ||
+                    msStmt.getPredicate().toString().equals("urn:") ||
+                    msStmt.getObject().toString().equals("urn:")
+                    ) {
+                output += msStmt.getSubject() + " " + msStmt.getPredicate().toString() + " " + msStmt.getObject().toString() + " .\n";
+            }
+        }
+        // Output assertion with message of results
+        if (!output.equals(""))
+            assertTrue("\nThe following triples in " + propertyOutputFileName + " have an empty element:\n" + output
+                    , false);
+        else
+            assertTrue(true);
+    }
+
+    /**
+     * Look for empty elements in the the classOutputFile
+     * @throws Exception
+     */
+    @Test
+    public void emptyElementsInClassFile() throws Exception {
+        String output = "";
+
+        StmtIterator msIter = classOutput.listStatements();
+        while (msIter.hasNext()) {
+            Statement msStmt = msIter.nextStatement();
+            if (msStmt.getSubject().toString().equals("") ||
+                    msStmt.getPredicate().toString().equals("") ||
+                    msStmt.getObject().toString().equals("")  ||
+                    msStmt.getSubject().toString().equals("urn:") ||
+                    msStmt.getPredicate().toString().equals("urn:") ||
+                    msStmt.getObject().toString().equals("urn:")
+                    ) {
+                output += msStmt.getSubject() + " " + msStmt.getPredicate().toString() + " " + msStmt.getObject().toString() + " .\n";
+            }
+        }
+        // Output assertion with message of results
+        if (!output.equals(""))
+            assertTrue("\nThe following triples in " + classOutputFileName + " have an empty element:\n" + output
+                    , false);
+        else
+            assertTrue(true);
     }
 
     /**
@@ -148,8 +249,6 @@ public class dwcValidatorTest {
     @Test
     public void propertyTest() throws Exception {
         String unMatchedTriples = "";
-
-
         StmtIterator msIter = propertyMeasuringStick.listStatements();
         while (msIter.hasNext()) {
             Statement msStmt = msIter.nextStatement();
@@ -172,10 +271,11 @@ public class dwcValidatorTest {
         }
         // Output assertion with message of results
         if (!unMatchedTriples.equals(""))
-            assertTrue("\nThe following triples ARE in propertyMeasuringStick but NOT in " + propertyOutputFileName + ":\n" + unMatchedTriples
+            assertTrue("\nThe following triples ARE in " + propertyOutputFileName + " but NOT in propertyMeasuringStick.n3:\n" + unMatchedTriples
                     , false);
         else
             assertTrue(true);
 
     }
+
 }
