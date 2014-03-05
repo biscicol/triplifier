@@ -226,14 +226,14 @@ EditableTable.prototype.addButtonClicked = function() {
 	var self = this;
 
 	tr.find("input.save").click(function() { self.saveRowInput(this); }).prop("disabled", false); // disabled: firefox bug fix
-	tr.find("input.cancel").click(function() { self.cancelRowInput(this); }).prop("disabled", false); // disabled: firefox bug fix
+	tr.find("input.cancel").click(function() { self.cancelRowInput(this, false); }).prop("disabled", false); // disabled: firefox bug fix
 
 	this.populateTableRowOptions(tr, false);
 
 	// add the input row to the table and make sure the table is visible
 	tr.appendTo(this.contentelem.children("table").show())
 
-	this.styleEdit(tr);	
+	this.setEditStyle(tr, true);	
 }
 
 /**
@@ -244,7 +244,7 @@ EditableTable.prototype.editButtonClicked = function() {
 	var self = this;
 
 	tr.find("input.save").click(function() { self.saveEditedRowInput(this); }).prop("disabled", false); // disabled: firefox bug fix
-	tr.find("input.cancel").click(function() { self.cancelRowInput(this); }).prop("disabled", false); // disabled: firefox bug fix
+	tr.find("input.cancel").click(function() { self.cancelRowInput(this, true); }).prop("disabled", false); // disabled: firefox bug fix
 
 	this.populateTableRowOptions(tr, true);
 
@@ -255,7 +255,7 @@ EditableTable.prototype.editButtonClicked = function() {
 	// add the input row to the table immediately after the selected row
 	tr.insertAfter(this.selectedtr);
 
-	this.styleEdit(tr, false, true);
+	this.setEditStyle(tr, true, true);
 }
 
 /**
@@ -266,24 +266,32 @@ EditableTable.prototype.populateTableRowOptions = function(tr) {
 }
 
 /**
- * Set the styles for the table depending on whether we are adding or editing a row.
+ * Sets the style of the content table for editing or adding a new row.  If isActive == true,
+ * The active row is highlighted and the rest of the page is partially grayed out.  If
+ * isActive == false, the table is returned to its usual display.
+ *
+ * @param isActive Whether a row is active for editing or defining a new row.
+ * @param isEdit Whether the style should be applied to a row being edited.
  **/
-EditableTable.prototype.styleEdit = function(tr, isEnd, isEdit) {
+EditableTable.prototype.setEditStyle = function(tr, isActive, isEdit) {
 	// set the editing style on the table header and the row selected for editing, if applicable
-	tr.parent().siblings("thead").toggleClass("editData", !isEnd);
+	tr.parent().siblings("thead").toggleClass("editData", isActive);
 	if (isEdit && this.selectedtr)
-		this.selectedtr.toggleClass("editData", !isEnd);
+		this.selectedtr.toggleClass("editData", isActive);
 
-	$("#overlay").fadeToggle(!isEnd);
+	$("#overlay").fadeToggle(isActive);
 }
 
 /**
  * Cancel the edit/add operation by removing the editing row from the table.
+ *
+ * @param srcelement The element that triggered the cancel event.
+ * @param isEdit True if the cancel event came from a row edit operation.
  **/
-EditableTable.prototype.cancelRowInput = function(srcelement) {
+EditableTable.prototype.cancelRowInput = function(srcelement, isEdit) {
 	var tr = $(srcelement).parent().parent();
 
-	this.styleEdit(tr, true);
+	this.setEditStyle(tr, false, isEdit);
 
 	if (!tr.siblings().size()) 
 		tr.closest("table").hide();
@@ -314,7 +322,7 @@ EditableTable.prototype.saveRowInput = function(srcelement) {
 	// fire the change event so the selected row index gets updated
 	newtr.children().first().children("input").change();
 
-	this.styleEdit(newtr, true);
+	this.setEditStyle(newtr, false, false);
 }
 
 /**
@@ -347,7 +355,7 @@ EditableTable.prototype.saveEditedRowInput = function(srcelement) {
 	// fire the change event so the selected row index gets updated
 	newtr.children().first().children("input").change();
 
-	this.styleEdit(newtr, true);
+	this.setEditStyle(newtr, false, true);
 }
 
 /**

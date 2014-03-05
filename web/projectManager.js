@@ -123,7 +123,6 @@ Project.prototype.setProperty = function(propname, newval, dontnotify) {
 
 	// update all possible relations
 	this.allrels = this.findAllPossibleRelations();
-	console.log(this.allrels)
 
 	if (dontnotify) {
 		this.unregisterObserver(dontnotify);

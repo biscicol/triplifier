@@ -322,11 +322,6 @@ div.sectioncontentflexTable > table .editData+.edit td {
 	border-right: 1px solid #bbb; 	
 }
 
-.editData td, .editData th, .edit td {
-    z-index: 1;
-    position: relative;
-}
-
 #simpleDiv {
    /*float:center;*/
    padding:20px;
@@ -385,6 +380,10 @@ div.sectioncontentflexTable > table .editData+.edit td {
 	font-size: 120%;
 }
 
+/**
+ * The next two style definitions are used for highlighting table rows when
+ * a row is being edited or a new row is being defined.
+ **/
 #overlay {
     position: fixed;
     top: 0;
@@ -393,6 +392,11 @@ div.sectioncontentflexTable > table .editData+.edit td {
     right: 0;
     background-color: #ddd;
     opacity: 0.75;
+}
+
+.editData td, .editData th, .edit td {
+    z-index: 1;
+    position: relative;
 }
 
 #uploadTarget {
