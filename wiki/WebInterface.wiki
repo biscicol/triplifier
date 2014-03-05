@@ -1,0 +1,108 @@
+#summary Using the Web-based interface
+
+= Using the Web-based interface =
+
+The Web-based interface consists of seven separate panels that are used to provide the information the Triplifier needs to upload a data source and convert it to an RDF representation.  Individual panels can be activated by clicking on their title text.
+
+From start to finish, creating a Triplifier project from scratch and generating the final RDF output will generally follow the following seven steps.  Note that you will often be able to skip at least some of these configuration steps, and if you have data in the Darwin Core-Archive format, you will usually be able to simply upload your data and then download the RDF triples (i.e., go from step 2 directly to step 7).
+
+ # [WebInterface#Create_or_select_a_project Create or select a project]
+ # [WebInterface#Provide_a_data_source Provide a data source]
+ # [WebInterface#Define_table_joins Define table joins]
+ # [WebInterface#Define_concepts Define concepts]
+ # [WebInterface#Assign_attributes_to_concepts Assign attributes to concepts]
+ # [WebInterface#Define_concept_relations Define concept relations]
+ # [WebInterface#Triplify! Triplify!]
+
+
+
+==1. Create or select a project==
+
+The "Manage Projects" panel allows you to create new Triplifier projects, save projects, and import and export project files.
+
+Project details are saved in your browser's local storage and may be shared with others using the import and export functions.   The export function creates a *.trp file which can be imported into different browsers using the import function.
+
+By default, the Triplifier will automatically create an empty project called "new project" for you, and you can simply use this project if you like.
+
+http://triplifier.googlecode.com/svn/trunk/web/photos/Project.jpg
+
+
+==2. Provide a data source==
+
+Two options for data source: Database connection or File upload.
+
+http://triplifier.googlecode.com/svn/trunk/web/photos/Datasource.jpg
+
+*Database connection*
+
+Direct connection to a SQL database is supported (MySQL, PostgreSQL, Oracle, Microsoft SQL Server).
+
+*File upload*
+
+Files in the following formats are currently supported:  CSV, Excel spreadsheets (both XLS and XLSX files), !OpenDocument spreadsheets (e.g., !OpenOffice), and Darwin Core archives.
+
+We do not support direct uploads of SQL text files.  Instead, we support connecting directly to a SQL database (see Database connection above). 
+
+If you check the “auto-generate” box and select a format (which currently only supports Darwin Core Archives) then the entire form will be populated based on the triplifier’s understanding of Darwin Core Archives. 
+
+*Sample of a successful data source upload or connection:
+
+http://triplifier.googlecode.com/svn/trunk/web/photos/datasource2.jpg
+
+Note this Darwin Core Archive has been parsed into five tables, and the field names are listed for each table. 
+
+
+==3. Define table joins==
+
+If any of the tables in your source data should be connected through joins, you can define the joins here. The "foreign key" in one table should match the "primary key" in another table. 
+
+*  In the example below, maintable is joined to all the other tables through identifiers for Darwin Core classes.
+
+http://triplifier.googlecode.com/svn/trunk/web/photos/joins.jpg
+
+
+==4. Define concepts==
+
+This section links identifiers in your data with a well-known representation of reality (“concept”). Identifiers are unique and represent physical material, digital representatives of physical material (such as photographs), processes, or metadata. Concepts are defined through a standardized vocabulary. You can think of concepts as indicating what "kind" of information your identifiers represent.
+
+The Triplifier utilizes Darwin Core concepts. The simple Darwin Core includes six core classes or concepts: Occurrence, Event, Location, GeologicalContext, Identification, and Taxon. Occurrence is information pertaining to evidence of occurence in nature, in a collection or dataset, such as physical specimens. Event describes the information related to actions (e.g. collecting) during a specific time and at a particular spot. Location is information describing spatial region or named place. GeologicalContext refers to information about location and time for fossil (and modern) material such as stratigraphy. Identification refers to information about how taxonomic designations were made. Taxon refers to the information pertaining to taxon names, usage and concepts. If your data is not already in Darwin Core format, you will need to choose which identifiers in your dataset map to which Darwin Core concepts.
+
+*  In the example below, we see the table name, identifiers, and Darwin Core class terms referenced for a Darwin Core archive.
+
+http://triplifier.googlecode.com/svn/trunk/web/photos/concepts.jpg
+
+==5. Assign attributes to concepts==
+
+Attributes provide information about the concepts you defined in step 3. For example, if you defined an "Occurence" concept for physical specimens, then you might define attributes that describe each specimen's sex, life stage, and when it was collected. In general, attributes attach properties, or metadata, to concepts.
+
+In the Triplifier, attributes are Darwin Core terms that describe Darwin Core classes or concepts. The current, ratified Darwin Core has 159 total terms. As with concepts, if your data is not already in Darwin Core format, you will need to decide how the columns in your data map to Darwin Core terms. This can be challenging, and we refer you to [http://rs.tdwg.org/dwc/terms/ a list of Darwin Core terms] for a full list of terms. You do not need to map every column in your data to a Darwin Core term. Columns that you do not map will simply "pass through" the system and not be triplified.
+
+http://triplifier.googlecode.com/svn/trunk/web/photos/attributes.jpg
+
+
+==6. Define concept relations==
+
+Concept relations are key to make the Semantic Web and linked data work. Concept relations define how the different concepts in your data are connected to one another.
+
+The Triplifier allows four different relationships between concepts to be expressed: derives_from, depends_on, related_to, and alias_of.  These terms were developed as part of the BiSciCol project - [http://biscicol.org/terms/index.html more information here]. The first three are by far the most commonly used. What do these terms mean? Briefly, derives_from indicates that one thing was derived from another (e.g., a tissue sample derives_from a specimen), depends_on indicates that one thing could not exist without another (e.g., an identification depends_on a particular specimen), related_to indicates a non-dependent relationship (e.g., a specimen is related_to a taxon), and alias_of indicates that two things are really the same thing.
+
+* The example shown below is for a Darwin Core Archive, which only ever uses two concept relations, "related_to" and "depends_on".
+
+http://triplifier.googlecode.com/svn/trunk/web/photos/conceptrelate.jpg
+
+
+==7. Triplify!==
+
+Triplify is the fun part, because you finally get to see what your data looks like as RDF triples. (That does sound fun, doesn't it?)
+
+You have several options here. 
+
+"Get Mapping" lets you download a D2RQ mapping file that includes all of the technical details about how your source data maps to an RDF representation. Unless you use D2RQ for other purposes or need to tweak the mapping by hand, you will probably not be interested in this. However, these mapping files can also be used with the command-line version of the Triplifier and so might be useful to you in that context.
+
+"Get Triples" lets you download a Turtle-format file of your entire data set as RDF triples. If your goal was to convert your data to RDF, this is the button you want to click.
+
+http://triplifier.googlecode.com/svn/trunk/web/photos/triplify.jpg
+
+==Now what?==
+
+If you've successfully followed these instructions, you should now have an RDF version of your original data.  You might want to check out [WhatCanIDoWithMyData these ideas] for what to do with it next.  If you anticipate needing to convert many datasets, or very large datasets, to RDF, then you probably also want to read about the [CommandLineTriplifier command-line version of the Triplifier].
