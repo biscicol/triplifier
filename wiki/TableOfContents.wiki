@@ -4,10 +4,10 @@
 
 For a basic description of what the Triplifier is and what it can do, see the [http://code.google.com/p/triplifier/ project's home page].  The best way to learn more is to try it out for yourself!  Start by reading the [Introduction introduction], then visit http://www.biscicol.org/triplifier/ to work with the Web-based interface while you read through the rest of the user documentation.
 
- * Introduction
+ * [Introduction]
  * User documentation
-   * Should I use the Web-based or command-line interface?
-   * Using the Web-based interface
-   * Using the command-line interface
-   * What can I do with my RDF data?
- * Information for developers
+   * [WebOrCLInterface Should I use the Web-based or command-line interface?]
+   * [WebInterface Using the Web-based interface]
+   * [CommandLineTriplifier Using the command-line interface]
+   * [WhatCanIDoWithMyData What can I do with my RDF data?]
+ * [DeveloperInformation Information for developers]
