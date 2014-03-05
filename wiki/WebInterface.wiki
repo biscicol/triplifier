@@ -4,7 +4,7 @@
 
 The Web-based interface consists of seven separate panels that are used to provide the information the Triplifier needs to upload a data source and convert it to an RDF representation.  Individual panels can be activated by clicking on their title text.
 
-From start to finish, creating a Triplifier project from scratch and generating the final RDF output will generally follow the following seven steps.  Note that you will often be able to skip at least some of these configuration steps, and if you have data in the Darwin Core-Archive format, you will usually be able to simply upload your data and then download the RDF triples (i.e., go from step 2 directly to step 7).
+From start to finish, creating a Triplifier project and generating the final RDF output will generally follow these seven steps.  Note that you will often be able to skip at least some of these configuration steps, and if you have data in the Darwin Core-Archive format, you will usually be able to simply upload your data and then download the RDF triples (i.e., go from step 2 directly to step 7).
 
  # [WebInterface#1._Create_or_select_a_project Create or select a project]
  # [WebInterface#2._Provide_a_data_source Provide a data source]
