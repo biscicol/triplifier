@@ -29,7 +29,7 @@ http://triplifier.googlecode.com/svn/trunk/web/photos/Project.jpg
 
 ==2. Provide a data source==
 
-Two options for data source: Database connection or File upload.
+There are two options for specifying a data source: Database connection or File upload.
 
 http://triplifier.googlecode.com/svn/trunk/web/photos/Datasource.jpg
 
