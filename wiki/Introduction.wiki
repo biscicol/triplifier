@@ -1,0 +1,17 @@
+#summary Introduction to the Triplifier
+
+=Introduction to the Triplifier=
+
+==Overview==
+
+The BiSciCol Triplifier makes it relatively easy to convert just about any structured biocollections data into RDF triples.  It is particularly convenient for those working with [http://en.wikipedia.org/wiki/Darwin_Core_Archive Darwin Core Archives (DwC-As)], which are commonly used for Darwin Core-encoded biodiversity data.  Automated processing of DwC-As will relate instances of Darwin Core classes to each other using just two object properties, "related_to" and "depends_on".  More details about the very simple way we capture relations between Darwin Core classes for automated RDF production can be found [http://biscicol.blogspot.com/2013/03/biscicol-triples-and-darwin-core.html here].
+
+The Triplifier can be used with either a Web-based graphical interface or a command-line interface.  Although the functionality is similar either way, there are [WebOrCLInterface reasons to prefer one interface to the other], depending on your needs.
+
+==Supported input formats==
+
+By default, the Triplifier supports a wide variety of input data formats.  The Triplifier can connect directly to relational database management systems, including MySQL, Oracle, PostgreSQL, and Microsoft SQL Server.  It can also read file-based input formats, including Comma-Separated Values (CSV), !OpenDocument spreadsheets (e.g., !OpenOffice and !LibreOffice), Excel spreadsheets, and both single-file and multi-file Darwin Core-Archives.  There are no specific requirements about how the input data are structured.
+
+==Comparison to other "RDF converter" software==
+
+Although other software is available for converting tabular data to RDF, for biodiversity scientists, there are at least three key advantages that separate the Triplifier from most of these other tools. First, the Triplifier supports a broad range of data formats, ranging from plain text files to full-fledged databases, and it is the only tool of which we are aware that directly supports Darwin Core Archives. Second, the Triplifier is specifically tailored for biodiversity data and comes with a ready-to-use vocabulary and interface based upon the DwC standard. Third, because of its domain-specificity, the Triplifer can hide most or all of the complexity of SW technologies from the end user. For users with data in DwC-As, conversion to RDF can be fully automated and requires no special knowledge at all. This is in sharp contrast to more generic tabular data converters for which the user must specify complex mappings that require detailed knowledge of the target RDF vocabularies and ontologies. 
