@@ -2,7 +2,7 @@
 
 = Triplifier documentation =
 
-The best way to learn more is to try it out for yourself!  Start by reading the basic descriptions of what the Triplifier is and what it can do at the [http://code.google.com/p/triplifier/ project's home page] and the documentation [Introduction introduction] page.  Then, visit http://www.biscicol.org/triplifier/ to work with the Web-based interface while you read through the rest of the user documentation.
+The best way to learn about the !Triplifier is to try it out for yourself!  Start by reading the basic descriptions of what the Triplifier is and what it can do at the [http://code.google.com/p/triplifier/ project's home page] and the documentation [Introduction introduction] page.  Then, visit http://www.biscicol.org/triplifier/ to work with the Web-based interface while you read through the rest of the user documentation.
 
  * [Introduction]
  * User documentation
