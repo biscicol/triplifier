@@ -4,7 +4,7 @@
 
 ==Overview==
 
-The BiSciCol Triplifier makes it relatively easy to convert just about any structured biocollections data into RDF triples.  It is particularly convenient for those working with [http://en.wikipedia.org/wiki/Darwin_Core_Archive Darwin Core Archives (DwC-As)], which are commonly used for Darwin Core-encoded biodiversity data.  Automated processing of DwC-As will relate instances of Darwin Core classes to each other using just two object properties, "related_to" and "depends_on".  More details about the very simple way we capture relations between Darwin Core classes for automated RDF production can be found [http://biscicol.blogspot.com/2013/03/biscicol-triples-and-darwin-core.html here].
+The !BiSciCol Triplifier makes it relatively easy to convert just about any structured biocollections data into RDF triples.  It is particularly convenient for those working with [http://en.wikipedia.org/wiki/Darwin_Core_Archive Darwin Core Archives (DwC-As)], which are commonly used for Darwin Core-encoded biodiversity data.  Automated processing of DwC-As will relate instances of Darwin Core classes to each other using just two object properties, "related_to" and "depends_on".  More details about the very simple way we capture relations between Darwin Core classes for automated RDF production can be found [http://biscicol.blogspot.com/2013/03/biscicol-triples-and-darwin-core.html here].
 
 The Triplifier can be used with either a Web-based graphical interface or a command-line interface.  Although the functionality is similar either way, there are [WebOrCLInterface reasons to prefer one interface to the other], depending on your needs.
 
