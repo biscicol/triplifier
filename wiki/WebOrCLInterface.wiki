@@ -1,3 +1,13 @@
 #summary When to use the Web-based or command-line interface
 
 =When should I use the Web-based or command-line interface?=
+
+Generally speaking, you will want to use the command-line interface when either 1) you have many datasets to convert to RDF, or 2) one or more of your datasets are very large.
+
+In the first case (you have many datasets to convert), you can use simple shell scripts to batch process them with the command-line Triplifier.  This is of course much more time-efficient than manually running each of them through the Web-based interface.
+
+In the second case (you have one or more very large datasets), really big datasets can sometimes take a very long time to process through the Web-based interface.  In some cases, your browser connection might simply time out before any RDF data is returned.
+
+But what does "very large" mean?  The answer to this question is heavily dependent upon the input data format and complexity.  For single-table Darwin Core-Archives (DwC-As), we have found that datasets with tens of thousands of records, up to around 100,000 records or so, can usually be processed in a reasonable amount of time.  Processing single-table DwC-As requires first "re-normalizing" the data to move the implicit DwC class instances into separate tables and eliminate instance-level data redundancies.  This is computationally intensive, so for other input formats that do not require this pre-processing step, you should be able to convert even larger datasets.
+
+The RDF output format also makes a difference in determining the total processing time.  Because of the way the statements are grouped in the output file, Turtle output takes much longer to produce than N-Triples output (for a given dataset, we've found that N-Triples can be generated in a little more than 10% of the time it takes to generate Turtle output).  So, for very large datasets, you will definitely want to choose N-Triples as the output format.
