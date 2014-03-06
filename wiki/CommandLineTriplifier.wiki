@@ -57,6 +57,7 @@ Done! see, {myhomedirectory}/tmp/myDarwinCoreArchive.zip.triples.ttl
 }}}
 
 ==Running from Source==
+You may also choose to download the entire source tree, build using [http://ant.apache.org/ ant], and run using java itself from the commandline:
 {{{
 svn checkout http://triplifier.googlecode.com/svn/trunk/ triplifier-read-only
 cd triplifier-read-only/
