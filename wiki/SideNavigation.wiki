@@ -1,0 +1,9 @@
+#summary Navigation sidebar for the Triplifier documentation
+
+ * [Introduction]
+ * User documentation
+   * [WebOrCLInterface Web-based or command-line interface?]
+   * [WebInterface The Web-based interface]
+   * [CommandLineTriplifier The command-line interface]
+   * [WhatCanIDoWithMyData What can I do with my RDF data?]
+ * [DeveloperInformation Information for developers]
