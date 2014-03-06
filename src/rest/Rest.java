@@ -195,16 +195,24 @@ public class Rest {
     @Path("/getTriples")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public String getTriples(Mapping mapping) throws Exception {
+    public String getTriples(TriplifyParams tparams) throws Exception {
         System.gc();
         SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
-        Model model = new ModelD2RQ(FileUtils.toURL(context.getRealPath(getMapping(mapping, true))), 
-        		FileUtils.langN3, sm.retrieveValue("defaultURI","urn:x-biscicol:"));
+        Model model = new ModelD2RQ(FileUtils.toURL(
+                context.getRealPath(getMapping(tparams.mapping, true))), 
+        	FileUtils.langN3, sm.retrieveValue("defaultURI","urn:x-biscicol:"));
 
         File tripleFile = createUniqueFile("triples.ttl", getTriplesPath());
         FileOutputStream fos = new FileOutputStream(tripleFile);
-        model.write(fos, FileUtils.langTurtle);
+        
+        // Set the output format.  The default is N-Triples.
+        String rdfformat = FileUtils.langNTriple;
+        if (tparams.outputformat.equals("turtle"))
+            rdfformat = FileUtils.langTurtle;
+        
+        // Write the RDF triples and return the file location.
+        model.write(fos, rdfformat);
         fos.close();
         return triplesFolder + "/" + tripleFile.getName();
     }

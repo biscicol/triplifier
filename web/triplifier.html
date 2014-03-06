@@ -344,7 +344,9 @@
         <!--input type="button" id="sendToBiSciCol" value="Send To BiSciCol" class="external"/-->
         <!--<input type="button" id="publishDataset" value="Publish Dataset (w/ DOI)" class="external"/>-->
 
-
+	<span class="activatablesectioncontent">Output format: 
+        <input type="radio" name="rdfFormat" value="ntriples" checked="checked">N-Triples</input>
+	<input type="radio" name="rdfFormat" value="turtle">Turtle</input></span>
 
         <form id="sendToBiSciColForm" method="post" action="" target="uploadTarget">
             <input type="hidden" name="url"/>

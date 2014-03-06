@@ -70,8 +70,13 @@ ProjectSection.prototype.setActive = function(isactive) {
 	if (isactive != this.isactive) {
 		this.element.toggleClass("active", isactive);
 
+		// Show or hide any input elements in this section.
 		var inputs = this.contentelem.find("input");
 		inputs.fadeToggle(isactive);
+
+		// Shor or hide any extra activatable content in this section.
+		var activatablecontent = this.contentelem.find("span.activatablesectioncontent");
+		activatablecontent.fadeToggle(isactive);
 
 		this.isactive = isactive;
 

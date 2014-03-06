@@ -123,9 +123,9 @@ Triplifier.prototype.defineHelpMessages = function() {
 	this.helpmgr.setHelpItem('relations_help', '<p>Concept relations are key to make the Semantic Web and linked data work.  Concept relations define how the different concepts in your data are connected to one another.<p>' +
 	'<p>The Triplifier allows four different relationships between concepts to be expressed: <em>derives_from</em>, <em>depends_on</em>, <em>related_to</em>, and <em>alias_of</em>.  The first three are by far the most commonly used.  What do these terms mean?  Briefly, derives_from indicates that one thing was derived from another (e.g., a tissue sample derives_from a specimen), depends_on indicates that one thing could not exist without another (e.g., an identification depends_on a particular specimen), related_to indicates a non-dependent relationship (e.g., a specimen is related_to a taxon), and alias_of indicates that two things are really the same thing.');
 	// Triplify.
-	this.helpmgr.setHelpItem('triplify_help', '<p>Triplify is the fun part, because you finally get to see what your data looks like as RDF triples.  (That does sound fun, doesn\'t it?)</p>' +
+	this.helpmgr.setHelpItem('triplify_help', '<p>Triplify is the fun part, because you finally get to see what your data look like as RDF triples.  (That does sound fun, doesn\'t it?)</p>' +
 	'<p>You have several options here.  "Get Mapping" lets you download a <a href="http://d2rq.org/">D2RQ</a> mapping file that includes all of the technical details about how your source data maps to an RDF representation.  Unless you use D2RQ for other purposes or need to tweak the mapping by hand, you will probably not be interested in this.  However, these mapping files can also be used with the command-line version of the Triplifier and so might be useful to you in that context.</p>' +
-	'<p>"Get Triples" lets you download a Turtle-format file of your entire data set as RDF triples.  If your goal was to convert your data to RDF, this is the button you want to click.</p>');
+	'<p>"Get Triples" lets you download a file of your entire data set as RDF triples in either N-Triples or Turtle format.  If your goal was to convert your data to RDF, this is the button you want to click.  Generating N-Triples is very fast, so it is the default output format and recommended for larger datasets.  Turtle output is more human-friendly and recommended for smaller datasets where you\'d like to be able to read the output.</p>');
 	//'<p>We\'re still figuring out exactly what the last two buttons will do, but the general idea is that they will allow you to send your data directly to the BiSciCol system so that they become searchable and linkable with millions of other pieces of biological data.</p>');
 }
 
@@ -246,16 +246,22 @@ Triplifier.prototype.triplify = function(url, successFn) {
 	var dataseturi = {};
 	dataseturi.name = this.dSsection.getDataSourceName();
 
+	// Get the output format.
+	var outformat = $("input[type='radio'][name='rdfFormat']:checked").val();
+
 	var self = this;
 	$.ajax({
 		url: url,
 		type: "POST",
 		data: JSON.stringify({
-		    connection: this.mainproject.connection,
-		    joins: this.mainproject.joins,
-		    entities: this.mainproject.getCombinedEntitiesAndAttributes(),
-		    relations: this.mainproject.relations,
-		    dataseturi:dataseturi
+		    mapping: {
+		      connection: this.mainproject.connection,
+		      joins: this.mainproject.joins,
+		      entities: this.mainproject.getCombinedEntitiesAndAttributes(),
+		      relations: this.mainproject.relations,
+		      dataseturi: dataseturi
+		    },
+		    outputformat: outformat
 		}),
 		contentType: "application/json; charset=utf-8",
 		dataType: "text",
