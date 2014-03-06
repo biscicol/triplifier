@@ -2,7 +2,7 @@
 
 = Command-Line Triplifier =
 
-To run the triplifier from the command-line, you can download a pre-compiled executable from the downloads folder in the svn repo at https://code.google.com/p/triplifier/source/browse/#svn%2Ftrunk%2Fdownloads
+To run the triplifier from the command-line, you can download a pre-compiled executable from the  [https://code.google.com/p/triplifier/source/browse/#svn%2Ftrunk%2Fdownloads downloads folder] (part of the SVN repository).
 
 Once you download and install the package on your system (available on either Mac or Unix), you just type "triplify" on the command prompt and the following help will be displayed:
 
