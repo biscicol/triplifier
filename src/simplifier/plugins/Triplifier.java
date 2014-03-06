@@ -87,8 +87,8 @@ public class Triplifier {
         try {
             model.write(fos, lang);
         } catch (Exception e) {
-           System.out.println("ERROR! There was an issue writing file.  This can happen if not all of your file's identifiers are not" +
-                   "well formed URIs and you chose to NOT assign prefixes.");
+           System.out.println("ERROR! There was an issue writing file.  This may happen if you chose to not assign " +
+                   "prefixes and your identifiers are not well formed URIs.");
             throw new Exception("File writing exception",e);
         }
         fos.close();

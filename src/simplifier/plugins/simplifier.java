@@ -47,7 +47,7 @@ public abstract class simplifier {
         this.addPrefix = addPrefix;
     }
 
-     /**
+    /**
      * Create D2RQ Database from the database connection.
      *
      * @return D2RQ Database.
@@ -57,10 +57,11 @@ public abstract class simplifier {
         database.setJDBCDSN(getJdbcUrl(connection));
         database.setUsername(connection.username);
         database.setPassword(connection.password);
+
         return database;
     }
 
-      /**
+    /**
      * Generate a JDBC URL specific to DBsystem.
      *
      * @return JDBC URL.
@@ -68,18 +69,19 @@ public abstract class simplifier {
     String getJdbcUrl(Connection connection) {
         switch (connection.system) {
             case mysql:
-                return "jdbc:mysql://" + connection.host + "/" + database;
+                return "jdbc:mysql://" + connection.host + "/" + connection.database;
             case postgresql:
-                return "jdbc:postgresql://" + connection.host + "/" + database;
+                return "jdbc:postgresql://" + connection.host + "/" + connection.database;
             case oracle:
-                return "jdbc:oracle:thin:@" + connection.host + ":" + database;
+                return "jdbc:oracle:thin:@" + connection.host + ":" + connection.database;
             case sqlserver:
-                return "jdbc:sqlserver://" + connection.host + ";databaseName=" + database;
+                return "jdbc:sqlserver://" + connection.host + ";databaseName=" + connection.database;
             case sqlite:
-                return "jdbc:sqlite:" + connection.host + "/" + database;
+                return "jdbc:sqlite:" + connection.host + "/" + connection.database;
         }
         return null;
     }
+
     /**
      * initializeTerms is meant to be overridden
      */
@@ -101,6 +103,7 @@ public abstract class simplifier {
             de.fuberlin.wiwiss.d2rq.algebra.Attribute a = (de.fuberlin.wiwiss.d2rq.algebra.Attribute) it.next();
             arrayList.add(a.attributeName());
         }
+
         return arrayList;
     }
 
@@ -179,6 +182,16 @@ public abstract class simplifier {
     }
 
     /**
+     * Check to see if this table exists in the schema
+     *
+     * @param tableName
+     * @return
+     */
+    protected Boolean tableInSchema(String tableName) {
+        return schemaInspector.listTableNames(null).toString().contains(tableName);
+    }
+
+    /**
      * Create Entity, so calling functions can work with the actual Entity (e.g., putting them into relations)
      */
     protected Entity setEntity(
@@ -188,6 +201,8 @@ public abstract class simplifier {
             String idColumn,
             ArrayList extraConditions,
             ArrayList attributes) {
+
+        if (!tableInSchema(tableName)) return null;
 
         // Entity
         // Entity lEntity = new Entity(vocabularyItem.name);
@@ -215,6 +230,9 @@ public abstract class simplifier {
             String primaryColumn,
             String primaryTable
     ) {
+        if (!tableInSchema(foreignTable)) return;
+        if (!tableInSchema(primaryTable)) return;
+
         Join lJoin = new Join();
         lJoin.foreignColumn = foreignColumn;
         lJoin.foreignTable = foreignTable;
@@ -233,6 +251,15 @@ public abstract class simplifier {
     protected void setRelation(Entity subject,
                                String predicate,
                                Entity object) {
+
+
+        if (subject == null) return;
+        if (object == null) return;
+
+        if (!tableInSchema(subject.table)) return;
+        if (!tableInSchema(object.table)) return;
+
+
         Relation lRelation = new Relation();
         // setting relation according to the text/delimited syntax since i'm going along with the javascript methods
         // for handling this. Probably not the cleanest approach here

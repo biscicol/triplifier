@@ -57,7 +57,7 @@ public class Dataseturi {
             if (subjEntity == null)
                 return;
         }*/
-        
+
         // See if instances of dwc:Occurrence are defined.  If so, use those
         // instances to connect to the data source identifier.  Otherwise, just
         // use the first entity (concept) that is returned.
@@ -73,7 +73,7 @@ public class Dataseturi {
         pw.println("map:DataSet a d2rq:ClassMap;");
         pw.println("\td2rq:dataStorage map:database;");
         pw.println("\td2rq:constantValue <" + mapping.dataseturi.name + ">;");
-        // TODO: make this not hardcoded.
+        // TODO: DataSet URI is hard-coded, need to put this into a configuration file
         pw.println("\td2rq:class <http://rs.tdwg.org/dwc/terms/DataSet>;");
         pw.println("\t.");
 
