@@ -58,8 +58,8 @@ function Triplifier() {
 
 	// Assign event handlers for the "triplify" section.
 	var self = this;
-	$("#getMapping").click(function() { self.triplify("rest/getMapping", "downloadFile"); });
-	$("#getTriples").click(function() { self.triplify("rest/getTriples", "downloadFile"); });
+	$("#getMapping").click(function() { self.triplify("rest/getMapping", "downloadFile", 'Generating mapping file...'); });
+	$("#getTriples").click(function() { self.triplify("rest/getTriples", "downloadFile", 'Triplifying Data Source...'); });
 	// This was originally for sending the RDF directly to BiSciCol, but is disabled for now.
 	//$("#sendToBiSciCol").click(function() { self.triplify("rest/getTriples", "sendToBiSciCol"); });
 	// The Publish Component here is meant to assign a DOI to the triplified dataset, and store on server.
@@ -238,9 +238,10 @@ Triplifier.prototype.updateProjectSections  = function() {
  *
  * @param url The REST method to call.
  * @param successFn The name of a method to call after receiving a success response from the server.
+ * @param waitmsg The status message to display while waiting for the request to return.
  **/
-Triplifier.prototype.triplify = function(url, successFn) {
-	setStatus("Triplifying Data Source...");
+Triplifier.prototype.triplify = function(url, successFn, waitmsg) {
+	setStatus(waitmsg, true);
 
 	// Set the dataseturi to link to top level object on the server
 	var dataseturi = {};
@@ -339,11 +340,15 @@ jQuery.prototype.fadeToggle = function(fadeIn) {
 /**
  * A generic function to display a status message to the user.  If status is a non-empty
  * string, then the status message is displayed.  Otherwise, the status message area is
- * hidden from view.
+ * hidden from view.  If showspinner is true, a "spinner" image is displayed.
  **/
-function setStatus(status) {
-	$("#status").html(status);
-	$("#status, #overlay").fadeToggle(status);
+function setStatus(statusmsg, showspinner) {
+	var html = '<p>' + statusmsg + '</p>';
+	if (showspinner)
+		html = '<div><img src="images/spinner.gif" /></div>' + html;
+
+	$("#status").html(html);
+	$("#status, #overlay").fadeToggle(statusmsg);
 }
 
 /**

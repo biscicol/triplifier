@@ -324,7 +324,7 @@ DataSourceSection.prototype.uploadFormSubmitted = function(evtsrc) {
 	}
 
 	var self = this;
-	setStatus("Uploading file:</br>'" + evtsrc.file.value + "'");
+	setStatus("Uploading file:</br>'" + evtsrc.file.value + "'", true);
 	$("#uploadTarget").one("load", function(){ self.afterUpload(); });
 
 	return true;

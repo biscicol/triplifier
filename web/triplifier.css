@@ -369,15 +369,32 @@ div.sectioncontentflexTable > table .editData+.edit td {
 
 #status {
     position: fixed;
-	width: 300px;
-	margin-left: -150px;
-    top: 48%;
-	left: 50%;
-    padding: 10px;
+    width: 300px;
+    margin-left: -150px;
+    top: 44%;
+    left: 50%;
     z-index: 4;
-	border: 2px solid crimson; 	
+    border-radius: 5px;
+    border: 2px solid crimson;
     background-color: white;
-	font-size: 120%;
+    font-size: 120%;
+    padding: 10px;
+    display: table;
+}
+
+#status>div {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#status img {
+    margin-right: 16px;
+    margin-left: 8px;
+}
+
+#status p {
+    display: table-cell;
+    vertical-align: middle;
 }
 
 /**
