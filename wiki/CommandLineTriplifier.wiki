@@ -55,3 +55,13 @@ Beginning mapping file creation
 Beginning triple file creation
 Done! see, {myhomedirectory}/tmp/zmuc_darwinCoreArchiveSample.zip.triples.ttl
 }}}
+
+==Running from Source==
+{{{
+svn checkout http://triplifier.googlecode.com/svn/trunk/ triplifier-read-only
+cd triplifier-read-only/
+mkdir dist
+ant
+java -classpath .:./out/triplifier:./lib/* triplify -h
+java -classpath .:./out/triplifier/:./lib/* triplify myDarwinCoreArchive.zip
+}}}
