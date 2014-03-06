@@ -1,7 +1,13 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 
+import JenaTools.rdf2dot;
+import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.util.FileUtils;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -51,6 +57,7 @@ public class triplify {
         opts.addOption("d", "dontFixDwCA", false, "In cases where we are triplifying DwC Archives, " +
                 "don't attempt to fix them using the DwCFixer. This saves many cycles of compute time but " +
                 "the results are not as robust.");
+        opts.addOption("g", "graphviz", false, "Output a graphviz DOT format file");
         opts.addOption("o", "outputDirectory", true, "Output all files to this directory. Default is to the use a directory " +
                 "called 'tripleOutput' which is a child of the application root");
         opts.addOption("t", "simplifierType", true, "*Required {genbank|dwc}");
@@ -195,7 +202,7 @@ public class triplify {
                     simplifier s = null;
                     if (
                             cl.getOptionValue("t").equals("dwc") ||
-                            cl.getOptionValue("t").equals("genbank")
+                                    cl.getOptionValue("t").equals("genbank")
                             ) {
                         s = new dwcSimplifier(connection, addPrefix, dRootURL);
                     } else {
@@ -211,10 +218,52 @@ public class triplify {
                     System.out.println("Beginning triple file creation");
                     String results = r.getTriples(file.getName(), mapping, FileUtils.langTurtle);
 
-                    System.out.println("Done! see, " + results);
+                    System.out.println("Turtle File Output = " + results);
+
+                    // Print Graphviz/DOT representation
+                    if (cl.hasOption("g")) {
+                        Model rdf = ModelFactory.createOntologyModel(OntModelSpec.OWL_LITE_MEM_RULES_INF);
+                        rdf.read("file://" + results, "urn:", FileUtils.langTurtle);
+                        System.out.println("DOT File Output = " + writeFile(rdf2dot.parse(rdf), results + ".dot"));
+                    }
                 }
             }
         }
+    }
+
+    private static String writeFile(String data, String filepath) {
+        FileOutputStream fop = null;
+        File file = null;
+
+        try {
+
+            file = new File(filepath);
+            fop = new FileOutputStream(file);
+
+            // if file doesnt exists, then create it
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            // get the content in bytes
+            byte[] contentInBytes = data.getBytes();
+
+            fop.write(contentInBytes);
+            fop.flush();
+            fop.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fop != null) {
+                    fop.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return file.getAbsolutePath();
     }
 
 
