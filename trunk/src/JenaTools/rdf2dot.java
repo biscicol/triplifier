@@ -58,6 +58,7 @@ public class rdf2dot {
             }
         }
 
+
         graph.writeTo(os);
         return os.toString();
     }
