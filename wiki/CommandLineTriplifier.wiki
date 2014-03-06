@@ -13,7 +13,7 @@ usage: triplify input_files [-D <arg>] [-d] [-h] [-m <arg>] [-o <arg>]
                               set it will use Deep Roots mapping from this
                               file.
  -d,--dontFixDwCA             In cases where we are triplifying DwC
-                              Archives, don't attempt to them using the
+                              Archives, do not attempt to fix them using the
                               DwCFixer. This saves many cycles of compute
                               time but the results are not as robust.
  -h,--help                    print this help message and exit
