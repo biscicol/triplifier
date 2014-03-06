@@ -11,7 +11,7 @@ usage: triplify input_files [-D <arg>] [-d] [-h] [-m <arg>] [-o <arg>]
        [-p] [-s] [-t <arg>]
  -D,--deepRoot <arg>          Provide a deepRoots File.  If this option is
                               set it will use Deep Roots mapping from this
-                              file.
+                              file. This is not a common option.
  -d,--dontFixDwCA             In cases where we are triplifying DwC
                               Archives, do not attempt to fix them using the
                               DwCFixer. This saves many cycles of compute
@@ -35,4 +35,21 @@ usage: triplify input_files [-D <arg>] [-d] [-h] [-m <arg>] [-o <arg>]
                               to use a system specific prefix.
  -s,--sqlite                  output SQLite files only
  -t,--simplifierType <arg>    *Required {genbank|dwc}
+}}}
+
+Suppose we want to triplify a darwin core archive and write output to a specified directory.  We would use the following command:
+
+{{{
+./triplify ~/IdeaProjects/triplifier/web/sampledata/zmuc_darwinCoreArchiveSample.zip -o ~/tmp -t dwc
+
+Beginning SQlite creation & connection
+Fixing missing or empty "eventID" column.
+Fixing missing or empty "locationID" column.
+Fixing missing or empty "taxonID" column.
+Fixing missing or empty "identificationID" column.
+Removing unneeded columns from the main table.
+Beginning simplifier instantiation
+Beginning mapping file creation
+Beginning triple file creation
+Done! see, {myhomedirectory}/tmp/zmuc_darwinCoreArchiveSample.zip.triples.ttl
 }}}
