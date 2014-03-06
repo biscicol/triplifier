@@ -198,11 +198,11 @@
     </target>
 
     <!-- Create a JAR file of just the commander package -->
-    <jar jarfile="dist/commander.jar">
+   <!-- <jar jarfile="dist/commander.jar">
         <fileset dir="${triplifier.output.dir}">
             <exclude name="rest/**"/>
         </fileset>
-    </jar>
+    </jar>-->
 
     <target name="clean" description="Deletes the build directory and its contents.">
         <delete dir="${triplifier.output.dir}"/>
