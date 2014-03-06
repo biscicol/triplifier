@@ -6,7 +6,7 @@ To run the triplifier from the command-line, you can download a pre-compiled exe
 
 Once you download and install the package on your system (available on either Mac or Unix), you just type "triplify" on the command prompt and help will be displayed.  
 
-usage: triplify input_files [-D <arg>] [-d] [-h] [-m <arg>] [-o <arg>]
+{{{usage: triplify input_files [-D <arg>] [-d] [-h] [-m <arg>] [-o <arg>]
        [-p] [-s] [-t <arg>]
  -D,--deepRoot <arg>          Provide a deepRoots File.  If this option is
                               set it will use Deep Roots mapping from this
@@ -34,3 +34,4 @@ usage: triplify input_files [-D <arg>] [-d] [-h] [-m <arg>] [-o <arg>]
                               to use a system specific prefix.
  -s,--sqlite                  output SQLite files only
  -t,--simplifierType <arg>    *Required {genbank|dwc}
+}}}
