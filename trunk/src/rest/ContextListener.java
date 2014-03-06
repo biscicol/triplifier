@@ -3,6 +3,7 @@ package rest;
 import dbmap.DBsystem;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import org.apache.log4j.Level;
 
 /**
  * Registers/unregisters JDBC drivers listed in DBsystem
@@ -25,6 +26,9 @@ public class ContextListener implements ServletContextListener
                 e.printStackTrace();
             }
         }
+        
+        // Set the log level so that D2RQ doesn't produce DEBUG messages.
+        org.apache.log4j.Logger.getRootLogger().setLevel(Level.ERROR);
     }
 
     /**
