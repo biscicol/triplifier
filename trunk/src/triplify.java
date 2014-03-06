@@ -49,7 +49,7 @@ public class triplify {
         opts.addOption("h", "help", false, "print this help message and exit");
         opts.addOption("s", "sqlite", false, "output SQLite files only");
         opts.addOption("d", "dontFixDwCA", false, "In cases where we are triplifying DwC Archives, " +
-                "don't attempt to them using the DwCFixer. This saves many cycles of compute time but " +
+                "don't attempt to fix them using the DwCFixer. This saves many cycles of compute time but " +
                 "the results are not as robust.");
         opts.addOption("o", "outputDirectory", true, "Output all files to this directory. Default is to the use a directory " +
                 "called 'tripleOutput' which is a child of the application root");
@@ -57,7 +57,7 @@ public class triplify {
         opts.addOption("m", "mappingFile", true, "Provide a mapping file.  If this option is set it will ignore all other steps," +
                 "not create a SQLlite database but just go straight to triplification by reading the mapping file.");
         opts.addOption("D", "deepRoot", true, "Provide a deepRoots File.  If this option is set it will use Deep Roots mapping from this " +
-                "file.");
+                "file.  This is not common currently.");
         opts.addOption("p", "prefixNotNecessary", false, "Do not apply a system prefix.  Use this if you have persistent identifiers" +
                 "already in place-- that is, they are resolvable, persistent, and especially you must ensure they are all " +
                 "properly formatted URIs.  If you do not add this option, the default is to use a system specific prefix." +
