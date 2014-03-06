@@ -240,7 +240,7 @@ Triplifier.prototype.updateProjectSections  = function() {
  * @param successFn The name of a method to call after receiving a success response from the server.
  **/
 Triplifier.prototype.triplify = function(url, successFn) {
-	setStatus('Triplifying Data Source...', true);
+	setStatus('Triplifying data source...', true);
 
 	// Set the dataseturi to link to top level object on the server
 	var dataseturi = {};
