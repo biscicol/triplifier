@@ -4,7 +4,7 @@
 
 To run the triplifier from the command-line, you can download a pre-compiled executable from the downloads folder in the svn repo at https://code.google.com/p/triplifier/source/browse/#svn%2Ftrunk%2Fdownloads
 
-Once you download and install the package on your system (available on either Mac or Unix), you just type "triplify" on the command prompt and help will be displayed.  
+Once you download and install the package on your system (available on either Mac or Unix), you just type "triplify" on the command prompt and the following help will be displayed:
 
 {{{
 usage: triplify input_files [-D <arg>] [-d] [-h] [-m <arg>] [-o <arg>]
@@ -36,6 +36,8 @@ usage: triplify input_files [-D <arg>] [-d] [-h] [-m <arg>] [-o <arg>]
  -s,--sqlite                  output SQLite files only
  -t,--simplifierType <arg>    *Required {genbank|dwc}
 }}}
+
+==Examples==
 
 Suppose we want to triplify a darwin core archive and write output to a specified directory.  We would use the following command:
 
