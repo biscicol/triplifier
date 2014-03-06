@@ -44,7 +44,7 @@ usage: triplify input_files [-D <arg>] [-d] [-g] [-h] [-m <arg>] [-o
 Suppose we want to triplify a darwin core archive and write output to a specified directory.  We would use the following command:
 
 {{{
-./triplify myDarwinCoreArchive.zip -o ~/tmp -t dwc
+./triplify myDarwinCoreArchive.zip -o /myHomeDir/output -t dwc
 
 Beginning SQlite creation & connection
 Fixing missing or empty "eventID" column.
