@@ -1,5 +1,6 @@
 #summary Navigation sidebar for the Triplifier documentation
 
+ * [TableOfContents Table of contents]
  * [Introduction]
  * User documentation
    * [WebOrCLInterface Web-based or command-line interface?]
