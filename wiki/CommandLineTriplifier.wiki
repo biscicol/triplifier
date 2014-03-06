@@ -6,6 +6,31 @@ To run the triplifier from the command-line, you can download a pre-compiled exe
 
 Once you download and install the package on your system (available on either Mac or Unix), you just type "triplify" on the command prompt and help will be displayed.  
 
-Currently, all output files are written to the same directory as where the application lives.. i haven't been able to figure out how to reference this on the path and have output written out to a more sensible location.  
-
-More options on the command-line triplifier are coming!
+usage: triplify input_files [-D <arg>] [-d] [-h] [-m <arg>] [-o <arg>]
+       [-p] [-s] [-t <arg>]
+ -D,--deepRoot <arg>          Provide a deepRoots File.  If this option is
+                              set it will use Deep Roots mapping from this
+                              file.
+ -d,--dontFixDwCA             In cases where we are triplifying DwC
+                              Archives, don't attempt to them using the
+                              DwCFixer. This saves many cycles of compute
+                              time but the results are not as robust.
+ -h,--help                    print this help message and exit
+ -m,--mappingFile <arg>       Provide a mapping file.  If this option is
+                              set it will ignore all other steps,not
+                              create a SQLlite database but just go
+                              straight to triplification by reading the
+                              mapping file.
+ -o,--outputDirectory <arg>   Output all files to this directory. Default
+                              is to the use a directory called
+                              'tripleOutput' which is a child of the
+                              application root
+ -p,--prefixNotNecessary      Do not apply a system prefix.  Use this if
+                              you have persistent identifiersalready in
+                              place-- that is, they are resolvable,
+                              persistent, and especially you must ensure
+                              they are all properly formatted URIs.  If
+                              you do not add this option, the default is
+                              to use a system specific prefix.
+ -s,--sqlite                  output SQLite files only
+ -t,--simplifierType <arg>    *Required {genbank|dwc}
