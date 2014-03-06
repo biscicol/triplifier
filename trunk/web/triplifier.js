@@ -58,8 +58,8 @@ function Triplifier() {
 
 	// Assign event handlers for the "triplify" section.
 	var self = this;
-	$("#getMapping").click(function() { self.triplify("rest/getMapping", "downloadFile", 'Generating mapping file...'); });
-	$("#getTriples").click(function() { self.triplify("rest/getTriples", "downloadFile", 'Triplifying Data Source...'); });
+	$("#getMapping").click(function() { self.sendProjData("rest/getMapping", "downloadFile", 'Generating mapping file...'); });
+	$("#getTriples").click(function() { self.triplify("rest/getTriples", "downloadFile"); });
 	// This was originally for sending the RDF directly to BiSciCol, but is disabled for now.
 	//$("#sendToBiSciCol").click(function() { self.triplify("rest/getTriples", "sendToBiSciCol"); });
 	// The Publish Component here is meant to assign a DOI to the triplified dataset, and store on server.
@@ -234,14 +234,13 @@ Triplifier.prototype.updateProjectSections  = function() {
 }
 
 /**
- * Sends the current project's data to the REST method at the specified URL.
+ * Sends the current project's data to the REST method for generating RDF triples.
  *
  * @param url The REST method to call.
  * @param successFn The name of a method to call after receiving a success response from the server.
- * @param waitmsg The status message to display while waiting for the request to return.
  **/
-Triplifier.prototype.triplify = function(url, successFn, waitmsg) {
-	setStatus(waitmsg, true);
+Triplifier.prototype.triplify = function(url, successFn) {
+	setStatus('Triplifying Data Source...', true);
 
 	// Set the dataseturi to link to top level object on the server
 	var dataseturi = {};
@@ -263,6 +262,41 @@ Triplifier.prototype.triplify = function(url, successFn, waitmsg) {
 		      dataseturi: dataseturi
 		    },
 		    outputformat: outformat
+		}),
+		contentType: "application/json; charset=utf-8",
+		dataType: "text",
+		success: function(url) { self[successFn](url); },
+		error: alertError
+	});
+}
+
+/**
+ * Sends the current project's data to the REST method at the specified URL.
+ *
+ * @param url The REST method to call.
+ * @param successFn The name of a method to call after receiving a success response from the server.
+ * @param waitmsg The status message to display while waiting for the request to return.
+ **/
+Triplifier.prototype.sendProjData = function(url, successFn, waitmsg) {
+	setStatus(waitmsg, false);
+
+	// Set the dataseturi to link to top level object on the server
+	var dataseturi = {};
+	dataseturi.name = this.dSsection.getDataSourceName();
+
+	// Get the output format.
+	var outformat = $("input[type='radio'][name='rdfFormat']:checked").val();
+
+	var self = this;
+	$.ajax({
+		url: url,
+		type: "POST",
+		data: JSON.stringify({
+		    connection: this.mainproject.connection,
+		    joins: this.mainproject.joins,
+		    entities: this.mainproject.getCombinedEntitiesAndAttributes(),
+		    relations: this.mainproject.relations,
+		    dataseturi: dataseturi
 		}),
 		contentType: "application/json; charset=utf-8",
 		dataType: "text",
