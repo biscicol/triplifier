@@ -99,7 +99,7 @@ You have several options here.
 
 "Get Mapping" lets you download a D2RQ mapping file that includes all of the technical details about how your source data maps to an RDF representation. Unless you use D2RQ for other purposes or need to tweak the mapping by hand, you will probably not be interested in this. However, these mapping files can also be used with the command-line version of the Triplifier and so might be useful to you in that context.
 
-"Get Triples" lets you download your entire data set as RDF triples. If your goal was to convert your data to RDF, this is the button you want to click.  You can choose either N-Triples (the default) or Turtle as the output RDF format.  N-Triples are fast to generate and should be used for large data files.  Turtle is generally much easier for humans to read and is ideal for smaller datasets when you want to be able to study the RDF output.
+"Get Triples" lets you download your entire data set as RDF triples. If your goal was to convert your data to RDF, this is the button you want to click.  You can choose either N-Triples (the default), Turtle, or DOT as the output RDF format.  N-Triples are fast to generate and should be used for large data files.  Turtle is generally much easier for humans to read and is ideal for smaller datasets when you want to be able to study the RDF output.  DOT is a format that is used by [http://graphviz.org/ GraphViz] and provides a way to easily visualize graph-based data.  GraphViz is generally good for small datasets.
 
 http://triplifier.googlecode.com/svn/trunk/web/photos/triplify.jpg
 
