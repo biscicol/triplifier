@@ -247,7 +247,7 @@ Triplifier.prototype.triplify = function(url, successFn) {
 	dataseturi.name = this.dSsection.getDataSourceName();
 
 	// Get the output format.
-	var outformat = $("input[type='radio'][name='rdfFormat']:checked").val();
+	var outformat = $("select[name='rdfFormat']").val();
 
 	var self = this;
 	$.ajax({
