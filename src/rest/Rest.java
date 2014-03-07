@@ -204,35 +204,37 @@ public class Rest {
                 context.getRealPath(getMapping(tparams.mapping, true))),
                 FileUtils.langN3, sm.retrieveValue("defaultURI", "urn:x-biscicol:"));
 
-        File tripleFile = createUniqueFile("triples.ttl", getTriplesPath());
+        // Set the output format and matching output file name.
+        // The default is N-Triples.
+        String outformat = FileUtils.langNTriple;
+        String foutname = "triples.nt";
+        if (tparams.outputformat.equals("turtle")) {
+            outformat = FileUtils.langTurtle;
+            foutname = "triples.ttl";
+        } else if (tparams.outputformat.equals("dot")) {
+            outformat = "dot";
+            foutname = "triples.dot";
+        }
+        
+        // Create the output file.
+        File tripleFile = createUniqueFile(foutname, getTriplesPath());
         FileOutputStream fos = new FileOutputStream(tripleFile);
 
-        // handle dot format files
-        if (tparams.outputformat.equals("dot")) {
+        // Write out the triples according to the output format.
+        if (outformat.equals("dot")) {
             String dotFileData = rdf2dot.parse(model);
-            File dotFile = createUniqueFile("triplifier.dot", getTriplesPath());
-            FileOutputStream dotFos = new FileOutputStream(dotFile);
-            byte[] contentInBytes = dotFileData.getBytes();
-
-            dotFos.write(contentInBytes);
-            dotFos.flush();
-            dotFos.close();
-            return triplesFolder + "/" + dotFile.getName();
+            fos.write(dotFileData.getBytes());
+            fos.flush();
         }
-        // handle langTurtle and langN3 format files
         else {
-            // Set the output format.  The default is N-Triples.
-            String rdfformat = FileUtils.langNTriple;
-
-            if (tparams.outputformat.equals("turtle"))
-                rdfformat = FileUtils.langTurtle;
-
-
-            // Write the RDF triples and return the file location.
-            model.write(fos, rdfformat);
-            fos.close();
-            return triplesFolder + "/" + tripleFile.getName();
+            // Write the RDF triples.
+            model.write(fos, outformat);
         }
+        
+        fos.close();
+        
+        // Return the file location.
+        return triplesFolder + "/" + tripleFile.getName();
     }
 
     /**
