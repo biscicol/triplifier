@@ -51,7 +51,7 @@ public class PathManager {
             //fullPath = System.getProperty("user.dir") + File.separator;
             fullPath = System.getProperty("user.dir");
         }
-          System.out.println(fullPath);
+
         File theDir = new File(fullPath);
         // if the directory does not exist, create it
         if (!theDir.exists()) {

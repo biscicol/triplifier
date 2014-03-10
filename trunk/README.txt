@@ -50,5 +50,5 @@ svn checkout http://triplifier.googlecode.com/svn/trunk/ triplifier-read-only
 cd triplifier-read-only/
 mkdir dist
 ant
-java -classpath .:./out/production/triplifier/:./lib/* triplify -h
+java -classpath .:./out/triplifier:./lib/* triplify -h
 java -classpath .:./out/production/triplifier/:./lib/* triplify myDarwinCoreArchive.zip

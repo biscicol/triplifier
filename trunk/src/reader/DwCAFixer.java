@@ -153,7 +153,7 @@ public class DwCAFixer
             // If we found terms for the current conceptID and there is not
             // already a populated ID column for it, process this concept.
             if (!includedterms.isEmpty() && !(hasIDcolumn && IDcolpopulated)) {
-                System.out.println("Fixing missing or empty \"" + conceptID + "\" column.");
+               // System.out.println("Fixing missing or empty \"" + conceptID + "\" column.");
                 
                 stmt.execute("BEGIN TRANSACTION");
                 
@@ -223,7 +223,7 @@ public class DwCAFixer
         }
         
         // Run the queries.
-        System.out.println("Removing unneeded columns from the main table.");
+        //System.out.println("Removing unneeded columns from the main table.");
         stmt.execute("BEGIN TRANSACTION");
         
         query = "CREATE TABLE \"" + tablename + "_tmp\"(" + newcollist + ")";
