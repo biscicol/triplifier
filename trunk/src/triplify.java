@@ -56,13 +56,16 @@ public class triplify {
         // Add the options for the program.
         opts.addOption("h", "help", false, "print this help message and exit");
 
-       /* opts.addOption("fast", false, "Speed up processing by turning off the DwCA Fixer " +
-                "(see http://biscicol.org/triplifier/doc/reader/DwCAFixer.html).  This saves compute time but " +
-                "the results are not as robust.");
-         */
+        /*   opts.addOption("fast", false, "Speed up processing by turning off the DwCA Fixer " +
+                 "(see http://biscicol.org/triplifier/doc/reader/DwCAFixer.html).  This saves compute time but " +
+                 "the results are not as robust.");
+        */
+
+        opts.addOption("debug", false, "Output debug statements and do not delete processing files, " +
+                "enabling the user to debug application");
 
         opts.addOption("o", "output", true, "Set the output format to one of:" +
-                "\n...N3" +
+                "\n...N3 (default)" +
                 "\n...NTriple" +
                 "\n...Turtle" +
                 "\n...DOT (Graphviz)");
@@ -95,15 +98,49 @@ public class triplify {
         }
 
         // If help was requested or if there are no other options, print the help message and exit.
-        if (cl.hasOption("h") || (cl.getArgs().length < 1)) {
+        if (cl.hasOption("h") || (cl.getOptions().length < 1)) {
             helpf.printHelp("triplify input_files", opts, true);
             return;
         }
 
-        // input mapping file option
+        // Set the language options
+        String language = FileUtils.langN3;
+        if (cl.getOptionValue("o").equals("N3")) {
+            language = FileUtils.langN3;
+        } else if (cl.getOptionValue("o").equals("NTriple")) {
+            language = FileUtils.langNTriple;
+        } else if (cl.getOptionValue("o").equals("Turtle")) {
+            language = FileUtils.langTurtle;
+        } else if (cl.getOptionValue("o").equals("DOT")) {
+            // Using N3 as default language for DOT since it is fastest
+            language = FileUtils.langN3;
+        } else {
+            System.err.println("invalid output type");
+            return;
+        }
+
+        // Set the processing directory
+        processDirectory = pm.setDirectory(System.getProperty("java.io.tmpdir") + File.separator + "triplifier");
+
+        // User has selected the Mapping File Option
         if (cl.hasOption("m")) {
             try {
-                new triplifyDirect(cl.getOptionValue("m"), cl.getOptionValue("m") + ".triples.n3");
+                File mappingInputFile = new File(cl.getOptionValue("m"));
+                File mappingOutputFile = new File(processDirectory.getAbsoluteFile() + File.separator + mappingInputFile.getName() + ".triples.n3");
+                triplifyDirect t = new triplifyDirect(mappingInputFile, mappingOutputFile, language);
+                File outputFile = t.getOutputFile();
+
+                // Print the contents of the file
+                printContents(cl, outputFile.getAbsoluteFile().toString(), language);
+
+                // Cleanup
+                if (!cl.hasOption("debug")) {
+                    if (!outputFile.delete()) {
+                        System.err.println("Unable to delete triplified file = " + outputFile.getAbsoluteFile());
+                    }
+                } else {
+                    System.out.println("Contents written to " + outputFile.getAbsoluteFile().toString());
+                }
             } catch (Exception e) {
                 System.err.println("Exception occurred during processing: " + e.getMessage());
             }
@@ -129,20 +166,16 @@ public class triplify {
             return;
         }
 
-
         // Setup for hasGuids option
         boolean addPrefix = true;
         if (cl.hasOption("hasGuids")) {
             addPrefix = false;
         }
 
-        // DwCA archive fixer off is the same as "fast" option
-       /* if (cl.hasOption("fast")) {
-            fixDwCA = false;
-        } */
-
-        // Set the processing directory
-        processDirectory = pm.setDirectory(System.getProperty("java.io.tmpdir") + File.separator + "triplifier");
+        /*  // DwCA archive fixer off is the same as "fast" option
+     if (cl.hasOption("fast")) {
+         fixDwCA = false;
+     }   */
 
         // deepRoot options
         String dRootURL = null;
@@ -172,23 +205,7 @@ public class triplify {
         // Set the input file
         File inputFile = pm.setFile(cl.getArgs()[0]);
 
-        // Set the language options
-        String language;
-        if (cl.getOptionValue("o").equals("N3")) {
-            language = FileUtils.langN3;
-        } else if (cl.getOptionValue("o").equals("NTriple")) {
-            language = FileUtils.langNTriple;
-        } else if (cl.getOptionValue("o").equals("Turtle")) {
-            language = FileUtils.langTurtle;
-        } else if (cl.getOptionValue("o").equals("DOT")) {
-            // Using N3 as default language for DOT since it is fastest
-            language = FileUtils.langN3;
-        } else {
-            System.err.println("invalid output type");
-            return;
-        }
-
-        // Handle genbank simplifier separately here.  We don't need alot of the other options for this case
+        // Handle genbank simplifier
         if (cl.getOptionValue("i").equals("genbank")) {
             // Create TTL output file
             String pathPrefix = processDirectory + File.separator + "genbankOutput";
@@ -200,16 +217,18 @@ public class triplify {
             genbankSimplifier s = new genbankSimplifier(inputFile, genbankFile);
 
             // Print the contents of the file
-            printContents( cl,  genbankFile.getAbsoluteFile().toString(),  language);
+            printContents(cl, genbankFile.getAbsoluteFile().toString(), language);
 
-             // Cleanup the mapping file
-            if (!genbankFile.delete()) {
-                System.err.println("Unable to delete genbank triplified file = " + genbankFile.getAbsoluteFile());
+            if (!cl.hasOption("debug")) {
+                // Cleanup the mapping file
+                if (!genbankFile.delete()) {
+                    System.err.println("Unable to delete genbank triplified file = " + genbankFile.getAbsoluteFile());
+                }
+            } else {
+                System.out.println("Contents written to " + genbankFile.getAbsoluteFile().toString());
             }
-
-            return;
         }
-        // all other cases/ simplifiers
+        // Handle dwc simplifier
         else {
             int filecounter;
             File sqlitefile;
@@ -227,6 +246,7 @@ public class triplify {
                 sqlitefile = new File(pathPrefix + "_" + filecounter++ + ".sqlite");
 
             tdc = new TabularDataConverter(tdr, "jdbc:sqlite:" + sqlitefile.getAbsolutePath());
+            tdc.setDwcFixer(fixDwCA);
             tdc.convert();
             tdr.closeFile();
 
@@ -234,44 +254,52 @@ public class triplify {
             Connection connection = new Connection(sqlitefile);
             Triplifier r = new Triplifier(processDirectory);
 
-            simplifier s = null;
-            // We've already covered the genbank option so, for now, the only other option is dwc
-            if (cl.getOptionValue("i").equals("dwc")) {
-                s = new dwcSimplifier(connection, addPrefix, dRootURL);
-            } else {
-                System.err.println(cl.getOptionValue("i") + " not a valid input type");
-                return;
-            }
+            // Create the dwcSimplifier
+            simplifier s = new dwcSimplifier(connection, addPrefix, dRootURL);
 
             // Create mapping file
-            dbmap.Mapping mapping = s.getMapping(connection);
+            dbmap.Mapping simplifiedMapping = s.getMapping(connection);
 
             // Triplify and return a filename (this writes a temporary file)
-            String fileName = r.getTriples(inputFile.getName(), mapping, language);
+            String fileName = r.getTriples(inputFile.getName(), simplifiedMapping, language);
 
             // Print the contents of the file
-            printContents( cl,  fileName,  language);
+            printContents(cl, fileName, language);
 
-            // Cleanup sqlite file
-            if (!sqlitefile.delete()) {
-                System.err.println("Unable to delete processing file = " + sqlitefile.getAbsoluteFile());
+            // Cleaning up
+            File tripleOutputFile = new File(fileName);
+            if (!cl.hasOption("debug")) {
+                // Cleanup sqlite file
+                if (!sqlitefile.delete()) {
+                    System.err.println("Unable to delete processing file = " + sqlitefile.getAbsoluteFile());
+                }
+
+                // Cleanup the processing file from triplifier
+                if (!tripleOutputFile.delete()) {
+                    System.err.println("Unable to delete temporary file = " + tripleOutputFile.getAbsoluteFile());
+                }
+
+                // Cleanup the mapping file
+                if (!r.getMappingFile().delete()) {
+                    System.err.println("Unable to delete mapping file = " + r.getMappingFile().getAbsoluteFile());
+                }
+            } else {
+                System.out.println("SQLite File = " + sqlitefile.getAbsoluteFile().toString());
+                System.out.println("TripleOutput File = " + tripleOutputFile.getAbsoluteFile().toString());
+                System.out.println("Mapping File = " + r.getMappingFile().getAbsoluteFile().toString());
             }
-            // Cleanup the processing file from triplifier
-    /*        File tripleOutputFile = new File(fileName);
-            if (!tripleOutputFile.delete()) {
-                System.err.println("Unable to delete temporary file = " + tripleOutputFile.getAbsoluteFile());
-            }
-            */
-            // Cleanup the mapping file
-            if (!r.getMappingFile().delete()) {
-                System.err.println("Unable to delete mapping file = " + r.getMappingFile().getAbsoluteFile());
-            }
+
+
         }
+
+        // Finally, clean up our temporary directory
+        deleteFilesOlderThan1Hour(processDirectory);
 
     }
 
     /**
      * Print the contents of a particular file
+     *
      * @param cl
      * @param fileName
      * @param language
@@ -360,5 +388,25 @@ public class triplify {
 
     private static InputStream string2InputStream(String input) throws IOException {
         return new ByteArrayInputStream(input.getBytes(Charset.forName("UTF-8")));
+    }
+
+    /**
+     * Function for cleaning up our temp directory
+     *
+     * @param directory
+     */
+    public static void deleteFilesOlderThan1Hour(File directory) {
+        if (directory.exists()) {
+
+            File[] listFiles = directory.listFiles();
+            long purgeTime = System.currentTimeMillis() - (60 * 60 * 1000);
+            for (File listFile : listFiles) {
+                if (listFile.lastModified() < purgeTime) {
+                    if (!listFile.delete()) {
+                        System.err.println("Unable to delete file: " + listFile);
+                    }
+                }
+            }
+        }
     }
 }

@@ -6,11 +6,10 @@ import com.hp.hpl.jena.util.FileUtils;
 import com.sun.jersey.core.util.ThrowHelper;
 import dbmap.Mapping;
 import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
+import org.apache.log4j.Level;
 import settings.SettingsManager;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 
 
 /**
@@ -73,34 +72,27 @@ public class Triplifier {
         System.gc();
         SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
+        String baseURIForData = sm.retrieveValue("defaultURI", "urn:x-biscicol:");
+
         Model model;
+        File outputFile = createUniqueFile(filenamePrefix + ".triples.txt", getOutputPath());
+        String inputFile = getMapping(filenamePrefix, mapping, true);
+        FileOutputStream fos = new FileOutputStream(outputFile);
 
+        model = new ModelD2RQ(
+                FileUtils.toURL(inputFile),
+                FileUtils.langN3,
+                baseURIForData);
 
-        model = new ModelD2RQ(FileUtils.toURL(getMapping(filenamePrefix, mapping, true)),
-                FileUtils.langN3, sm.retrieveValue("defaultURI", "urn:x-biscicol:"));
-
-        String extension = "n3";
-        if (lang == null) {
-            lang = FileUtils.langNTriple;
-        }
-
-        if (lang.equals(FileUtils.langTurtle)) {
-            extension = "ttl";
-        }
-
-        File tripleFile = createUniqueFile(filenamePrefix + ".triples." + extension, getOutputPath());
-
-         StringOutputStream outputStream = new StringOutputStream();
-        FileOutputStream fos = new FileOutputStream(tripleFile);
         try {
-            model.write(outputStream, lang);
+            model.write(fos, lang);
         } catch (Exception e) {
-           System.out.println("ERROR! There was an issue writing file.  This may happen if you chose to not assign " +
-                   "prefixes and your identifiers are not well formed URIs.");
-            throw new Exception("File writing exception",e);
+            System.out.println("ERROR! There was an issue writing file.  This may happen if you chose to not assign " +
+                    "prefixes and your identifiers are not well formed URIs.");
+            throw new Exception("File writing exception", e);
         }
         fos.close();
-        return getOutputPath() + tripleFile.getName();
+        return getOutputPath() + outputFile.getName();
     }
 }
 

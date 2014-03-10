@@ -2,6 +2,8 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileUtils;
 import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
 import org.apache.log4j.Level;
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,33 +30,39 @@ public class triplifyDirect {
                     "this command-line.  This tool is powerful as it will allow any type of relationship or attribute " +
                     "expressions, including those not possible via the triplifier interface.";
 
-    public triplifyDirect(String mappingFile, String outputFile) {
+    File outputFile;
+
+    public triplifyDirect(File inputFile, File pOutputFile, String language) {
+
         // Set Logging Level
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.ERROR);
 
+        outputFile = pOutputFile;
         try {
             // Construct a fileOutputStream to hold the output
             FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
 
             // Construct the model
-            Model model = new ModelD2RQ(FileUtils.toURL(mappingFile), FileUtils.langN3, "urn:x-biscicol:");
+            Model model = new ModelD2RQ(
+                    FileUtils.toURL(inputFile.getAbsoluteFile().toString()),
+                    FileUtils.langN3,
+                    "urn:x-biscicol:");
 
             // Write output
-            //System.out.println("Writing output to " + outputFile);
-            model.write(fileOutputStream, FileUtils.langN3);
+            model.write(fileOutputStream, language);
 
             // Finish up
             fileOutputStream.close();
-
-            // return ouptput just on command-line
-            System.out.println(fileOutputStream);
-            //System.out.println("Done!");
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public File getOutputFile() {
+        return outputFile;
     }
 
     /**
@@ -70,7 +78,7 @@ public class triplifyDirect {
             System.out.println("Usage: triplifyDirect mapping.n3 output.n3\n" + tD.disclaimer);
 
         } else {
-            tD = new triplifyDirect(args[0], args[1]);
+            tD = new triplifyDirect(new File(args[0]), new File(args[1]), FileUtils.langN3);
         }
     }
 }
