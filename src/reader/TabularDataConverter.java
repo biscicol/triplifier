@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import reader.plugins.TabularDataReader;
 
 
@@ -17,82 +18,90 @@ import reader.plugins.TabularDataReader;
  * SQLite database.  Each table in the source data is converted to a matching
  * table in the SQLite database.
  */
-public final class TabularDataConverter
-{
+public final class TabularDataConverter {
     TabularDataReader source;
     String dest;
     String tablename;
-    
+    Boolean dwcFixer = true;
+
     /**
      * Constructs a new TabularDataConverter for the specified source.
-     * 
+     *
      * @param source A TabularDataReader with an open data source.
-     * @throws ClassNotFoundException 
+     * @throws ClassNotFoundException
      */
     public TabularDataConverter(TabularDataReader source) throws ClassNotFoundException {
         this(source, "");
     }
-    
+
+    public Boolean getDwcFixer() {
+        return dwcFixer;
+    }
+
+    public void setDwcFixer(Boolean dwcFixer) {
+        this.dwcFixer = dwcFixer;
+    }
+
     /**
      * Constructs a new TabularDataConverter for the specified source and
      * destination database connection.
-     * 
+     *
      * @param source A TabularDataReader with an open data source.
-     * @param dest A valid SQLIte JDBC connection string.
-     * @throws ClassNotFoundException 
+     * @param dest   A valid SQLIte JDBC connection string.
+     * @throws ClassNotFoundException
      */
     public TabularDataConverter(TabularDataReader source, String dest) throws ClassNotFoundException {
         // load the Sqlite JDBC driver
         //Class.forName("org.sqlite.JDBC");
-        
+
         setSource(source);
         setDestination(dest);
     }
-    
+
     /**
      * Set the source data for this TabularDataConverter.  The source
      * TabularDataReader must have a data source open and ready to access.
-     * 
+     *
      * @param source The data source from which to read.
      */
     public final void setSource(TabularDataReader source) {
         this.source = source;
         tablename = "";
     }
-    
+
     /**
      * The SQLite JDBC connection string to use for the destination.
-     * 
+     *
      * @param dest A valid JDBC SQLite connection string.
      */
     public final void setDestination(String dest) {
         this.dest = dest;
     }
-    
+
     /**
      * Get the JDBC connection string for the destination SQLite database.
-     * 
+     *
      * @return The JDBC connection string.
      */
     public String getDestination() {
         return dest;
     }
-    
+
     /**
      * Specify a table name to use for storing the converted data in the
      * destination database.  This will only apply to the first table in a data
      * source, and is intended for data sources that don't explicitly provide a
      * meaningful table name, such as CSV files.
-     * 
+     *
      * @param tablename A valid SQLite table name.
      */
     public void setTableName(String tablename) {
         this.tablename = tablename;
     }
-    
+
     /**
      * Gets the table name string to use for the first table in the data source.
-     * 
+     *
      * @return The table name string.
      */
     public String getTableName() {
@@ -117,7 +126,7 @@ public final class TabularDataConverter
 
         // replace periods with underscores
         newname = newname.replace('.', '_');
-        
+
         // Remove any remaining non-alphanumeric characters.
         newname = newname.replaceAll("[^_a-zA-Z0-9]", "");
 
@@ -127,7 +136,7 @@ public final class TabularDataConverter
 
         return newname;
     }
-    
+
     /**
      * Reads the source data and converts it to tables in a Sqlite database.
      * Uses the database connection string provided in the constructor or in a
@@ -141,8 +150,8 @@ public final class TabularDataConverter
      * If the input data source is a Darwin Core archive, convert() will also
      * attempt to "re-normalize" the archive data.  This task is handed off to
      * an instance of DwCAFixer.
-     * 
-     * @throws SQLException 
+     *
+     * @throws SQLException
      */
     public void convert() throws SQLException {
         int tablecnt = 0;
@@ -164,16 +173,21 @@ public final class TabularDataConverter
             if (source.tableHasNextRow())
                 buildTable(conn, fixSQLiteIdentifierName(tname));
         }
-        
+
         // If the data source is a DwC archive, attempt to "fix" any missing
         // ID columns.  This could be designed more elegantly with a generic
         // "fixer" interface, but since we are only planning to do it for DwC
         // archives, the implementation is, for now, format-specific.
         if (source.getFormatString().equals("DwCA")) {
-            DwCAFixer dwcafixer = new DwCAFixer();
-            dwcafixer.fixArchive(conn);
+            // Only run this if dwcFixer Class variable is true.  This lets users
+            // turn this option off to speed up operations, e.g. especially useful
+            // in the command-line interpreter.
+            if (dwcFixer) {
+                DwCAFixer dwcafixer = new DwCAFixer();
+                dwcafixer.fixArchive(conn);
+            }
         }
-        
+
         conn.close();
     }
 
@@ -186,9 +200,8 @@ public final class TabularDataConverter
      * source returns a blank column name, then a machine-generated column name
      * will be used.
      *
-     * @param conn A valid connection to a destination database.
+     * @param conn  A valid connection to a destination database.
      * @param tname The name to use for the table in the destination database.
-     *
      * @throws SQLException
      */
     private void buildTable(Connection conn, String tname) throws SQLException {
@@ -196,7 +209,7 @@ public final class TabularDataConverter
         Statement stmt = conn.createStatement();
         // Counter for machine-generated column names.
         int col_cnt = 0;
-        
+
         // Generate a short string of random characters to use for machine-
         // generated column names if the data source provides a blank column
         // name.
@@ -221,8 +234,8 @@ public final class TabularDataConverter
                 query += ", ";
             // If the column name is blank, generate a suitable name.
             if (colname.trim().equals("")) {
-                    colname = tname + "_" + rand_prefix + "_" + col_cnt;
-                    col_cnt++;
+                colname = tname + "_" + rand_prefix + "_" + col_cnt;
+                col_cnt++;
             }
             colname = fixSQLiteIdentifierName(colname);
             query += "\"" + colname + "\"";
@@ -243,7 +256,7 @@ public final class TabularDataConverter
         query += ")";
         //System.out.println(query);
         PreparedStatement insstmt = conn.prepareStatement(query);
-        
+
         // Start a new transaction for all of the INSERT statements.  This
         // dramatically improves the run time from many minutes for a large data
         // source to a matter of seconds.
@@ -269,7 +282,7 @@ public final class TabularDataConverter
         }
 
         insstmt.close();
-        
+
         // end the transaction
         stmt.execute("COMMIT");
         stmt.close();
