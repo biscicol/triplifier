@@ -187,7 +187,7 @@ public class Mapping {
         pw.println("@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .");
         pw.println("@prefix jdbc: <http://d2rq.org/terms/jdbc/> .");
         pw.println("@prefix ro: <http://www.obofoundry.org/ro/ro.owl#> .");
-        pw.println("@prefix bsc: <http://biscicol.org/terms/index.html#> .");
+        pw.println("@prefix bsc: <http://biscicol.org/terms/biscicol.owl#> .");
         pw.println();
     }
 }
