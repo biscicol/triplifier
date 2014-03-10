@@ -40,12 +40,15 @@ public class triplifyDirect {
             Model model = new ModelD2RQ(FileUtils.toURL(mappingFile), FileUtils.langN3, "urn:x-biscicol:");
 
             // Write output
-            System.out.println("Writing output to " + outputFile);
+            //System.out.println("Writing output to " + outputFile);
             model.write(fileOutputStream, FileUtils.langN3);
 
             // Finish up
             fileOutputStream.close();
-            System.out.println("Done!");
+
+            // return ouptput just on command-line
+            System.out.println(fileOutputStream);
+            //System.out.println("Done!");
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

@@ -1,5 +1,6 @@
 package simplifier.plugins;
 
+import JenaTools.StringOutputStream;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileUtils;
 import com.sun.jersey.core.util.ThrowHelper;
@@ -18,6 +19,7 @@ import java.io.PrintWriter;
  */
 public class Triplifier {
     static File outputPath;
+    private File mappingFile;
 
     public Triplifier(File pOutputPath) throws Exception {
         outputPath = pOutputPath;
@@ -32,6 +34,9 @@ public class Triplifier {
         return outputPath.getAbsolutePath() + File.separator;
     }
 
+    public File getMappingFile() {
+        return mappingFile;
+    }
 
     /**
      * Create new file in given folder, add incremental number to base if filename already exists.
@@ -57,11 +62,11 @@ public class Triplifier {
         if (verifyFile)
             mapping.connection.verifyFile();
 
-        File mapFile = createUniqueFile(filenamePrefix + ".mapping.n3", getOutputPath());
-        PrintWriter pw = new PrintWriter(mapFile);
+        mappingFile = createUniqueFile(filenamePrefix + ".mapping.n3", getOutputPath());
+        PrintWriter pw = new PrintWriter(mappingFile);
         mapping.printD2RQ(pw);
         pw.close();
-        return getOutputPath() + mapFile.getName();
+        return getOutputPath() + mappingFile.getName();
     }
 
     public String getTriples(String filenamePrefix, Mapping mapping, String lang) throws Exception {
@@ -69,6 +74,7 @@ public class Triplifier {
         SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
         Model model;
+
 
         model = new ModelD2RQ(FileUtils.toURL(getMapping(filenamePrefix, mapping, true)),
                 FileUtils.langN3, sm.retrieveValue("defaultURI", "urn:x-biscicol:"));
@@ -83,9 +89,11 @@ public class Triplifier {
         }
 
         File tripleFile = createUniqueFile(filenamePrefix + ".triples." + extension, getOutputPath());
+
+         StringOutputStream outputStream = new StringOutputStream();
         FileOutputStream fos = new FileOutputStream(tripleFile);
         try {
-            model.write(fos, lang);
+            model.write(outputStream, lang);
         } catch (Exception e) {
            System.out.println("ERROR! There was an issue writing file.  This may happen if you chose to not assign " +
                    "prefixes and your identifiers are not well formed URIs.");

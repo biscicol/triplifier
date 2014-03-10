@@ -28,6 +28,7 @@ public class genbankSimplifier  {
      * @param outputFile
      * @throws IOException
      */
+    //public genbankSimplifier(File inputFile, File outputFile) throws IOException {
     public genbankSimplifier(File inputFile, File outputFile) throws IOException {
         // Create bufferedReader for reading input
         bufferedReader = new BufferedReader(new FileReader(inputFile));
