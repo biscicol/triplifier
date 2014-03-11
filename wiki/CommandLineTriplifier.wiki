@@ -7,11 +7,16 @@ To run the triplifier from the command-line, you can download a pre-compiled exe
 Once you download and install the package on your system you just type "triplify" on the command prompt and the following help will be displayed:
 
 {{{
-usage: triplify input_files [-debug] [-h] [-hasGuids] [-i <arg>] [-m
-       <arg>] [-o <arg>] [-roots <arg>] [-v]
+usage: triplify input_files [-debug] [-f <arg>] [-h] [-hasGuids] [-m
+       <arg>] [-roots <arg>] [-t <arg>] [-v]
  -debug                   Output debug statements and do not delete
                           processing files, enabling the user to debug
                           application
+ -f,--format <arg>        Set the output format to one of:
+                          ...N3
+                          ...NTriple (default)
+                          ...Turtle
+                          ...DOT (Graphviz)
  -h,--help                print this help message and exit
  -hasGuids                Use this if you have persistent identifiers
                           already in place-- that is, they are resolvable,
@@ -19,22 +24,17 @@ usage: triplify input_files [-debug] [-h] [-hasGuids] [-i <arg>] [-m
                           are all properly formatted URIs.  If you do not
                           add this option, the default is to use a system
                           specific prefix.
- -i,--input <arg>         Set the input data file type to one of:
-                          ...genbank
-                          ...dwc (Darwin Core Archive)
  -m,--mappingFile <arg>   Provide a D2RQ mapping file
                           (http://d2rq.org/d2rq-language).  If this option
                           is set it will ignore all other steps, and
                           triplify only based on the mapping file.
- -o,--output <arg>        Set the output format to one of:
-                          ...N3
-                          ...NTriple (default)
-                          ...Turtle
-                          ...DOT (Graphviz)
  -roots <arg>             Provide a deepRoots file (see
                           http://code.google.com/p/bcid/wiki/deepRoots)
                           This option will use Deep Roots mapping for
                           generated GUIDs.
+ -t,--type <arg>          Set the input data file type to one of:
+                          ...genbank
+                          ...dwc (Darwin Core Archive)
  -v,--version             Print the program version and exit.
 }}}
 
