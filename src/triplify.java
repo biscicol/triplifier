@@ -65,8 +65,8 @@ public class triplify {
                 "enabling the user to debug application");
 
         opts.addOption("o", "output", true, "Set the output format to one of:" +
-                "\n...N3 (default)" +
-                "\n...NTriple" +
+                "\n...N3" +
+                "\n...NTriple (default)" +
                 "\n...Turtle" +
                 "\n...DOT (Graphviz)");
 
@@ -103,20 +103,20 @@ public class triplify {
             return;
         }
 
-        // Set the language options
-        String language = FileUtils.langN3;
-        if (cl.getOptionValue("o").equals("N3")) {
-            language = FileUtils.langN3;
-        } else if (cl.getOptionValue("o").equals("NTriple")) {
-            language = FileUtils.langNTriple;
-        } else if (cl.getOptionValue("o").equals("Turtle")) {
-            language = FileUtils.langTurtle;
-        } else if (cl.getOptionValue("o").equals("DOT")) {
-            // Using N3 as default language for DOT since it is fastest
-            language = FileUtils.langN3;
-        } else {
-            System.err.println("invalid output type");
-            return;
+        // Set the language options, defaulting to langNTriple
+        String language = FileUtils.langNTriple;
+        if (cl.hasOption("o")) {
+            if (cl.getOptionValue("o").equals("N3")) {
+                language = FileUtils.langN3;
+            } else if (cl.getOptionValue("o").equals("NTriple")) {
+                language = FileUtils.langNTriple;
+            } else if (cl.getOptionValue("o").equals("Turtle")) {
+                language = FileUtils.langTurtle;
+            }
+            // Using NTriple as as default language before creating DOT
+            else if (cl.getOptionValue("o").equals("DOT")) {
+                language = FileUtils.langNTriple;
+            }
         }
 
         // Set the processing directory
@@ -127,7 +127,7 @@ public class triplify {
             try {
                 File mappingInputFile = new File(cl.getOptionValue("m"));
                 File mappingOutputFile = new File(processDirectory.getAbsoluteFile() + File.separator + mappingInputFile.getName() + ".triples.n3");
-                triplifyDirect t = new triplifyDirect(mappingInputFile, mappingOutputFile, language);
+                triplifyDirect t = new triplifyDirect(mappingInputFile, mappingOutputFile, language, "urn:x-biscicol:");
                 File outputFile = t.getOutputFile();
 
                 // Print the contents of the file
@@ -307,7 +307,7 @@ public class triplify {
      */
     private static void printContents(CommandLine cl, String fileName, String language) throws IOException {
         // Print Graphviz/DOT representation
-        if (cl.getOptionValue("o").equals("DOT")) {
+        if (cl.hasOption("o") && cl.getOptionValue("o").equals("DOT")) {
             Model rdf = ModelFactory.createOntologyModel(OntModelSpec.OWL_LITE_MEM_RULES_INF);
             rdf.read("file://" + fileName, "urn:", language);
             System.out.println(rdf2dot.parse(rdf));

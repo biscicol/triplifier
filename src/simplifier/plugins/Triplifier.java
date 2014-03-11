@@ -69,32 +69,26 @@ public class Triplifier {
         return getOutputPath() + mappingFile.getName();
     }
 
+    /**
+     * Access the triplifyDirect class to run D2RQ engine
+     * @param filenamePrefix
+     * @param mapping
+     * @param lang
+     * @return
+     * @throws Exception
+     */
     public String getTriples(String filenamePrefix, Mapping mapping, String lang) throws Exception {
         System.gc();
         SettingsManager sm = SettingsManager.getInstance();
         sm.loadProperties();
-        String baseURIForData = sm.retrieveValue("defaultURI", "urn:x-biscicol:");
 
-        Model model;
-        File outputFile = createUniqueFile(filenamePrefix + ".triples.txt", getOutputPath());
-        String inputFile = getMapping(filenamePrefix, mapping, true);
-        FileOutputStream fos = new FileOutputStream(outputFile);
+        triplifyDirect t = new triplifyDirect(
+                new File(getMapping(filenamePrefix, mapping, true)),
+                createUniqueFile(filenamePrefix + ".triples.txt", getOutputPath()),
+                lang,
+                sm.retrieveValue("defaultURI", "urn:x-biscicol:"));
 
-        model = new ModelD2RQ(
-                FileUtils.toURL(inputFile),
-                FileUtils.langN3,
-                baseURIForData);
-        try {
-            model.write(fos, lang);
-        } catch (Exception e) {
-            System.out.println("ERROR! There was an issue writing file.  This may happen if you chose to not assign " +
-                    "prefixes and your identifiers are not well formed URIs.");
-            throw new Exception("File writing exception", e);
-        }
-
-        fos.close();
-
-        return getOutputPath() + outputFile.getName();
+        return t.getOutputFile().getAbsoluteFile().toString();
     }
 }
 
