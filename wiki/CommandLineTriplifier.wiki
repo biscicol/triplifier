@@ -40,21 +40,10 @@ usage: triplify input_files [-debug] [-h] [-hasGuids] [-i <arg>] [-m
 
 ==Examples==
 
-Suppose we want to triplify a darwin core archive and write output to a specified directory.  We would use the following command:
+Suppose we want to triplify a darwin core archive, we would use the following command:
 
 {{{
-./triplify myDarwinCoreArchive.zip -o /myHomeDir/output -t dwc
-
-Beginning SQlite creation & connection
-Fixing missing or empty "eventID" column.
-Fixing missing or empty "locationID" column.
-Fixing missing or empty "taxonID" column.
-Fixing missing or empty "identificationID" column.
-Removing unneeded columns from the main table.
-Beginning simplifier instantiation
-Beginning mapping file creation
-Beginning triple file creation
-Done! see, /myHomeDir/output/myDarwinCoreArchive.zip.triples.ttl
+./triplify myDarwinCoreArchive.zip -i dwc > ~/myoutputfile.txt
 }}}
 
 ==Running from Source==
@@ -65,5 +54,5 @@ cd triplifier-read-only/
 mkdir dist
 ant
 java -classpath .:./out/triplifier:./lib/* triplify -h
-java -classpath .:./out/triplifier/:./lib/* triplify myDarwinCoreArchive.zip -t dwc
+java -classpath .:./out/triplifier/:./lib/* triplify myDarwinCoreArchive.zip -o dwc
 }}}
