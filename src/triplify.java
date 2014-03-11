@@ -64,13 +64,13 @@ public class triplify {
         opts.addOption("debug", false, "Output debug statements and do not delete processing files, " +
                 "enabling the user to debug application");
 
-        opts.addOption("o", "output", true, "Set the output format to one of:" +
+        opts.addOption("f", "format", true, "Set the output format to one of:" +
                 "\n...N3" +
                 "\n...NTriple (default)" +
                 "\n...Turtle" +
                 "\n...DOT (Graphviz)");
 
-        opts.addOption("i", "input", true, "Set the input data file type to one of:" +
+        opts.addOption("t", "type", true, "Set the input data file type to one of:" +
                 "\n...genbank" +
                 "\n...dwc (Darwin Core Archive)");
 
@@ -105,16 +105,16 @@ public class triplify {
 
         // Set the language options, defaulting to langNTriple
         String language = FileUtils.langNTriple;
-        if (cl.hasOption("o")) {
-            if (cl.getOptionValue("o").equals("N3")) {
+        if (cl.hasOption("f")) {
+            if (cl.getOptionValue("f").equals("N3")) {
                 language = FileUtils.langN3;
-            } else if (cl.getOptionValue("o").equals("NTriple")) {
+            } else if (cl.getOptionValue("f").equals("NTriple")) {
                 language = FileUtils.langNTriple;
-            } else if (cl.getOptionValue("o").equals("Turtle")) {
+            } else if (cl.getOptionValue("f").equals("Turtle")) {
                 language = FileUtils.langTurtle;
             }
             // Using NTriple as as default language before creating DOT
-            else if (cl.getOptionValue("o").equals("DOT")) {
+            else if (cl.getOptionValue("f").equals("DOT")) {
                 language = FileUtils.langNTriple;
             }
         }
@@ -154,14 +154,14 @@ public class triplify {
         }
 
         // Check the input version
-        if (!cl.hasOption("i")) {
+        if (!cl.hasOption("t")) {
             System.err.println("Must specify an input type with the -i option");
             return;
         }
 
         // Check that input type is valid
-        if (!cl.getOptionValue("i").equals("dwc") &&
-                !cl.getOptionValue("i").equals("genbank")) {
+        if (!cl.getOptionValue("t").equals("dwc") &&
+                !cl.getOptionValue("t").equals("genbank")) {
             System.err.println("Invalid input type");
             return;
         }
@@ -206,7 +206,7 @@ public class triplify {
         File inputFile = pm.setFile(cl.getArgs()[0]);
 
         // Handle genbank simplifier
-        if (cl.getOptionValue("i").equals("genbank")) {
+        if (cl.getOptionValue("t").equals("genbank")) {
             // Create TTL output file
             String pathPrefix = processDirectory + File.separator + "genbankOutput";
             File genbankFile = new File(pathPrefix + ".ttl");
@@ -307,7 +307,7 @@ public class triplify {
      */
     private static void printContents(CommandLine cl, String fileName, String language) throws IOException {
         // Print Graphviz/DOT representation
-        if (cl.hasOption("o") && cl.getOptionValue("o").equals("DOT")) {
+        if (cl.hasOption("f") && cl.getOptionValue("f").equals("DOT")) {
             Model rdf = ModelFactory.createOntologyModel(OntModelSpec.OWL_LITE_MEM_RULES_INF);
             rdf.read("file://" + fileName, "urn:", language);
             System.out.println(rdf2dot.parse(rdf));
