@@ -2,6 +2,7 @@ package simplifier.plugins;
 
 import JenaTools.StringOutputStream;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.sparql.SystemARQ;
 import com.hp.hpl.jena.util.FileUtils;
 import com.sun.jersey.core.util.ThrowHelper;
 import dbmap.Mapping;
@@ -83,7 +84,6 @@ public class Triplifier {
                 FileUtils.toURL(inputFile),
                 FileUtils.langN3,
                 baseURIForData);
-
         try {
             model.write(fos, lang);
         } catch (Exception e) {
@@ -91,7 +91,9 @@ public class Triplifier {
                     "prefixes and your identifiers are not well formed URIs.");
             throw new Exception("File writing exception", e);
         }
+
         fos.close();
+
         return getOutputPath() + outputFile.getName();
     }
 }
