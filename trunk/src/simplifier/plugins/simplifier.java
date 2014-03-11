@@ -168,6 +168,12 @@ public abstract class simplifier {
         return relation;
     }
 
+    public void setDataseturi(String name) {
+         Dataseturi duri = new Dataseturi();
+         duri.name =name;
+        this.dataseturi = duri;
+    }
+
     public Dataseturi getDataseturi() {
         return dataseturi;
     }
@@ -191,6 +197,8 @@ public abstract class simplifier {
         return schemaInspector.listTableNames(null).toString().contains(tableName);
     }
 
+
+
     /**
      * Create Entity, so calling functions can work with the actual Entity (e.g., putting them into relations)
      */
@@ -203,6 +211,7 @@ public abstract class simplifier {
             ArrayList attributes) {
 
         if (!tableInSchema(tableName)) return null;
+
 
         // Entity
         // Entity lEntity = new Entity(vocabularyItem.name);
