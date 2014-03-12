@@ -29,6 +29,7 @@ import com.sun.jersey.multipart.FormDataParam;
 import dbmap.Connection;
 import dbmap.Mapping;
 import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
+import org.codehaus.jackson.map.ObjectMapper;
 import settings.SettingsManager;
 import vocabulary.RDFreader;
 import vocabulary.Vocabulary;
@@ -81,7 +82,11 @@ public class Rest {
     }
 
     /**
-     * Upload file, convert into sqlite database, return Mapping representation of tabular data.
+     * Upload file, convert it into a SQLite database, and return a Mapping
+     * representation in JSON format.  Note that the returned content type is
+     * actually "text/plain", even though the response is a JSON-formatted
+     * string.  This is necessary for the UI to work properly with Internet
+     * Explorer.
      *
      * @param inputStream        File to be uploaded.
      * @param contentDisposition Form-data content disposition header.
@@ -89,9 +94,9 @@ public class Rest {
      */
     @POST
     @Path("/uploadDataSource")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Mapping uploadDataSource(
+    public String uploadDataSource(
             @FormDataParam("file") InputStream inputStream,
             @FormDataParam("file") FormDataContentDisposition contentDisposition)
             throws Exception {
@@ -109,7 +114,16 @@ public class Rest {
             tdc.convert();
             tdr.closeFile();
         }
-        return inspect(new Connection(sqliteFile));
+
+        // Get the data source Mapping object.
+        Mapping mapping = inspect(new Connection(sqliteFile));
+        
+        // In order to return JSON with the content-type "text/plain", we need
+        // to manually convert the Mapping object to JSON and then return it as
+        // a string.
+        ObjectMapper jsonmapper = new ObjectMapper();
+        
+        return jsonmapper.writeValueAsString(mapping);
     }
 
     /**
