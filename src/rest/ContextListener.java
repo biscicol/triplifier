@@ -10,9 +10,7 @@ import org.apache.log4j.Level;
  * when context is initialized/destroyed.
  * Needs an entry in web.xml.
  */
-public class ContextListener implements ServletContextListener
-{
-
+public class ContextListener implements ServletContextListener {
     /**
      * Register supported JDBC drivers.
      */

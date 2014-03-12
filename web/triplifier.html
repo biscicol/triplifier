@@ -1,7 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Triplifier</title>
@@ -57,7 +55,7 @@
     </div>
     <h3>Manage Projects</h3>
 
-    <div class="project"><input type='radio' name='projectChoice'/><label/></div>
+    <div class="project"><input type='radio' name='projectChoice'/><label></label></div>
 </div>
 
 <div id="dsDiv" class="section">
@@ -121,8 +119,8 @@
             </thead>
             <tbody>
             <tr>
-                <td/>
-                <td/>
+		<td></td>
+                <td></td>
             </tr>
             </tbody>
         </table>
@@ -141,36 +139,36 @@
         <table>
             <thead>
             <tr>
-                <th/>
+                <th></th>
                 <th colspan="2">Foreign Key</th>
                 <th colspan="2">Primary Key</th>
-                <th/>
+                <th></th>
             </tr>
             <tr>
-                <th/>
+                <th></th>
                 <th>Table</th>
                 <th>Column</th>
                 <th>Table</th>
                 <th>Column</th>
-                <th/>
+                <th></th>
             </tr>
             </thead>
             <tbody>
             <tr>
                 <td><input type="radio" name="joinChoice"/></td>
-                <td/>
-                <td/>
-                <td/>
-                <td/>
-                <td/>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
 
             <tr class="edit">
-                <td/>
-                <td><select name="foreignTable"/></td>
-                <td><select name="foreignColumn"/></td>
-                <td><select name="primaryTable"/></td>
-                <td><select name="primaryColumn"/></td>
+                <td></td>
+                <td><select name="foreignTable"></select></td>
+                <td><select name="foreignColumn"></select></td>
+                <td><select name="primaryTable"></select></td>
+		<td><select name="primaryColumn"></select></td>
                 <td>
                     <input type="button" value="Save" class="save"/>
                     <input type="button" value="Cancel" class="cancel"/>
@@ -189,7 +187,7 @@
     <div id="vocabularies">
         <h4>Vocabularies:</h4>
 
-        <div class="vocabulary"><input type='radio' name='vocabularyChoice'/><label class="external"/></div>
+	<div class="vocabulary"><input type='radio' name='vocabularyChoice'/><label class="external"></label></div>
         <hr/>
         <input type="button" class="showUpload" value="Upload custom..."/>
     </div>
@@ -204,32 +202,32 @@
         <table>
             <thead>
             <tr>
-                <th />
+                <th></th>
                 <th>Table</th>
                 <th>ID Column</th>
                 <th>Unique IDs? <span class="contexthelp"><a id="IDs_help" href="#">?</a></span></th>
                 <th>Class</th>
-                <th />
+                <th></th>
             </tr>
             </thead>
             <tbody>
             <tr>
                 <td><input type="radio" name="entityChoice"/></td>
-                <td />
-                <td />
-                <td style="text-align: center;" />
-                <td />
-                <td />
+                <td></td>
+                <td></td>
+		<td style="text-align: center;"></td>
+                <td></td>
+                <td></td>
             </tr>
 
             <tr class="edit">
-                <td />
-                <td><select name="table"/></td>
-		<td><select name="idColumn"/></td>
+                <td></td>
+		<td><select name="table"></select></td>
+		<td><select name="idColumn"></select></td>
 		<td style="text-align: center;"><input name="uniqueID" type="checkbox" /></td>
                 <td>
                     <input type="hidden" name="rdfClass[name]"/>
-                    <select name="rdfClass[uri]"/>
+                    <select name="rdfClass[uri]"></select>
                 </td>
                 <td>
                     <input type="button" value="Save" class="save"/>
@@ -255,29 +253,29 @@
         <table>
             <thead>
             <tr>
-                <th/>
+                <th></th>
                 <th>Concept</th>
                 <th>Predicate</th>
                 <th>Table column</th>
-                <th/>
+                <th></th>
             </tr>
             </thead>
             <tbody>
             <tr>
                 <td><input type="radio" name="entityChoice"/></td>
-                <td/>
-                <td/>
-                <td/>
-                <td/>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr class="edit">
-                <td/>
-                <td><select name="entity"/></td>
+                <td></td>
+                <td><select name="entity"></select></td>
                 <td>
                     <input type="hidden" name="rdfProperty[name]"/>
-                    <select name="rdfProperty[uri]"/>
+                    <select name="rdfProperty[uri]"></select>
                 </td>
-                <td><select name="column"/></td>
+                <td><select name="column"></select></td>
                 <td>
                     <input type="button" value="Save" class="save"/>
                     <input type="button" value="Cancel" class="cancel"/>
@@ -302,27 +300,27 @@
         <table>
             <thead>
             <tr>
-                <th/>
+                <th></th>
                 <th>Subject Concept</th>
                 <th>Predicate</th>
                 <th>Object Concept</th>
-                <th/>
+                <th></th>
             </tr>
             </thead>
             <tbody>
             <tr>
                 <td><input type="radio" name="relationChoice"/></td>
-                <td/>
-                <td/>
-                <td/>
-                <td/>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
 
             <tr class="edit">
-                <td/>
-                <td><select name="subject"/></td>
-                <td><select name="predicate"/></td>
-                <td><select name="object"/></td>
+                <td></td>
+                <td><select name="subject"></select></td>
+                <td><select name="predicate"></select></td>
+                <td><select name="object"></select></td>
                 <td>
                     <input type="button" value="Save" class="save"/>
                     <input type="button" value="Cancel" class="cancel"/>
