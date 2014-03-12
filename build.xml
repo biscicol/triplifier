@@ -195,6 +195,7 @@
     <!-- Currently does nothing, so no description is given for -projecthelp. -->
     <target name="init">
         <!-- Perform any build initialization in this target -->
+        <mkdir dir="dist" /> 
     </target>
 
     <!-- Create a JAR file of just the commander package -->
