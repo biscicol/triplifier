@@ -45,7 +45,7 @@ Files in the following formats are currently supported:  CSV, Excel spreadsheets
 
 We do not support direct uploads of SQL text files.  Instead, we support connecting directly to a SQL database (see Database connection above). 
 
-If you check the “auto-generate” box and select an input format (which currently only supports Darwin Core Archives) then the entire project will be configured for you automatically based on the Triplifier’s understanding of the input format.
+If you check the “auto-generate” box and select an input format (which currently only supports Darwin Core-Archives) then the entire project will be configured for you automatically based on the Triplifier’s understanding of the input format.  _If you are processing a DwC-A, we highly recommend you use this option.  It will save you a lot of time!_
 
 *Sample of a successful data source upload or connection:
 
