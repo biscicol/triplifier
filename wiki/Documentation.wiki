@@ -5,6 +5,8 @@
 
 The best way to learn about the Triplifier is to try it out for yourself!  Start by reading the basic descriptions of what the Triplifier is and what it can do at the [http://code.google.com/p/triplifier/ project's home page] and the documentation [Introduction introduction] page.  Then, visit http://www.biscicol.org/triplifier/ to work with the Web-based interface while you read through the rest of the user documentation.
 
+A hands-on approach to learning how the Triplifier works will be the most useful, so you will want to have some data to experiment with.  We recommend starting out with data in the Darwin Core-Archive (DwC-A) format, because DwC-As are very easy to run through the Triplifier.  If you don't have any DwC-As available, you can try out the sample DwC-As that are included in the "testdata" directory of the Triplifier's source distribution, such as [http://pac-12.com/2014-pac-12-mens-basketball-tournament this one].
+
  * [Introduction]
  * User documentation
    * [WebOrCLInterface Should I use the Web-based or command-line interface?]
