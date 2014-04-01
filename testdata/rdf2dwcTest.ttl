@@ -9,15 +9,15 @@
 <dwc:decimalLongitude>
       a       rdf:Property .
 
-<urn:x-biscicol:dwc:Taxon:11>
+<dwc:Taxon:11>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Hyperolius viridiflavus ngorongorensis Schiøtz, 1975" .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:14>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:14>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dwc:Event:5> , <urn:x-biscicol:dcterms:Location:9> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:8> ;
+      <bsc:depends_on> <dwc:Event:5> , <dcterms:Location:9> ;
+      <bsc:related_to> <dwc:Taxon:8> ;
       <dwc:catalogNumber> "14" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -27,12 +27,12 @@
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:14" ;
       <dwc:recordedBy> "Schiøtz & Westergaard" .
 
-<urn:x-biscicol:dwc:Taxon:21>
+<dwc:Taxon:21>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Xenoperdix udzungwensis obscurata Fjeldså & Kiure, 2003" .
 
-<urn:x-biscicol:dcterms:Location:2>
+<dcterms:Location:2>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-8.116667" ;
@@ -42,10 +42,10 @@
 <dwc:occurrenceID>
       a       rdf:Property .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:3>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:3>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dcterms:Location:12> , <urn:x-biscicol:dwc:Event:11> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:4> ;
+      <bsc:depends_on> <dcterms:Location:12> , <dwc:Event:11> ;
+      <bsc:related_to> <dwc:Taxon:4> ;
       <dwc:catalogNumber> "3" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -55,10 +55,10 @@
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:3" ;
       <dwc:recordedBy> "J. Kiure" .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:24>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:24>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dwc:Event:23> , <urn:x-biscicol:dcterms:Location:19> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:15> ;
+      <bsc:depends_on> <dwc:Event:23> , <dcterms:Location:19> ;
+      <bsc:related_to> <dwc:Taxon:15> ;
       <dwc:catalogNumber> "24" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -74,10 +74,10 @@
 <dwc:recordedBy>
       a       rdf:Property .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:2>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:2>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dwc:Event:12> , <urn:x-biscicol:dcterms:Location:12> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:4> ;
+      <bsc:depends_on> <dwc:Event:12> , <dcterms:Location:12> ;
+      <bsc:related_to> <dwc:Taxon:4> ;
       <dwc:catalogNumber> "2" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -87,35 +87,35 @@
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:2" ;
       <dwc:recordedBy> "J. Kiure" .
 
-<urn:x-biscicol:dwc:Event:12>
+<dwc:Event:12>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:12> .
+      <bsc:related_to> <dcterms:Location:12> .
 
-<urn:x-biscicol:dwc:Taxon:5>
+<dwc:Taxon:5>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Cnemaspis uzungwae  Perret, 1986" .
 
-<urn:x-biscicol:dcterms:Location:12>
+<dcterms:Location:12>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-9.766667" ;
       <dwc:decimalLongitude>
               "35.074333" .
 
-<urn:x-biscicol:dwc:Event:2>
+<dwc:Event:2>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:4> .
+      <bsc:related_to> <dcterms:Location:4> .
 
-<urn:x-biscicol:dwc:Taxon:19>
+<dwc:Taxon:19>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Sheppardia gunningi alticola Fjeldså, Roy, & Kiure, 2000" .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:13>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:13>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dcterms:Location:18> , <urn:x-biscicol:dwc:Event:4> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:7> ;
+      <bsc:depends_on> <dcterms:Location:18> , <dwc:Event:4> ;
+      <bsc:related_to> <dwc:Taxon:7> ;
       <dwc:catalogNumber> "13" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -125,11 +125,11 @@
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:13" ;
       <dwc:recordedBy> "Schiøtz" .
 
-<urn:x-biscicol:dwc:Event:19>
+<dwc:Event:19>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:7> .
+      <bsc:related_to> <dcterms:Location:7> .
 
-<urn:x-biscicol:dcterms:Location:9>
+<dcterms:Location:9>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-8.283333" ;
@@ -142,23 +142,23 @@
 <http://rs.tdwg.org/dwc/terms/DataSet>
       a       rdfs:Class .
 
-<urn:x-biscicol:dwc:Taxon:10>
+<dwc:Taxon:10>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Hyperolius viridiflavus mwanzae Schiøtz, 1975" .
 
-<urn:x-biscicol:dwc:Taxon:20>
+<dwc:Taxon:20>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Xenoperdix udzungwensis  Dinesen, Lehmberg, Svendsen, Hansen & Fjeldså, 1994" .
 
-<urn:x-biscicol:dcterms:Location:1>
+<dcterms:Location:1>
       a       <http://purl.org/dc/terms/Location> .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:23>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:23>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dcterms:Location:1> , <urn:x-biscicol:dwc:Event:20> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:3> ;
+      <bsc:depends_on> <dcterms:Location:1> , <dwc:Event:20> ;
+      <bsc:related_to> <dwc:Taxon:3> ;
       <dwc:catalogNumber> "23" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -168,17 +168,17 @@
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:23" ;
       <dwc:recordedBy> "Chenon" .
 
-<urn:x-biscicol:dcterms:Location:19>
+<dcterms:Location:19>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-3.160000" ;
       <dwc:decimalLongitude>
               "36.670666" .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:1>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:1>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dcterms:Location:5> , <urn:x-biscicol:dwc:Event:16> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:19> ;
+      <bsc:depends_on> <dcterms:Location:5> , <dwc:Event:16> ;
+      <bsc:related_to> <dwc:Taxon:19> ;
       <dwc:catalogNumber> "1" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -188,27 +188,27 @@
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:1" ;
       <dwc:recordedBy> "J. Kiure" .
 
-<urn:x-biscicol:dwc:Taxon:6>
+<dwc:Taxon:6>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Hyperolius kihangensis  A. Schiøtz & Westergaard, 1999" .
 
-<urn:x-biscicol:dcterms:Location:11>
+<dcterms:Location:11>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-9.233333" ;
       <dwc:decimalLongitude>
               "33.133331" .
 
-<urn:x-biscicol:dwc:Event:11>
+<dwc:Event:11>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:12> .
+      <bsc:related_to> <dcterms:Location:12> .
 
-<urn:x-biscicol:dwc:Event:1>
+<dwc:Event:1>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:2> .
+      <bsc:related_to> <dcterms:Location:2> .
 
-<urn:x-biscicol:dwc:Taxon:18>
+<dwc:Taxon:18>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Sheppardia aurantiithorax  Beresford, Fjeldså & Kiure, 2004" .
@@ -216,21 +216,21 @@
 <dwc:decimalLatitude>
       a       rdf:Property .
 
-<urn:x-biscicol:dcterms:Location:8>
+<dcterms:Location:8>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-8.500000" ;
       <dwc:decimalLongitude>
               "36.333332" .
 
-<urn:x-biscicol:dwc:Event:18>
+<dwc:Event:18>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:16> .
+      <bsc:related_to> <dcterms:Location:16> .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:12>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:12>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dcterms:Location:21> , <urn:x-biscicol:dwc:Event:3> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:6> ;
+      <bsc:depends_on> <dcterms:Location:21> , <dwc:Event:3> ;
+      <bsc:related_to> <dwc:Taxon:6> ;
       <dwc:catalogNumber> "12" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -243,10 +243,10 @@
 <bsc:related_to>
       a       rdf:Property .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:5>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:5>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dwc:Event:15> , <urn:x-biscicol:dcterms:Location:6> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:18> ;
+      <bsc:depends_on> <dwc:Event:15> , <dcterms:Location:6> ;
+      <bsc:related_to> <dwc:Taxon:18> ;
       <dwc:catalogNumber> "5" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -256,46 +256,46 @@
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:5" ;
       <dwc:recordedBy> "J. Bolding Kristensen" .
 
-<urn:x-biscicol:dcterms:Location:14>
+<dcterms:Location:14>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-7.833333" ;
       <dwc:decimalLongitude>
               "36.833332" .
 
-<urn:x-biscicol:dwc:Taxon:3>
+<dwc:Taxon:3>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Atractaspis irregularis  (Reinhardt, 1843)" .
 
-<urn:x-biscicol:dwc:Taxon:17>
+<dwc:Taxon:17>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Rhinotyphlops nigrocandidus  Broadley & Wallach, 2000" .
 
-<urn:x-biscicol:dwc:Event:10>
+<dwc:Event:10>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:11> .
+      <bsc:related_to> <dcterms:Location:11> .
 
-<urn:x-biscicol:dwc:Event:20>
+<dwc:Event:20>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:1> .
+      <bsc:related_to> <dcterms:Location:1> .
 
-<urn:x-biscicol:dwc:Event:4>
+<dwc:Event:4>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:18> .
+      <bsc:related_to> <dcterms:Location:18> .
 
-<urn:x-biscicol:dcterms:Location:7>
+<dcterms:Location:7>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-6.900000" ;
       <dwc:decimalLongitude>
               "36.566666" .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:11>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:11>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dcterms:Location:4> , <urn:x-biscicol:dwc:Event:2> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:2> ;
+      <bsc:depends_on> <dcterms:Location:4> , <dwc:Event:2> ;
+      <bsc:related_to> <dwc:Taxon:2> ;
       <dwc:catalogNumber> "11" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -308,17 +308,17 @@
 <http://purl.org/dc/terms/Location>
       a       rdfs:Class .
 
-<urn:x-biscicol:dwc:Event:17>
+<dwc:Event:17>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:16> .
+      <bsc:related_to> <dcterms:Location:16> .
 
 <dwc:catalogNumber>
       a       rdf:Property .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:4>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:4>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dwc:Event:14> , <urn:x-biscicol:dcterms:Location:6> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:18> ;
+      <bsc:depends_on> <dwc:Event:14> , <dcterms:Location:6> ;
+      <bsc:related_to> <dwc:Taxon:18> ;
       <dwc:catalogNumber> "4" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -331,7 +331,7 @@
 <dwc:datasetID>
       a       rdf:Property .
 
-<urn:x-biscicol:dcterms:Location:13>
+<dcterms:Location:13>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-7.833333" ;
@@ -343,26 +343,26 @@
 
 <file:///Users/jdeck/IdeaProjects/triplifier/tripleOutput/null>
       a       <http://rs.tdwg.org/dwc/terms/DataSet> ;
-      bsc:related_to <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:7> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:18> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:13> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:6> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:11> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:12> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:8> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:14> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:9> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:16> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:15> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:5> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:4> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:24> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:3> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:20> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:23> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:17> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:1> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:2> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:22> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:21> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:10> , <urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:19> .
+      bsc:related_to <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:7> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:18> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:13> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:6> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:11> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:12> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:8> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:14> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:9> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:16> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:15> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:5> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:4> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:24> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:3> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:20> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:23> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:17> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:1> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:2> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:22> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:21> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:10> , <dwc:Occurrence:urn:catalog:ZMUC:TanzVert:19> .
 
-<urn:x-biscicol:dwc:Taxon:4>
+<dwc:Taxon:4>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Batis crypta  Fjeldså, Bowie & Kiure, 2006" .
 
-<urn:x-biscicol:dwc:Taxon:16>
+<dwc:Taxon:16>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Nectarinia rufipennis  Jensen, 1983" .
 
-<urn:x-biscicol:dwc:Event:3>
+<dwc:Event:3>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:21> .
+      <bsc:related_to> <dcterms:Location:21> .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:19>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:19>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dcterms:Location:11> , <urn:x-biscicol:dwc:Event:10> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:13> ;
+      <bsc:depends_on> <dcterms:Location:11> , <dwc:Event:10> ;
+      <bsc:related_to> <dwc:Taxon:13> ;
       <dwc:catalogNumber> "19" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -372,15 +372,15 @@
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:19" ;
       <dwc:recordedBy> "Schiøtz" .
 
-<urn:x-biscicol:dwc:Taxon:15>
+<dwc:Taxon:15>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Micrelaps bicoloratus moyeri Rasmussen, 2002" .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:7>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:7>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dcterms:Location:16> , <urn:x-biscicol:dwc:Event:17> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:20> ;
+      <bsc:depends_on> <dcterms:Location:16> , <dwc:Event:17> ;
+      <bsc:related_to> <dwc:Taxon:20> ;
       <dwc:catalogNumber> "7" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -390,10 +390,10 @@
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:7" ;
       <dwc:recordedBy> "Dinesen et al." .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:18>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:18>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dcterms:Location:8> , <urn:x-biscicol:dwc:Event:9> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:12> ;
+      <bsc:depends_on> <dcterms:Location:8> , <dwc:Event:9> ;
+      <bsc:related_to> <dwc:Taxon:12> ;
       <dwc:catalogNumber> "18" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -403,65 +403,65 @@
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:18" ;
       <dwc:recordedBy> "Schiøtz" .
 
-<urn:x-biscicol:dwc:Event:21>
+<dwc:Event:21>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:20> .
+      <bsc:related_to> <dcterms:Location:20> .
 
-<urn:x-biscicol:dwc:Event:6>
+<dwc:Event:6>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:10> .
+      <bsc:related_to> <dcterms:Location:10> .
 
-<urn:x-biscicol:dwc:Taxon:9>
+<dwc:Taxon:9>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Hyperolius tannerorum  Schiøtz, 1982" .
 
-<urn:x-biscicol:dcterms:Location:16>
+<dcterms:Location:16>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-7.750000" ;
       <dwc:decimalLongitude>
               "36.500000" .
 
-<urn:x-biscicol:dwc:Event:16>
+<dwc:Event:16>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:5> .
+      <bsc:related_to> <dcterms:Location:5> .
 
-<urn:x-biscicol:dwc:Taxon:1>
+<dwc:Taxon:1>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Afrixalus morerei  Dubois, 1985" .
 
-<urn:x-biscicol:dcterms:Location:6>
+<dcterms:Location:6>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-6.826500" ;
       <dwc:decimalLongitude>
               "36.556168" .
 
-<urn:x-biscicol:dwc:Taxon:14>
+<dwc:Taxon:14>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Leptosiaphos rhomboidalis  Broadley, 1989" .
 
-<urn:x-biscicol:dcterms:Location:5>
+<dcterms:Location:5>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-5.566667" ;
       <dwc:decimalLongitude>
               "37.466667" .
 
-<urn:x-biscicol:dcterms:Location:10>
+<dcterms:Location:10>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-4.800000" ;
       <dwc:decimalLongitude>
               "38.500000" .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:6>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:6>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dwc:Event:19> , <urn:x-biscicol:dcterms:Location:7> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:21> ;
+      <bsc:depends_on> <dwc:Event:19> , <dcterms:Location:7> ;
+      <bsc:related_to> <dwc:Taxon:21> ;
       <dwc:catalogNumber> "6" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -471,21 +471,21 @@
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:6" ;
       <dwc:recordedBy> "J. Kiure" .
 
-<urn:x-biscicol:dwc:Event:5>
+<dwc:Event:5>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:9> .
+      <bsc:related_to> <dcterms:Location:9> .
 
-<urn:x-biscicol:dwc:Event:22>
+<dwc:Event:22>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:13> .
+      <bsc:related_to> <dcterms:Location:13> .
 
 bsc:related_to
       a       rdf:Property .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:20>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:20>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dcterms:Location:13> , <urn:x-biscicol:dwc:Event:22> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:14> ;
+      <bsc:depends_on> <dcterms:Location:13> , <dwc:Event:22> ;
+      <bsc:related_to> <dwc:Taxon:14> ;
       <dwc:catalogNumber> "20" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -495,17 +495,17 @@ bsc:related_to
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:20" ;
       <dwc:recordedBy> "N. Scharff" .
 
-<urn:x-biscicol:dcterms:Location:20>
+<dcterms:Location:20>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-7.783333" ;
       <dwc:decimalLongitude>
               "36.900002" .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:17>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:17>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dwc:Event:8> , <urn:x-biscicol:dcterms:Location:17> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:11> ;
+      <bsc:depends_on> <dwc:Event:8> , <dcterms:Location:17> ;
+      <bsc:related_to> <dwc:Taxon:11> ;
       <dwc:catalogNumber> "17" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -515,7 +515,7 @@ bsc:related_to
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:17" ;
       <dwc:recordedBy> "Schiøtz" .
 
-<urn:x-biscicol:dcterms:Location:15>
+<dcterms:Location:15>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-2.516667" ;
@@ -525,7 +525,7 @@ bsc:related_to
 <dwc:Occurrence>
       a       rdfs:Class .
 
-<urn:x-biscicol:dwc:Taxon:2>
+<dwc:Taxon:2>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Afrixalus sylvaticus  Schiøtz, 1975" .
@@ -533,14 +533,14 @@ bsc:related_to
 <dwc:Taxon>
       a       rdfs:Class .
 
-<urn:x-biscicol:dwc:Event:15>
+<dwc:Event:15>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:6> .
+      <bsc:related_to> <dcterms:Location:6> .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:10>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:10>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dwc:Event:1> , <urn:x-biscicol:dcterms:Location:2> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:1> ;
+      <bsc:depends_on> <dwc:Event:1> , <dcterms:Location:2> ;
+      <bsc:related_to> <dwc:Taxon:1> ;
       <dwc:catalogNumber> "10" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -550,26 +550,26 @@ bsc:related_to
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:10" ;
       <dwc:recordedBy> "Schiøtz" .
 
-<urn:x-biscicol:dwc:Event:8>
+<dwc:Event:8>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:17> .
+      <bsc:related_to> <dcterms:Location:17> .
 
-<urn:x-biscicol:dcterms:Location:4>
+<dcterms:Location:4>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-4.183333" ;
       <dwc:decimalLongitude>
               "39.616669" .
 
-<urn:x-biscicol:dwc:Taxon:13>
+<dwc:Taxon:13>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Hyperolius viridis  Schiøtz, 1975" .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:9>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:9>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dcterms:Location:14> , <urn:x-biscicol:dwc:Event:13> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:16> ;
+      <bsc:depends_on> <dcterms:Location:14> , <dwc:Event:13> ;
+      <bsc:related_to> <dwc:Taxon:16> ;
       <dwc:catalogNumber> "9" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -579,10 +579,10 @@ bsc:related_to
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:9" ;
       <dwc:recordedBy> "F.P. Jensen" .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:16>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:16>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dcterms:Location:15> , <urn:x-biscicol:dwc:Event:7> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:10> ;
+      <bsc:depends_on> <dcterms:Location:15> , <dwc:Event:7> ;
+      <bsc:related_to> <dwc:Taxon:10> ;
       <dwc:catalogNumber> "16" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -592,14 +592,14 @@ bsc:related_to
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:16" ;
       <dwc:recordedBy> "Schiøtz" .
 
-<urn:x-biscicol:dcterms:Location:21>
+<dcterms:Location:21>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-8.366667" ;
       <dwc:decimalLongitude>
               "35.966667" .
 
-<urn:x-biscicol:dwc:Taxon:7>
+<dwc:Taxon:7>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Hyperolius minutissimus  Schiøtz, 1975" .
@@ -607,21 +607,21 @@ bsc:related_to
 <dwc:collectionCode>
       a       rdf:Property .
 
-<urn:x-biscicol:dwc:Event:23>
+<dwc:Event:23>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:19> .
+      <bsc:related_to> <dcterms:Location:19> .
 
-<urn:x-biscicol:dcterms:Location:18>
+<dcterms:Location:18>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-9.333333" ;
       <dwc:decimalLongitude>
               "34.766666" .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:21>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:21>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dcterms:Location:3> , <urn:x-biscicol:dwc:Event:24> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:17> ;
+      <bsc:depends_on> <dcterms:Location:3> , <dwc:Event:24> ;
+      <bsc:related_to> <dwc:Taxon:17> ;
       <dwc:catalogNumber> "21" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -631,34 +631,34 @@ bsc:related_to
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:21" ;
       <dwc:recordedBy> "Gravlund & Andersen" .
 
-<urn:x-biscicol:dwc:Event:14>
+<dwc:Event:14>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:6> .
+      <bsc:related_to> <dcterms:Location:6> .
 
-<urn:x-biscicol:dwc:Event:9>
+<dwc:Event:9>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:8> .
+      <bsc:related_to> <dcterms:Location:8> .
 
-<urn:x-biscicol:dwc:Event:7>
+<dwc:Event:7>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:15> .
+      <bsc:related_to> <dcterms:Location:15> .
 
-<urn:x-biscicol:dwc:Taxon:12>
+<dwc:Taxon:12>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Hyperolius viridiflavus reesi Schiøtz, 1982" .
 
-<urn:x-biscicol:dcterms:Location:3>
+<dcterms:Location:3>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-8.150000" ;
       <dwc:decimalLongitude>
               "36.083332" .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:8>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:8>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dcterms:Location:16> , <urn:x-biscicol:dwc:Event:18> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:20> ;
+      <bsc:depends_on> <dcterms:Location:16> , <dwc:Event:18> ;
+      <bsc:related_to> <dwc:Taxon:20> ;
       <dwc:catalogNumber> "8" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -668,7 +668,7 @@ bsc:related_to
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:8" ;
       <dwc:recordedBy> "Dinesen et al." .
 
-<urn:x-biscicol:dwc:Taxon:8>
+<dwc:Taxon:8>
       a       <dwc:Taxon> ;
       <dwc:scientificName>
               "Hyperolius pseudargus  Schiøtz & Westergaard, 1999" .
@@ -676,10 +676,10 @@ bsc:related_to
 <dwc:scientificName>
       a       rdf:Property .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:15>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:15>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dcterms:Location:10> , <urn:x-biscicol:dwc:Event:6> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:9> ;
+      <bsc:depends_on> <dcterms:Location:10> , <dwc:Event:6> ;
+      <bsc:related_to> <dwc:Taxon:9> ;
       <dwc:catalogNumber> "15" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -689,14 +689,14 @@ bsc:related_to
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:15" ;
       <dwc:recordedBy> "Schiøtz" .
 
-<urn:x-biscicol:dwc:Event:24>
+<dwc:Event:24>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:3> .
+      <bsc:related_to> <dcterms:Location:3> .
 
-<urn:x-biscicol:dwc:Occurrence:urn:catalog:ZMUC:TanzVert:22>
+<dwc:Occurrence:urn:catalog:ZMUC:TanzVert:22>
       a       <dwc:Occurrence> ;
-      <bsc:depends_on> <urn:x-biscicol:dwc:Event:21> , <urn:x-biscicol:dcterms:Location:20> ;
-      <bsc:related_to> <urn:x-biscicol:dwc:Taxon:5> ;
+      <bsc:depends_on> <dwc:Event:21> , <dcterms:Location:20> ;
+      <bsc:related_to> <dwc:Taxon:5> ;
       <dwc:catalogNumber> "22" ;
       <dwc:collectionCode>
               "TanzVert" ;
@@ -706,13 +706,13 @@ bsc:related_to
       <dwc:occurrenceID> "urn:catalog:ZMUC:TanzVert:22" ;
       <dwc:recordedBy> "M.Stoltze & N.Scharff" .
 
-<urn:x-biscicol:dcterms:Location:17>
+<dcterms:Location:17>
       a       <http://purl.org/dc/terms/Location> ;
       <dwc:decimalLatitude>
               "-3.166667" ;
       <dwc:decimalLongitude>
               "35.583332" .
 
-<urn:x-biscicol:dwc:Event:13>
+<dwc:Event:13>
       a       <dwc:Event> ;
-      <bsc:related_to> <urn:x-biscicol:dcterms:Location:14> .
+      <bsc:related_to> <dcterms:Location:14> .
