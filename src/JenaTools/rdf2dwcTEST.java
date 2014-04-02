@@ -95,7 +95,7 @@ public class rdf2dwcTEST {
         // Set logging output level
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.ERROR);
 
-        JenaTools.rdf2dwcTEST r = new JenaTools.rdf2dwcTEST("rdf2dwcTest.ttl", FileUtils.langTurtle);
+        rdf2dwcTEST r = new rdf2dwcTEST("rdf2dwcTest.ttl", FileUtils.langTurtle);
 
         // Output query results
         r.printer(r.getDwcClass("dwc:Occurrence"));
