@@ -11,6 +11,8 @@ public class rdf2dwc {
     private String baseuri;
     Model model;
     QueryExecution qe;
+    int depth = 0;          // Go to a maximum Depth in the tree
+    private Resource rootResource;
 
     /**
      * Constructor reads the test File
@@ -36,11 +38,12 @@ public class rdf2dwc {
         String queryString =
                 "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
                         "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  " +
-                        "select ?s ?p ?o " +
+                        "select ?s " +
                         "where { " +
-                        "?s ?p ?o . " +
+                        //"?s ?p ?o . " +
+                        //"?s a <" + queryClass + "> . " +
                         "?s a <" + queryClass + "> . " +
-                        "FILTER(isLiteral(?o)) . " +
+                        //"FILTER(isLiteral(?o)) . " +
                         "} \n ";
         // Create a new query
         Query query = QueryFactory.create(queryString);
@@ -59,15 +62,30 @@ public class rdf2dwc {
     public void printer(ResultSet resultSet) {
         for (; resultSet.hasNext(); ) {
             QuerySolution soln = resultSet.nextSolution();
-            RDFNode x = soln.get("s");
-            Resource r = soln.getResource("p");
-            Literal l = soln.getLiteral("o");
+            rootResource = soln.getResource("s");
+             printMyLiterals(rootResource);
 
-            // Print output as an example here
-            System.out.println(x.toString() + " " + r.toString() + " " + l.toString());
         }
         // close the Query after printing.
         qe.close();
+    }
+    public void printMyLiterals(Resource resource) {
+        depth++;
+         StmtIterator s = resource.listProperties();
+            while (s.hasNext()) {
+                Statement s2 = s.nextStatement();
+
+                Resource x2 = s2.getSubject();
+                Resource r2 = s2.getPredicate();
+                RDFNode l2 = s2.getObject();
+                if (l2.isLiteral())
+                    System.out.println(rootResource + " " + r2.toString() + " " + l2);
+
+                if (!l2.isLiteral() && depth < 3)
+                    printMyLiterals(l2.asResource());
+            }
+
+         depth--;
     }
 
     /**
@@ -81,7 +99,7 @@ public class rdf2dwc {
 
         // Output query results
         r.printer(r.getDwcClass("dwc:Occurrence"));
-        r.printer(r.getDwcClass("dwc:Taxon"));
+        //r.printer(r.getDwcClass("dwc:Taxon"));
     }
 
 }
