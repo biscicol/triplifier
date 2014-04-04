@@ -4,10 +4,19 @@ import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileUtils;
 import org.apache.log4j.Level;
+
 import java.io.File;
+import java.util.ArrayList;
 
 /**
- * Conversion of input RDF data to ISATab Specification
+ * Conversion of input RDF data to ISATab Specification.
+ * Classes are coded using the Biological Collections Ontology while relationships are translated to graph-based
+ * instructions that are used to inform the construction of source-sample based chains as part of the "ISATab study file"
+ * and also assays as part of the "ISATab assay files"
+ *
+ * derives_from (transitive/non-symmetric)  indicates sample-based derivations
+ * depends_on (non-transitive/non-symmetric)   indicates
+ *
  */
 public class rdf2isa extends rdfConversionTools {
 
@@ -29,6 +38,7 @@ public class rdf2isa extends rdfConversionTools {
         for (; resultSet.hasNext(); ) {
             QuerySolution soln = resultSet.nextSolution();
             rootResource = soln.getResource("s");
+            System.out.println(rootResource);
              printMyLiterals(rootResource);
 
         }
@@ -68,7 +78,7 @@ public class rdf2isa extends rdfConversionTools {
                 inputFile,
                 FileUtils.langTurtle,
                 3,
-                ResourceFactory.createResource("dwc:Occurrence"),
+                ResourceFactory.createResource("dwc:Event"),
                 org.gbif.utils.file.FileUtils.createTempDir());
 
         // Output query results
@@ -76,5 +86,24 @@ public class rdf2isa extends rdfConversionTools {
         //r.printer(r.getDwcClass("dwc:Taxon"));
     }
 
+    class Investigation {
+        ArrayList<Study> studyArrayList = new ArrayList<Study>();
+    }
+    class Study {
+        ArrayList<Sample> sampleNameArrayList = new ArrayList<Sample>();
+    }
+    class Sample {
+        Protocol protocol;
+    }
+    class Protocol {
+        String protocolURI;
+        String protocolName;
+    }
+    class Assay {
+
+    }
+
+
 }
+
 
