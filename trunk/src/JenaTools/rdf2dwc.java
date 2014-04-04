@@ -24,6 +24,7 @@ import org.apache.log4j.Level;
 public class rdf2dwc extends rdfConversionTools {
     private DwcTerm dwcRootTerm;
     private static final TermFactory TERM_FACTORY = TermFactory.instance();
+    private Boolean changeOccurrenceIDtoMaterialSampleID = false;
 
     /**
      * rdf2dwc reads RDF input and outputs a darwin core archive
@@ -34,11 +35,20 @@ public class rdf2dwc extends rdfConversionTools {
      * @param rootResource is the root term to use when traversing the model
      * @param dwcRootTerm  is the root to use for constructing the DwC Archive (materialSample, Taxon, or Occurrence)
      * @param outputDir    is the directory to write output to
+     * @param changeOccurrenceIDtoMaterialSampleID  is a boolean if set to true will change all occurrenceID to materialSampleID
      */
-    public rdf2dwc(String inputFile, String lang, Integer depth, Resource rootResource, DwcTerm dwcRootTerm, File outputDir) {
+    public rdf2dwc(
+            String inputFile,
+            String lang,
+            Integer depth,
+            Resource rootResource,
+            DwcTerm dwcRootTerm,
+            File outputDir,
+            Boolean changeOccurrenceIDtoMaterialSampleID) {
 
         super(inputFile, lang, depth, rootResource, outputDir);
         this.dwcRootTerm = dwcRootTerm;
+        this.changeOccurrenceIDtoMaterialSampleID = changeOccurrenceIDtoMaterialSampleID;
     }
 
 
@@ -52,8 +62,9 @@ public class rdf2dwc extends rdfConversionTools {
         // Loop each of the root nodes
         for (; resultSet.hasNext(); ) {
             QuerySolution soln = resultSet.nextSolution();
-            System.out.println("Create new record/row, with ID=" + dwcRootTerm);
-            writer.newRecord(dwcRootTerm.toString());
+            Resource recordID = soln.getResource("s");
+            //System.out.println("Create new record/row, with ID=" + soln.getResource("s"));
+            writer.newRecord(recordID.toString());
             printResourceLiterals(soln.getResource("s"), writer);
         }
 
@@ -78,9 +89,22 @@ public class rdf2dwc extends rdfConversionTools {
             Resource r2 = s2.getPredicate();
             RDFNode l2 = s2.getObject();
 
+            // In cases where the user has expressed a MaterialSample Core and has an OccurrenceID, then
+            // map the occurrenceID to materialSampleID
+
+
             // lookup the Term using the predicate, e.g dwc:occurrenceID -> DwcTerm.occurrenceID
             Term term = TERM_FACTORY.findTerm(r2.toString());
+            // In cases where there is an occurrenceID specified and this is a materialSample core,
+            // then force the occurrenceID to be materialSampleID
+            if (changeOccurrenceIDtoMaterialSampleID &&
+                    dwcRootTerm.equals(DwcTerm.MaterialSample) &&
+                    term.toString().equals("dwc:occurrenceID")) {
+                term = TERM_FACTORY.findTerm("dwc:materialSampleID");
+            }
+
             if (l2.isLiteral()) {
+                //System.out.println("   " + term.toString() + " " + l2.toString());
                 writer.addCoreColumn(term, l2.toString());
             }
 
@@ -107,7 +131,8 @@ public class rdf2dwc extends rdfConversionTools {
                 3,
                 ResourceFactory.createResource("dwc:Occurrence"),
                 DwcTerm.MaterialSample,
-                org.gbif.utils.file.FileUtils.createTempDir());
+                org.gbif.utils.file.FileUtils.createTempDir(),
+                true);
 
         // Output query results
         r.printer(r.getRootResources());

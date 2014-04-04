@@ -43,12 +43,12 @@ public class rdfConversionTools {
         String queryString =
                 "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
                         "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  " +
-                        "select ?s ?p ?o " +
+                        "select ?s  " +
                         "where { " +
                         "?s ?p ?o . " +
                         "?s a <" + rootResource.toString() + "> . " +
                         "FILTER(isLiteral(?o)) . " +
-                        "} \n ";
+                        "} group by ?s \n ";
         // Create a new query
         System.out.println(queryString);
         Query query = QueryFactory.create(queryString);
