@@ -1,0 +1,81 @@
+<urn:x-biscicol:maintable.occurrenceID_1> <http://biscicol.org/terms/biscicol.owl#related_to> <urn:x-biscicol:taxon.id_1> .
+<urn:x-biscicol:maintable.identificationID_1> <http://biscicol.org/terms/biscicol.owl#depends_on> <urn:x-biscicol:taxon.id_1> .
+<urn:x-biscicol:maintable.occurrenceID_1> <http://biscicol.org/terms/biscicol.owl#depends_on> <urn:x-biscicol:event.id_1> .
+<urn:x-biscicol:maintable.occurrenceID_1> <http://biscicol.org/terms/biscicol.owl#depends_on> <urn:x-biscicol:location.id_1> .
+<urn:x-biscicol:event.id_1> <http://biscicol.org/terms/biscicol.owl#related_to> <urn:x-biscicol:location.id_1> .
+<urn:x-biscicol:maintable.identificationID_1> <http://biscicol.org/terms/biscicol.owl#depends_on> <urn:x-biscicol:maintable.occurrenceID_1> .
+<urn:x-biscicol:maintable.occurrenceID_1> <http://rs.tdwg.org/dwc/terms/occurrenceStatus> "present" .
+<urn:x-biscicol:maintable.occurrenceID_1> <http://rs.tdwg.org/dwc/terms/recordedBy> "Junius Henderson" .
+<urn:x-biscicol:maintable.occurrenceID_1> <http://rs.tdwg.org/dwc/terms/basisOfRecord> "HumanObservation" .
+<urn:x-biscicol:maintable.occurrenceID_1> <http://rs.tdwg.org/dwc/terms/collectionCode> "HendersonNotes" .
+<urn:x-biscicol:maintable.occurrenceID_1> <http://rs.tdwg.org/dwc/terms/catalogNumber> "JHFN1-3-A" .
+<urn:x-biscicol:maintable.occurrenceID_1> <http://rs.tdwg.org/dwc/terms/associatedMedia> "http://en.wikisource.org/wiki/Page:Field_Notes_of_Junius_Henderson,_Notebook_1.djvu/3?oldid=3636719" .
+<urn:x-biscicol:maintable.occurrenceID_1> <http://rs.tdwg.org/dwc/terms/institutionCode> "UCM" .
+<urn:x-biscicol:maintable.occurrenceID_1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rs.tdwg.org/dwc/terms/Occurrence> .
+<urn:x-biscicol:henderson.zip.1> <http://biscicol.org/terms/biscicol.owl#related_to> <urn:x-biscicol:maintable.occurrenceID_1> .
+<urn:x-biscicol:maintable.identificationID_1> <http://rs.tdwg.org/dwc/terms/identificationRemarks> "Observation cross-referenced using ITIS and/or EOL synonymy services through Google Refine. Results were verified by manually by the individual(s) noted in IdentifiedBy. Cross-reference and validation proved both ITIS and EOL correct on this record." .
+<urn:x-biscicol:maintable.identificationID_1> <http://rs.tdwg.org/dwc/terms/identifiedBy> "Gaurav" .
+<urn:x-biscicol:maintable.identificationID_1> <http://rs.tdwg.org/dwc/terms/dateIdentified> "1905-07-28" .
+<urn:x-biscicol:maintable.identificationID_1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rs.tdwg.org/dwc/terms/Identification> .
+<urn:x-biscicol:taxon.id_1> <http://rs.tdwg.org/dwc/terms/order> "Passeriformes" .
+<urn:x-biscicol:taxon.id_1> <http://rs.tdwg.org/dwc/terms/kingdom> "Animalia" .
+<urn:x-biscicol:taxon.id_1> <http://rs.tdwg.org/dwc/terms/taxonomicStatus> "valid" .
+<urn:x-biscicol:taxon.id_1> <http://rs.tdwg.org/dwc/terms/family> "Tyrannidae" .
+<urn:x-biscicol:taxon.id_1> <http://rs.tdwg.org/dwc/terms/taxonRemarks> "ITIS taxonomic serial number (TSN) used to populate the taxon names (at each available rank), vernacularName, and taxonomicStatus where ITIS or both ITIS and EOL provided the correct reference for identification (as verified by the individual(s) noted in identifiedBy). ITIS TSN recorded in taxonID." .
+<urn:x-biscicol:taxon.id_1> <http://rs.tdwg.org/dwc/terms/class> "Aves" .
+<urn:x-biscicol:taxon.id_1> <http://rs.tdwg.org/dwc/terms/genus> "Sayornis" .
+<urn:x-biscicol:taxon.id_1> <http://rs.tdwg.org/dwc/terms/vernacularName> "Say's Phoebe" .
+<urn:x-biscicol:taxon.id_1> <http://rs.tdwg.org/dwc/terms/scientificName> "Sayornis saya (Bonaparte, 1825)" .
+<urn:x-biscicol:taxon.id_1> <http://rs.tdwg.org/dwc/terms/phylum> "Chordata" .
+<urn:x-biscicol:taxon.id_1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rs.tdwg.org/dwc/terms/Taxon> .
+<urn:x-biscicol:event.id_1> <http://rs.tdwg.org/dwc/terms/verbatimEventDate> "July 28, 1905" .
+<urn:x-biscicol:event.id_1> <http://rs.tdwg.org/dwc/terms/month> "7" .
+<urn:x-biscicol:event.id_1> <http://rs.tdwg.org/dwc/terms/eventDate> "1905-07-28" .
+<urn:x-biscicol:event.id_1> <http://rs.tdwg.org/dwc/terms/year> "1905" .
+<urn:x-biscicol:event.id_1> <http://rs.tdwg.org/dwc/terms/fieldNotes> "http://en.wikisource.org/wiki/Field_Notes_of_Junius_Henderson" .
+<urn:x-biscicol:event.id_1> <http://rs.tdwg.org/dwc/terms/day> "28" .
+<urn:x-biscicol:event.id_1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rs.tdwg.org/dwc/terms/Event> .
+<urn:x-biscicol:location.id_1> <http://rs.tdwg.org/dwc/terms/countryCode> "US" .
+<urn:x-biscicol:location.id_1> <http://rs.tdwg.org/dwc/terms/verbatimLocality> "Boulder, Colo" .
+<urn:x-biscicol:location.id_1> <http://rs.tdwg.org/dwc/terms/locality> "Boulder, Colorado" .
+<urn:x-biscicol:location.id_1> <http://rs.tdwg.org/dwc/terms/country> "United States of America" .
+<urn:x-biscicol:location.id_1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/dc/terms/Location> .
+<urn:x-biscicol:henderson.zip.1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rs.tdwg.org/dwc/terms/DataSet> .
+<http://rs.tdwg.org/dwc/terms/basisOfRecord> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/phylum> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/taxonomicStatus> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://biscicol.org/terms/biscicol.owl#related_to> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/country> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/taxonRemarks> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/kingdom> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/eventDate> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/dateIdentified> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/associatedMedia> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/occurrenceStatus> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://biscicol.org/terms/biscicol.owl#depends_on> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/Taxon> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class> .
+<http://rs.tdwg.org/dwc/terms/recordedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/verbatimLocality> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/identificationRemarks> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/fieldNotes> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/class> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/institutionCode> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/scientificName> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/Event> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class> .
+<http://rs.tdwg.org/dwc/terms/genus> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/locality> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/year> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/vernacularName> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/order> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://purl.org/dc/terms/Location> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class> .
+<http://rs.tdwg.org/dwc/terms/Identification> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class> .
+<http://rs.tdwg.org/dwc/terms/catalogNumber> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/verbatimEventDate> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/Occurrence> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class> .
+<http://rs.tdwg.org/dwc/terms/countryCode> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/DataSet> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class> .
+<http://rs.tdwg.org/dwc/terms/identifiedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/collectionCode> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/day> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/month> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://rs.tdwg.org/dwc/terms/family> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
