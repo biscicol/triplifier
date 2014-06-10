@@ -7,6 +7,7 @@ To illustrate what data looks like after triplifying, we have provided the follo
 == Abbreviated Dataset (1 row) ==
 
   * [http://biscicol.org/triplifier/sampledata/henderson/henderson-short.pdf Henderson PDF file] which contains all relevant class level relations and an abbreviated set of properties.
+ * [http://biscicol.org/triplifier/sampledata/henderson/henderson-short.jpg Henderson JPG file] which is the same image as the PDF file above.
   * [http://biscicol.org/triplifier/sampledata/henderson/henderson-short.dot Henderson DOT file] for viewing with [http://www.graphviz.org/ GraphViz]
   * [http://biscicol.org/triplifier/sampledata/henderson/henderson-short.nt Henderson N-Triple file] for use with SPARQL processors
   * [http://biscicol.org/triplifier/sampledata/henderson/henderson-short.vpk Henderson VUE package] for viewing with [http://vue.tufts.edu/ Visual Understanding Environment], containing all relevant class level relations and an abbreviated set of properties.
