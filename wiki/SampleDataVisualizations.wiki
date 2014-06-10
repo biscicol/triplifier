@@ -4,15 +4,14 @@
 
 To illustrate what data looks like after triplifying, we have provided the following example dataset and accompanying visualizations based on the Henderson Field Notebook Dataset.  The abbreviated dataset is limited to 1 row so content can be visualized in graphical form, which would be impossible to understand visually with 1000 rows.  
 
-= Details =
+== Abbreviated Dataset (1 row) ==
 
-Abbreviated Dataset ... 1 row
   * [http://biscicol.org/triplifier/sampledata/henderson/henderson-short.pdf PDF file]
   * [http://biscicol.org/triplifier/sampledata/henderson/henderson-short.dot DOT file] for viewing with [http://www.graphviz.org/ GraphViz]
   * [http://biscicol.org/triplifier/sampledata/henderson/henderson-short.nt N-Triple file] for use with SPARQL processors
   * [http://biscicol.org/triplifier/sampledata/henderson/henderson-short.vue VUE file] for viewing with [http://vue.tufts.edu/ Visual Understanding Environment]
   * [http://biscicol.org/triplifier/sampledata/henderson/henderson-short.zip Darwin Core Archive Zip file] which can be run through the triplifier
 
-Full Dataset ... 1000 row
+== Full Dataset (1069 rows) ==
   * [http://biscicol.org/triplifier/sampledata/henderson/henderson.nt N-Triple file] for use with SPARQL processors
   * [http://biscicol.org/triplifier/sampledata/henderson/henderson.zip Darwin Core Archive Zip file] which can be run through the triplifier
