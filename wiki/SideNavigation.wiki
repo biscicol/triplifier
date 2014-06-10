@@ -8,3 +8,4 @@
    * [CommandLineTriplifier The command-line interface]
    * [WhatCanIDoWithMyData What can I do with my RDF data?]
  * [DeveloperInformation Information for developers]
+ * [SampleDataVisualizations Sample Data Visualizations]
