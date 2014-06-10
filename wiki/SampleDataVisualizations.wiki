@@ -1,6 +1,6 @@
 #summary Sample Visualizations of a single dataset
 
-= Introduction =
+= Introduction to Visualizing Triplifier Data =
 
 To illustrate what data looks like after triplifying, we have provided the following example dataset and accompanying visualizations based on the Henderson Field Notebook Dataset.  The abbreviated dataset is limited to 1 row so content can be visualized in graphical form, which would be impossible to understand visually with 1000 rows.  
 
