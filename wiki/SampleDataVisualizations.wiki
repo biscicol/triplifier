@@ -1,0 +1,18 @@
+#summary Sample Visualizations of a single dataset
+
+= Introduction =
+
+To illustrate what data looks like after triplifying, we have provided the following example dataset and accompanying visualization.
+
+= Details =
+
+Abbreviated Dataset ... 1 row
+  * [http://biscicol.org/triplifier/sampledata/henderson/henderson-short.pdf PDF file]
+  * [http://biscicol.org/triplifier/sampledata/henderson/henderson-short.dot DOT file] for viewing with [http://www.graphviz.org/ GraphViz]
+  * [http://biscicol.org/triplifier/sampledata/henderson/henderson-short.nt N-Triple file] for use with SPARQL processors
+  * [http://biscicol.org/triplifier/sampledata/henderson/henderson-short.vue VUE file] for viewing with [http://vue.tufts.edu/ Visual Understanding Environment]
+[http://biscicol.org/triplifier/sampledata/henderson/henderson-short.zip Darwin Core Archive Zip file] which can be run through the triplifier
+
+Full Dataset ... 1000 row
+[http://biscicol.org/triplifier/sampledata/henderson/henderson.nt N-Triple file] for use with SPARQL processors
+[http://biscicol.org/triplifier/sampledata/henderson/henderson.zip Darwin Core Archive Zip file] which can be run through the triplifier
