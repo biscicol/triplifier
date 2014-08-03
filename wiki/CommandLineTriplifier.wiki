@@ -43,7 +43,7 @@ usage: triplify input_files [-debug] [-f <arg>] [-h] [-hasGuids] [-m
 Suppose we want to triplify a darwin core archive, we would use the following command:
 
 {{{
-./triplify myDarwinCoreArchive.zip -i dwc > ~/myoutputfile.txt
+./triplify myDarwinCoreArchive.zip -t dwc > ~/myoutputfile.txt
 }}}
 
 ==Running from Source==
